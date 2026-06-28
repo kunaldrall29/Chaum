@@ -30,7 +30,24 @@ Ephemeral — addresses are printed by `pnpm demo` / `scripts/deploy.ts` on each
 
 ### Starknet Sepolia
 
-> Filled in after the credential-gated deployment step (T1 deliverable).
+> Credential-gated T1 step. Needs: a **funded Sepolia account** (address + key)
+> and a **Sepolia RPC URL**. Then:
+>
+> ```bash
+> cd contracts && scarb build            # produce sierra + casm artifacts
+> cd ../scripts
+> RPC_URL=<sepolia-rpc> \
+> DEPLOYER_ADDRESS=<addr> DEPLOYER_PRIVATE_KEY=<key> \
+> AGENT_ACCOUNT_ADDRESS=<agent-account> \
+> PAYROLL_CONFIG_PATH=../agent/payroll.example.json \
+> MAX_PER_PAYEE=1000000000000000000000 MAX_PER_CYCLE=10000000000000000000000 CADENCE=3600 \
+> pnpm deploy                            # → writes scripts/deployments.json, prints addresses
+> ```
+>
+> Then run the agent against Sepolia (`agent/.env` with the printed addresses +
+> the session key) and record the addresses below.
+
+> _Addresses filled in after the deploy run._
 
 | Contract | Class hash | Address |
 | --- | --- | --- |
@@ -42,6 +59,20 @@ Ephemeral — addresses are printed by `pnpm demo` / `scripts/deploy.ts` on each
 
 | Resource | URL |
 | --- | --- |
+| Landing (Vercel) | _TBD_ |
 | Dashboard (Vercel) | _TBD_ |
 | RPC endpoint | _TBD_ |
 | Voyager / Starkscan | _TBD_ |
+
+### Vercel (static — no build)
+
+Both `landing/` and `dashboard/` are self-contained static sites. Deploy each as
+its own Vercel project with **Root Directory** set to `landing` / `dashboard`
+(build command empty — pinned in each `vercel.json`), or:
+
+```bash
+cd landing   && vercel deploy --prod
+cd dashboard && vercel deploy --prod
+```
+
+Needs a Vercel token / linked project.
