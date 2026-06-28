@@ -66,7 +66,7 @@ Policy: per-payee cap 1,000,000 · per-cycle cap 10,000,000 · cadence 60s · 5 
 | Resource | URL |
 | --- | --- |
 | Landing (Vercel) | https://chaum-landing.vercel.app |
-| Dashboard / console (Vercel) | https://chaum-app.vercel.app |
+| Console — functional, live Sepolia data (Vercel) | https://chaum-app.vercel.app · https://beta.chaum.fun |
 | RPC endpoint | _TBD (Sepolia)_ |
 | Voyager / Starkscan | _TBD (Sepolia)_ |
 
