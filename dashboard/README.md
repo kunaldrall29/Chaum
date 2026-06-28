@@ -1,38 +1,30 @@
 # Chaum console (dashboard)
 
-The treasury console — five views matching the design system:
+A **functional** Vite + React + TypeScript app that reads **live data from the
+deployed Starknet Sepolia contracts** — nothing is mocked. Five pages:
 
-1. **Treasury** — vault balance, current cycle status, payee count, last cycle's verified aggregate; fund / withdraw (owner).
-2. **Policy** — define the payee set (→ Merkle root), per-payee & per-cycle caps, cadence; register/revoke the agent session key; plain-language pre-sign summary.
-3. **Cycle** — run or watch a cycle; payout table with every amount as a redaction bar and the aggregate legible; explorer links.
-4. **Disclosure** — the proof center: Auditor verifies the aggregate; a Payee opens only their own commitment (exportable income proof).
-5. **Activity** — cycle history, `CycleExecuted` events, ERC-8004 attestations.
+1. **Treasury** — real vault balance, caps, cadence, status, cycle count, and the last cycle's verified aggregate.
+2. **Policy** — the on-chain policy (caps, cadence, Merkle root, registered agent) + a plain-language summary + the payee set.
+3. **Cycle** — the payout table: every amount a redaction bar, each per-payee **commitment read from chain**, the cycle-total commitment, and `verify_aggregate` (✓ on-chain). Links to the `execute_cycle` tx on Voyager.
+4. **Disclosure** — Public / Auditor / Payee. Auditor uses the on-chain `verify_aggregate`; the **payee view recomputes `commit(amount, blinding)` in your browser and checks it against the on-chain commitment** — a real selective-disclosure proof.
+5. **Activity** — `CycleExecuted` events read from the executor, with tx links.
 
-## Source
-
-Authored in [Claude Design](https://claude.ai/design) and vendored verbatim
-(same runtime as [`../landing`](../landing)): `index.html` (`<x-dc>` template +
-`DCLogic`) + `support.js` (self-contained `dc-runtime`; loads React at runtime,
-no build). The only edit is the GitHub URL.
+All reads go through [`src/chain.ts`](src/chain.ts) (starknet.js `RpcProvider`).
+The deployed addresses + the demo cycle live in [`src/config.json`](src/config.json).
+It is read-only (no wallet): owner/agent writes happen via the CLI/agent, which
+hold the scoped keys.
 
 ## Run locally
 
 ```bash
-cd dashboard && python3 -m http.server 8001
-# open http://localhost:8001
+cd dashboard && npm install && npm run dev   # http://localhost:5173
 ```
-
-## Wiring to live Starknet (next step)
-
-The console currently renders the design's representative data. To make it live,
-replace its in-component data with reads/writes via Starknet — the exact calls
-are already implemented in [`../agent/src/chain.ts`](../agent/src/chain.ts):
-
-- reads: `get_policy`, vault `balance`, executor `get_cycle` / `verify_aggregate` / `commitment_of`
-- writes (wallet via `starknetkit`): owner `deposit` / `withdraw` / `create_policy` / `update_payees` / `set_agent` / `revoke`; payee `open_own`
-
-Point it at the addresses in [`../docs/DEPLOYMENTS.md`](../docs/DEPLOYMENTS.md).
 
 ## Deploy (Vercel)
 
-Static — no build. Set the project **Root Directory** to `dashboard`.
+Vite build, output `dist/` (pinned in `vercel.json`). Set the Vercel project
+**Root Directory** to `dashboard`, or:
+
+```bash
+cd dashboard && vercel deploy --prod
+```
