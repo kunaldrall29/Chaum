@@ -1,0 +1,68 @@
+//! Interfaces for the three core contracts: registry (policy), vault (custody),
+//! executor (cycle execution + disclosure).
+
+use starknet::ContractAddress;
+use crate::types::{Policy, PayoutInput, CycleSummary};
+use crate::commitments::Commitment;
+
+#[starknet::interface]
+pub trait IPayrollRegistry<TContractState> {
+    // --- owner-only mutations ---
+    fn create_policy(
+        ref self: TContractState,
+        payee_root: felt252,
+        max_per_payee: u256,
+        max_per_cycle: u256,
+        cadence: u64,
+        agent: ContractAddress,
+        agent_session_pubkey: felt252,
+    );
+    fn update_policy(
+        ref self: TContractState, max_per_payee: u256, max_per_cycle: u256, cadence: u64,
+    );
+    fn update_payees(ref self: TContractState, new_root: felt252);
+    fn set_agent(ref self: TContractState, agent: ContractAddress, agent_session_pubkey: felt252);
+    fn set_executor(ref self: TContractState, executor: ContractAddress);
+    fn pause(ref self: TContractState);
+    fn unpause(ref self: TContractState);
+    fn revoke(ref self: TContractState);
+    // --- views ---
+    fn get_policy(self: @TContractState) -> Policy;
+    fn get_executor(self: @TContractState) -> ContractAddress;
+    fn is_paused(self: @TContractState) -> bool;
+    // --- executor-only ---
+    fn record_cycle(ref self: TContractState, timestamp: u64);
+}
+
+#[starknet::interface]
+pub trait IDisbursementVault<TContractState> {
+    fn deposit(ref self: TContractState, amount: u256);
+    fn withdraw(ref self: TContractState, amount: u256);
+    fn balance(self: @TContractState) -> u256;
+    /// Owner approves a spender (the transfer adapter) for the payment token.
+    fn set_spender(ref self: TContractState, spender: ContractAddress);
+    fn payment_token(self: @TContractState) -> ContractAddress;
+}
+
+#[starknet::interface]
+pub trait IDisbursementExecutor<TContractState> {
+    /// The single agent-callable entrypoint. Re-validates the entire policy
+    /// on-chain, stores commitments, executes transfers via the adapter.
+    fn execute_cycle(ref self: TContractState, cycle_id: u64, payouts: Array<PayoutInput>);
+    /// Anyone/auditor: Σ per-payee commitments == cycle-total commitment.
+    fn verify_aggregate(self: @TContractState, cycle_id: u64) -> bool;
+    /// A payee proves their own amount; reverts for any other caller.
+    fn open_own(
+        ref self: TContractState,
+        cycle_id: u64,
+        payee: ContractAddress,
+        amount: u256,
+        blinding: felt252,
+    ) -> bool;
+    // --- views ---
+    fn get_cycle(self: @TContractState, cycle_id: u64) -> CycleSummary;
+    fn commitment_of(
+        self: @TContractState, cycle_id: u64, payee: ContractAddress,
+    ) -> Commitment;
+    fn total_commitment(self: @TContractState, cycle_id: u64) -> Commitment;
+}
