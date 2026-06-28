@@ -71,10 +71,11 @@ flowchart TD
 ## Repository layout
 
 ```
-contracts/   Cairo (Scarb workspace): registry, vault, executor, commitments, adapters, mocks
+contracts/   Cairo (Scarb): registry, vault, executor, commitments, merkle, adapters, mocks, vendor/
 agent/        TypeScript agent runtime: deterministic cycle engine, no LLM in the hot path
-dashboard/    Vite + React: Treasury, Policy, Cycle, Disclosure, Activity
-scripts/      deploy, seed-demo, run-cycle (pnpm demo)
+scripts/      deploy + run-cycle (pnpm demo)
+dashboard/    Treasury / Policy / Cycle / Disclosure / Activity console (static, design-system)
+landing/      marketing + selective-disclosure demo (static, design-system)
 docs/         ARCHITECTURE, COMPLIANCE_MODEL, POLICY_MODEL, DECISIONS, GRANT_MILESTONES, DEPLOYMENTS
 ```
 
@@ -93,7 +94,14 @@ cd contracts && scarb build && snforge test
 cd .. && pnpm install && pnpm demo
 ```
 
-The demo proves, in one command: individual amounts hidden (commitments only), aggregate verified, one payee opens their own amount, an auditor verifies the sum, a non-payee is rejected, and an over-cap payout reverts.
+The demo proves, in one command: individual amounts hidden (commitments only), aggregate verified, one payee opens their own amount, an auditor verifies the sum, a non-payee is rejected, and an over-cap payout reverts. (Validated end-to-end on starknet-devnet — `✅ DEMO PASSED`.)
+
+View the UIs:
+
+```bash
+pnpm landing     # marketing + selective-disclosure demo  → http://localhost:8000
+pnpm dashboard   # treasury console (5 views)             → http://localhost:8001
+```
 
 ## Documentation
 
