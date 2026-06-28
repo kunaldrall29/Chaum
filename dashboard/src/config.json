@@ -1,0 +1,73 @@
+{
+  "rpcUrl": "https://api.cartridge.gg/x/starknet/sepolia",
+  "explorer": "https://sepolia.voyager.online",
+  "chainId": "SN_SEPOLIA",
+  "addresses": {
+    "token": "0xff9112d96316df8195468051fd8e3702e91b03ca5e87a32cd43c686b73125c",
+    "registry": "0xec11eaca97ecc712e664ba746182685349d6edf39460ca76060a9a54e2b5ce",
+    "vault": "0x299aa4e037605d293c4be086bd8b46d587c7772f2f536eb24cc2247f558d571",
+    "adapter": "0x51de9449725a1f5cc9cc77700a157f9ab90869e79d0c930c40d3b9a1ced84e7",
+    "executor": "0x1df66554167bba9647ed4c5e08054fbd00101e543cc29adb99ea6142a5d0712"
+  },
+  "owner": "0x020cc09b5ceff6ccb001071bbc1507a8224892e4bde893501de0e69fe10de4f2",
+  "agent": "0x020cc09b5ceff6ccb001071bbc1507a8224892e4bde893501de0e69fe10de4f2",
+  "demoCycle": {
+    "cycleId": 1,
+    "txHash": "0x40741368a3c6b4866a660a7fe68e2a45e0a91b7583da41e0450dbdb21ee7c40",
+    "total": "1000",
+    "payeeRoot": "0x11ae8358c70fcc438419f37eec9866f401d1362ba12048658b4fd84d72c3f21",
+    "payouts": [
+      {
+        "label": "Alice",
+        "payee": "0x111",
+        "amount": "100",
+        "blinding": "1097897978311194752932609143602677606123059200275372864903169984404808494971",
+        "commitment": {
+          "x": "0x75511ab593bb4aed626609cf22f46c502abd82d2c9cb666cfa471fd2bae68d8",
+          "y": "0x576b8b50518387972bc8e2915c3ada6a515805636b3e03b7237ab644b99f6a4"
+        }
+      },
+      {
+        "label": "Bob",
+        "payee": "0x222",
+        "amount": "200",
+        "blinding": "2060893573553159088365141381727871521209279081456694342431203592191263037945",
+        "commitment": {
+          "x": "0x1673c52941f4100fd29c32e27a535aa996c91dfa7a484a73385fd738905c82",
+          "y": "0x5eb40dac4167334d618298a39d9a2209d4231291e449f05c654f5a098bfad90"
+        }
+      },
+      {
+        "label": "Carol",
+        "payee": "0x333",
+        "amount": "150",
+        "blinding": "2467505650622701847670340704386780057357804621847402423990656974709937525804",
+        "commitment": {
+          "x": "0x2062e4a15036c98d70975ac09f667357faf3b77b988a600ee565de097548c2b",
+          "y": "0x5965559d8d082a705e2cd6e6fc637b9f7be30083c7c8c7a526abe384174e81f"
+        }
+      },
+      {
+        "label": "Dave",
+        "payee": "0x444",
+        "amount": "300",
+        "blinding": "1261882629337467481172344549189728744895496218069135335603405464318347282095",
+        "commitment": {
+          "x": "0x4014256c2cbe4a357431c119a5b6fa70f6883ca8eab243a6c99ac67e7e53a6f",
+          "y": "0x63b1ff0badb92f06bca44e2dd42d8654f9f6f2d27e588668bee48f7bd276aa4"
+        }
+      },
+      {
+        "label": "Erin",
+        "payee": "0x555",
+        "amount": "250",
+        "blinding": "137344578132026661595389505778150165390613293417338410759384430659350020440",
+        "commitment": {
+          "x": "0x1b1895d53f2149fd7601fc29a69965ca9da13bdbe0d7402242842e0c2b97d18",
+          "y": "0x9203a15f331420d8f3b84ea9abd0bea2c716538864bcd792119ae4d196b6b0"
+        }
+      }
+    ]
+  },
+  "fromBlock": 11326330
+}
