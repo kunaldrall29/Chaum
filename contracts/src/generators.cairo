@@ -13,6 +13,12 @@ use core::poseidon::poseidon_hash_span;
 /// Domain-separation seed for H (ASCII "Chaum/v1/PedersenH/STARK").
 pub const H_SEED: felt252 = 'Chaum/v1/PedersenH/STARK';
 
+/// STARK-curve group order (core::ec::stark_curve::ORDER), as u256. EC scalar
+/// multiplication reduces modulo this, so blinding sums must be accumulated
+/// mod CURVE_ORDER for the homomorphic check `C_total == commit(Σa, Σb)` to hold.
+pub const CURVE_ORDER: u256 =
+    3618502788666131213697322783095070105526743751716087489154079457884512865583;
+
 /// NUMS generator H = first on-curve point from poseidon_hash_span([H_SEED, n]).
 /// Landed on-curve at n = 0. Reproduce with `derive_h`.
 pub const H_X: felt252 =

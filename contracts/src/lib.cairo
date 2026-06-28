@@ -5,9 +5,11 @@
 
 pub mod generators;
 pub mod commitments;
+pub mod merkle;
 pub mod types;
 pub mod interfaces;
 pub mod payroll_registry;
 pub mod disbursement_vault;
+pub mod disbursement_executor;
 pub mod adapters;
 pub mod mocks;

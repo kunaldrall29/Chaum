@@ -44,6 +44,20 @@ pub trait IDisbursementVault<TContractState> {
     fn payment_token(self: @TContractState) -> ContractAddress;
 }
 
+/// Owner-side wiring for the executor (adapter + optional ERC-8004 attestation).
+#[starknet::interface]
+pub trait IExecutorAdmin<TContractState> {
+    fn set_adapter(ref self: TContractState, adapter: ContractAddress);
+    /// Enable ERC-8004 attestation: the validation registry + this agent's id.
+    /// Set registry to 0 to disable (cycles then emit only Chaum's own events).
+    fn set_attestation(
+        ref self: TContractState, validation_registry: ContractAddress, agent_id: u256,
+    );
+    fn registry(self: @TContractState) -> ContractAddress;
+    fn vault(self: @TContractState) -> ContractAddress;
+    fn adapter(self: @TContractState) -> ContractAddress;
+}
+
 #[starknet::interface]
 pub trait IDisbursementExecutor<TContractState> {
     /// The single agent-callable entrypoint. Re-validates the entire policy
