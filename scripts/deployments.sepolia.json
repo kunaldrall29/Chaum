@@ -1,0 +1,9 @@
+{
+  "rpc": "https://api.cartridge.gg/x/starknet/sepolia",
+  "payeeRoot": "0x11ae8358c70fcc438419f37eec9866f401d1362ba12048658b4fd84d72c3f21",
+  "token": "0xff9112d96316df8195468051fd8e3702e91b03ca5e87a32cd43c686b73125c",
+  "registry": "0xec11eaca97ecc712e664ba746182685349d6edf39460ca76060a9a54e2b5ce",
+  "vault": "0x299aa4e037605d293c4be086bd8b46d587c7772f2f536eb24cc2247f558d571",
+  "adapter": "0x51de9449725a1f5cc9cc77700a157f9ab90869e79d0c930c40d3b9a1ced84e7",
+  "executor": "0x1df66554167bba9647ed4c5e08054fbd00101e543cc29adb99ea6142a5d0712"
+}

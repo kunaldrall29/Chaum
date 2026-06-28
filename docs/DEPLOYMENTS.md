@@ -49,13 +49,19 @@ Ephemeral — addresses are printed by `pnpm demo` / `scripts/deploy.ts` on each
 
 > _Addresses filled in after the deploy run._
 
-| Contract | Class hash | Address |
-| --- | --- | --- |
-| `PayrollRegistry` | _TBD_ | _TBD_ |
-| `DisbursementVault` | _TBD_ | _TBD_ |
-| `DisbursementExecutor` | _TBD_ | _TBD_ |
-| `PublicTransferAdapter` | _TBD_ | _TBD_ |
-| `MockERC20` (demo asset) | _TBD_ | _TBD_ |
+Deployed 2026-06-28 (deployer/owner+agent account `0x020cc09b5ceff6ccb001071bbc1507a8224892e4bde893501de0e69fe10de4f2`):
+
+| Contract | Address |
+| --- | --- |
+| `MockERC20` (demo asset) | `0xff9112d96316df8195468051fd8e3702e91b03ca5e87a32cd43c686b73125c` |
+| `PayrollRegistry` | `0xec11eaca97ecc712e664ba746182685349d6edf39460ca76060a9a54e2b5ce` |
+| `DisbursementVault` | `0x299aa4e037605d293c4be086bd8b46d587c7772f2f536eb24cc2247f558d571` |
+| `PublicTransferAdapter` | `0x51de9449725a1f5cc9cc77700a157f9ab90869e79d0c930c40d3b9a1ced84e7` |
+| `DisbursementExecutor` | `0x1df66554167bba9647ed4c5e08054fbd00101e543cc29adb99ea6142a5d0712` |
+
+RPC used for deploy: `https://api.cartridge.gg/x/starknet/sepolia`. Explorer:
+[executor on Voyager](https://sepolia.voyager.online/contract/0x1df66554167bba9647ed4c5e08054fbd00101e543cc29adb99ea6142a5d0712).
+Policy: per-payee cap 1,000,000 · per-cycle cap 10,000,000 · cadence 60s · 5 payees.
 
 | Resource | URL |
 | --- | --- |
