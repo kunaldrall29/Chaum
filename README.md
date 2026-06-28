@@ -10,6 +10,32 @@ Built for the STRK20 Request for Startups #11.
 
 ---
 
+## Live deployment
+
+Fully deployed and running on **Starknet Sepolia**, with a console that reads live on-chain state.
+
+| | |
+| --- | --- |
+| **Console** (functional, live Sepolia data) | **https://beta.chaum.fun** · [chaum-app.vercel.app](https://chaum-app.vercel.app) |
+| **Landing** (selective-disclosure demo) | [chaum-landing.vercel.app](https://chaum-landing.vercel.app) |
+| **Repo** | [github.com/kunaldrall29/Chaum](https://github.com/kunaldrall29/Chaum) |
+
+### Contracts on Starknet Sepolia
+
+| Contract | Address (Voyager) |
+| --- | --- |
+| `MockERC20` (demo payout asset) | [`0xff9112…73125c`](https://sepolia.voyager.online/contract/0xff9112d96316df8195468051fd8e3702e91b03ca5e87a32cd43c686b73125c) |
+| `PayrollRegistry` | [`0xec11ea…e2b5ce`](https://sepolia.voyager.online/contract/0xec11eaca97ecc712e664ba746182685349d6edf39460ca76060a9a54e2b5ce) |
+| `DisbursementVault` | [`0x299aa4…558d571`](https://sepolia.voyager.online/contract/0x299aa4e037605d293c4be086bd8b46d587c7772f2f536eb24cc2247f558d571) |
+| `PublicTransferAdapter` | [`0x51de94…ced84e7`](https://sepolia.voyager.online/contract/0x51de9449725a1f5cc9cc77700a157f9ab90869e79d0c930c40d3b9a1ced84e7) |
+| `DisbursementExecutor` | [`0x1df665…a5d0712`](https://sepolia.voyager.online/contract/0x1df66554167bba9647ed4c5e08054fbd00101e543cc29adb99ea6142a5d0712) |
+
+Owner / agent account: [`0x020cc0…0de4f2`](https://sepolia.voyager.online/contract/0x020cc09b5ceff6ccb001071bbc1507a8224892e4bde893501de0e69fe10de4f2) ·
+First real private cycle (5 payees, `verify_aggregate = true`): [tx `0x407413…ee7c40`](https://sepolia.voyager.online/tx/0x40741368a3c6b4866a660a7fe68e2a45e0a91b7583da41e0450dbdb21ee7c40).
+Policy: per-payee cap 1,000,000 · per-cycle cap 10,000,000 · cadence 60s · 5 payees. Full record in [docs/DEPLOYMENTS.md](docs/DEPLOYMENTS.md).
+
+---
+
 ## Why
 
 Treasuries that run payroll on-chain face a dilemma: automate disbursement and either (a) hand an agent a hot wallet that can drain everything, or (b) leak every employee's salary to the entire world, forever. Chaum refuses both.
@@ -74,7 +100,7 @@ flowchart TD
 contracts/   Cairo (Scarb): registry, vault, executor, commitments, merkle, adapters, mocks, vendor/
 agent/        TypeScript agent runtime: deterministic cycle engine, no LLM in the hot path
 scripts/      deploy + run-cycle (pnpm demo)
-dashboard/    Treasury / Policy / Cycle / Disclosure / Activity console (static, design-system)
+dashboard/    Vite + React console (5 pages) reading LIVE Sepolia data via starknet.js
 landing/      marketing + selective-disclosure demo (static, design-system)
 docs/         ARCHITECTURE, COMPLIANCE_MODEL, POLICY_MODEL, DECISIONS, GRANT_MILESTONES, DEPLOYMENTS
 ```
@@ -99,9 +125,11 @@ The demo proves, in one command: individual amounts hidden (commitments only), a
 View the UIs:
 
 ```bash
-pnpm landing     # marketing + selective-disclosure demo  → http://localhost:8000
-pnpm dashboard   # treasury console (5 views)             → http://localhost:8001
+pnpm landing                          # marketing + disclosure demo → http://localhost:8000
+cd dashboard && npm install && npm run dev   # live console (5 pages)      → http://localhost:5173
 ```
+
+The console reads the deployed Sepolia contracts directly — vault balance, policy/caps/cadence, per-payee commitments, `verify_aggregate`, and `CycleExecuted` events are all live; the Disclosure → Payee view recomputes `commit(amount, blinding)` in the browser and checks it against the on-chain commitment.
 
 ## Documentation
 
@@ -114,7 +142,9 @@ pnpm dashboard   # treasury console (5 views)             → http://localhost:8
 
 ## Status
 
-Proof of concept (T1). Strict non-goals for V1: yield, lending, cards, consumer/mass-market payroll, multi-chain, token, mainnet, LLM in the execution path, recipient-side accounts.
+Proof of concept (T1) — **deployed and live on Starknet Sepolia** with a real executed cycle and a live console (links above). 52 `snforge` tests green; `pnpm demo` passes end-to-end on devnet; commitment math cross-verified Cairo ↔ TypeScript.
+
+Strict non-goals for V1: yield, lending, cards, consumer/mass-market payroll, multi-chain, token, mainnet, LLM in the execution path, recipient-side accounts.
 
 ## License
 
