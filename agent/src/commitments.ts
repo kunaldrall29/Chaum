@@ -14,8 +14,9 @@ export const H_Y =
 /** STARK-curve group order (core::ec::stark_curve::ORDER). */
 export const CURVE_ORDER = Point.CURVE().n;
 
-const G = Point.BASE;
-const H = Point.fromAffine({ x: H_X, y: H_Y });
+type Pt = typeof Point.BASE;
+const G: Pt = Point.BASE;
+const H: Pt = Point.fromAffine({ x: H_X, y: H_Y });
 
 export interface Commitment {
   x: bigint;
@@ -27,7 +28,7 @@ function modOrder(k: bigint): bigint {
   return ((k % CURVE_ORDER) + CURVE_ORDER) % CURVE_ORDER;
 }
 
-function mul(p: Point, k: bigint): Point {
+function mul(p: Pt, k: bigint): Pt {
   const s = modOrder(k);
   return s === 0n ? Point.ZERO : p.multiply(s);
 }
