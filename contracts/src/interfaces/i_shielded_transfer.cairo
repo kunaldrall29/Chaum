@@ -11,3 +11,11 @@ pub trait IShieldedTransfer<TContractState> {
     /// the caller to the authorized executor (they spend the vault's allowance).
     fn transfer(ref self: TContractState, to: ContractAddress, amount: u256, note: Span<felt252>);
 }
+
+/// Owner-side wiring for an adapter (the executor address is known only after the
+/// executor is deployed, so it is set post-deploy).
+#[starknet::interface]
+pub trait ITransferAdapterAdmin<TContractState> {
+    fn set_executor(ref self: TContractState, executor: ContractAddress);
+    fn executor(self: @TContractState) -> ContractAddress;
+}
