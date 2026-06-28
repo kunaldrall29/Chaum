@@ -11,9 +11,10 @@
   "scripts": {
     "build:contracts": "cd contracts && scarb build",
     "test:contracts": "cd contracts && snforge test",
-    "demo": "tsx scripts/run-cycle.ts",
+    "demo": "pnpm --filter @chaum/scripts demo",
     "agent": "pnpm --filter @chaum/agent start",
-    "dashboard": "pnpm --filter @chaum/dashboard dev"
+    "dashboard": "python3 -m http.server 8001 --directory dashboard",
+    "landing": "python3 -m http.server 8000 --directory landing"
   },
   "devDependencies": {
     "tsx": "^4.19.2",
