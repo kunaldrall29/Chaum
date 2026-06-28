@@ -9,6 +9,10 @@ license = "MIT"
 starknet = "2.18.0"
 openzeppelin = "3.0.0"
 openzeppelin_merkle_tree = "3.0.0"
+# Vendored from keep-starknet-strange/starknet-agentic (MIT) — see vendor/README.md.
+erc8004 = { path = "vendor/erc8004" }
+session_account = { path = "vendor/session_account" }
+agent_account = { path = "vendor/agent_account" }
 
 [dev-dependencies]
 snforge_std = "0.61.0"

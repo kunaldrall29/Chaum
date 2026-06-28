@@ -1,0 +1,16 @@
+[package]
+name = "agent_account"
+version = "0.1.0"
+edition = "2024_07"
+# Vendored from keep-starknet-strange/starknet-agentic (MIT). See ../README.md.
+
+[dependencies]
+starknet = "2.18.0"
+openzeppelin = "3.0.0"
+
+[lib]
+sierra = true
+
+[[target.starknet-contract]]
+sierra = true
+casm = true
