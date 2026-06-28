@@ -59,10 +59,10 @@ Ephemeral — addresses are printed by `pnpm demo` / `scripts/deploy.ts` on each
 
 | Resource | URL |
 | --- | --- |
-| Landing (Vercel) | _TBD_ |
-| Dashboard (Vercel) | _TBD_ |
-| RPC endpoint | _TBD_ |
-| Voyager / Starkscan | _TBD_ |
+| Landing (Vercel) | https://chaum-landing.vercel.app |
+| Dashboard / console (Vercel) | https://chaum-app.vercel.app |
+| RPC endpoint | _TBD (Sepolia)_ |
+| Voyager / Starkscan | _TBD (Sepolia)_ |
 
 ### Vercel (static — no build)
 
