@@ -1,16 +1,20 @@
 // Live Starknet reads (and best-effort wallet writes) for the console.
 // All display data comes from the deployed Sepolia contracts — nothing is mocked.
 
-import { Contract, RpcProvider, hash } from "starknet";
+import { Contract, RpcProvider, hash, type AccountInterface } from "starknet";
 import config from "./config.json";
 import registryAbi from "./abi/registry.json";
+import vaultAbi from "./abi/vault.json";
 import executorAbi from "./abi/executor.json";
 import erc20Abi from "./abi/erc20.json";
+import { commit, randomBlinding } from "./lib/commitments.ts";
+import { buildTree } from "./lib/merkle.ts";
 
 export const CFG = config;
 export const provider = new RpcProvider({ nodeUrl: config.rpcUrl });
 
 const registry = new Contract({ abi: registryAbi as any, address: config.addresses.registry, providerOrAccount: provider });
+const vault = new Contract({ abi: vaultAbi as any, address: config.addresses.vault, providerOrAccount: provider });
 const executor = new Contract({ abi: executorAbi as any, address: config.addresses.executor, providerOrAccount: provider });
 const token = new Contract({ abi: erc20Abi as any, address: config.addresses.token, providerOrAccount: provider });
 
@@ -114,6 +118,75 @@ export async function getCycleEvents(): Promise<CycleEvent[]> {
     });
   }
   return out.reverse();
+}
+
+// ---------------- writes (via connected wallet) ----------------
+
+async function send(account: AccountInterface, calls: any[]): Promise<string> {
+  const { transaction_hash } = await account.execute(calls);
+  await provider.waitForTransaction(transaction_hash, { retryInterval: 4000 });
+  return transaction_hash;
+}
+
+/** Owner: fund the vault (approve + deposit in one multicall). */
+export function deposit(account: AccountInterface, amount: bigint): Promise<string> {
+  return send(account, [
+    token.populate("approve", [config.addresses.vault, amount]),
+    vault.populate("deposit", [amount]),
+  ]);
+}
+
+/** Owner: withdraw from the vault back to the owner. */
+export function withdraw(account: AccountInterface, amount: bigint): Promise<string> {
+  return send(account, [vault.populate("withdraw", [amount])]);
+}
+
+/** Owner: pause / unpause the policy. */
+export function setPaused(account: AccountInterface, paused: boolean): Promise<string> {
+  return send(account, [registry.populate(paused ? "pause" : "unpause", [])]);
+}
+
+/** Owner: revoke the agent session key. */
+export function revokeAgent(account: AccountInterface): Promise<string> {
+  return send(account, [registry.populate("revoke", [])]);
+}
+
+/** Payee: prove your own amount on-chain (reverts for anyone else). */
+export function openOwn(
+  account: AccountInterface,
+  cycleId: number,
+  payee: string,
+  amount: bigint,
+  blinding: bigint,
+): Promise<string> {
+  return send(account, [executor.populate("open_own", [cycleId, payee, amount, blinding])]);
+}
+
+export interface BuiltCycle {
+  cycleId: number;
+  payouts: any[];
+  total: bigint;
+}
+
+/** Build a fresh cycle (new blindings) over the configured payees + run it. */
+export async function runCycle(account: AccountInterface): Promise<{ txHash: string; cycleId: number }> {
+  const events = await getCycleEvents();
+  const cycleId = (events.length ? events[0].cycleId : 0) + 1;
+  const payees = config.demoCycle.payouts as any[];
+  const tree = buildTree(payees.map((p) => BigInt(p.payee)));
+  const payouts = payees.map((p, i) => {
+    const amount = BigInt(p.amount);
+    const blinding = randomBlinding();
+    return {
+      payee: p.payee,
+      amount,
+      blinding,
+      commitment: commit(amount, blinding),
+      merkle_proof: tree.proof(i),
+    };
+  });
+  const txHash = await send(account, [executor.populate("execute_cycle", [cycleId, payouts])]);
+  return { txHash, cycleId };
 }
 
 export const explorerTx = (h: string) => `${config.explorer}/tx/${h}`;

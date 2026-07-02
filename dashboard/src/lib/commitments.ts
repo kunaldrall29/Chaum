@@ -29,3 +29,12 @@ export function opensTo(
   const r = commit(amount, blinding);
   return r.x === c.x && r.y === c.y;
 }
+
+/** Random blinding in [1, ORDER). */
+export function randomBlinding(): bigint {
+  const b = new Uint8Array(32);
+  crypto.getRandomValues(b);
+  let v = 0n;
+  for (const x of b) v = (v << 8n) | BigInt(x);
+  return (v % (n - 1n)) + 1n;
+}

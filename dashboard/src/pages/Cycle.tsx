@@ -1,8 +1,12 @@
-import { CFG, getCycle, verifyAggregate, commitmentOf, getCycleEvents, explorerTx, short } from "../chain.ts";
+import { CFG, getCycle, verifyAggregate, commitmentOf, getCycleEvents, runCycle, explorerTx, short } from "../chain.ts";
 import { useAsync } from "../lib/useAsync.ts";
+import { useWallet } from "../App.tsx";
+import { useTx, TxFeedback } from "../components/actions.tsx";
 import { Loading, ErrorBox, PageHead } from "../components/ui.tsx";
 
 export function Cycle() {
+  const wallet = useWallet();
+  const runTx = useTx();
   const q = useAsync(async () => {
     const events = await getCycleEvents();
     const cycleId = events.length ? events[0].cycleId : CFG.demoCycle.cycleId;
@@ -27,6 +31,25 @@ export function Cycle() {
     <>
       <PageHead eyebrow={`cycle #${cycleId}`} title="Disbursement — amounts redacted"
         desc="Every per-payee amount is a commitment on-chain. The split is hidden; the aggregate is legible and verified." />
+
+      {/* Run a fresh cycle — real execute_cycle tx (agent/owner) */}
+      <div className="card" style={{ marginBottom: 16, display: "flex", alignItems: "center", gap: 14, flexWrap: "wrap" }}>
+        <div style={{ flex: 1, minWidth: 200 }}>
+          <div className="label">run a cycle</div>
+          <p className="mono" style={{ fontSize: 11.5, color: "var(--muted-2)", margin: "6px 0 0" }}>
+            builds fresh commitments + Merkle proofs in-browser, then calls execute_cycle. The contract re-validates everything.
+          </p>
+        </div>
+        {wallet.address ? (
+          <button className="btn" disabled={runTx.status === "pending"}
+            onClick={() => runTx.run(async () => (await runCycle(wallet.account!)).txHash).then(() => q.reload())}>
+            {runTx.status === "pending" ? "running…" : "Run new cycle"}
+          </button>
+        ) : (
+          <span className="mono" style={{ fontSize: 12, color: "var(--muted)" }}>connect wallet to run</span>
+        )}
+        <div style={{ flexBasis: "100%" }}><TxFeedback tx={runTx} /></div>
+      </div>
 
       {!cycle.exists ? (
         <div className="card"><span className="pill">no cycle executed yet</span></div>

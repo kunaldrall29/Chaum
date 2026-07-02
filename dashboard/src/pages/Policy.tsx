@@ -1,8 +1,13 @@
-import { CFG, getPolicy, short } from "../chain.ts";
+import { CFG, getPolicy, setPaused, revokeAgent, short } from "../chain.ts";
 import { useAsync } from "../lib/useAsync.ts";
+import { useWallet } from "../App.tsx";
+import { useTx, TxFeedback } from "../components/actions.tsx";
 import { Loading, ErrorBox, PageHead, Grid, Stat, fmt } from "../components/ui.tsx";
 
 export function Policy() {
+  const wallet = useWallet();
+  const pauseTx = useTx();
+  const revokeTx = useTx();
   const q = useAsync(getPolicy, []);
   if (q.loading) return <Loading what="reading policy" />;
   if (q.error || !q.data) return <ErrorBox msg={q.error ?? "no data"} />;
@@ -64,6 +69,29 @@ export function Policy() {
         </div>
         <div className="label" style={{ marginTop: 12 }}>session pubkey</div>
         <div className="mono" style={{ fontSize: 13, marginTop: 8, color: "var(--muted)" }}>{short(p.agentSessionPubkey)}</div>
+      </div>
+
+      {/* Owner controls — real on-chain txs */}
+      <div className="card" style={{ marginTop: 16 }}>
+        <div className="label">owner controls</div>
+        {!wallet.address ? (
+          <p className="muted" style={{ fontSize: 14, marginTop: 12 }}>Connect the owner wallet to pause or revoke.</p>
+        ) : (
+          <>
+            <div style={{ display: "flex", gap: 10, marginTop: 14, flexWrap: "wrap" }}>
+              <button className="btn ghost" disabled={pauseTx.status === "pending"}
+                onClick={() => pauseTx.run(() => setPaused(wallet.account!, !p.paused)).then(() => q.reload())}>
+                {p.paused ? "Unpause" : "Pause"}
+              </button>
+              <button className="btn ghost" disabled={revokeTx.status === "pending" || p.agent === 0n}
+                onClick={() => revokeTx.run(() => revokeAgent(wallet.account!)).then(() => q.reload())}>
+                Revoke agent
+              </button>
+            </div>
+            <div style={{ marginTop: 10, display: "flex", gap: 16 }}><TxFeedback tx={pauseTx} /><TxFeedback tx={revokeTx} /></div>
+            {!wallet.owner && <p className="mono" style={{ fontSize: 11.5, color: "var(--muted-2)", marginTop: 10 }}>connected wallet is not the owner — these will revert (owner-gated).</p>}
+          </>
+        )}
       </div>
     </>
   );
