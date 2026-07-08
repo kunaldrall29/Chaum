@@ -98,26 +98,31 @@ export interface CycleEvent {
 /** Read CycleExecuted events from the executor (real activity log). */
 export async function getCycleEvents(): Promise<CycleEvent[]> {
   const key = hash.getSelectorFromName("CycleExecuted");
-  const res: any = await provider.getEvents({
-    address: config.addresses.executor,
-    from_block: { block_number: (config as any).fromBlock ?? 0 },
-    to_block: "latest",
-    keys: [[key]],
-    chunk_size: 100,
-  });
   const out: CycleEvent[] = [];
-  for (const ev of res.events ?? []) {
-    // keys = [selector, cycle_id]; data = [payee_count, cx, cy, caller, ts]
-    const cycleId = ev.keys?.[1] ? Number(BigInt(ev.keys[1])) : 0;
-    const payeeCount = ev.data?.[0] ? Number(BigInt(ev.data[0])) : 0;
-    out.push({
-      cycleId,
-      payeeCount,
-      txHash: ev.transaction_hash,
-      blockNumber: ev.block_number ?? 0,
+  let continuation: string | undefined = undefined;
+  // Follow the RPC pagination token so events across a wide block range aren't missed.
+  do {
+    const res: any = await provider.getEvents({
+      address: config.addresses.executor,
+      from_block: { block_number: (config as any).fromBlock ?? 0 },
+      to_block: "latest",
+      keys: [[key]],
+      chunk_size: 100,
+      ...(continuation ? { continuation_token: continuation } : {}),
     });
-  }
-  return out.reverse();
+    for (const ev of res.events ?? []) {
+      // keys = [selector, cycle_id]; data = [payee_count, cx, cy, caller, ts]
+      out.push({
+        cycleId: ev.keys?.[1] ? Number(BigInt(ev.keys[1])) : 0,
+        payeeCount: ev.data?.[0] ? Number(BigInt(ev.data[0])) : 0,
+        txHash: ev.transaction_hash,
+        blockNumber: ev.block_number ?? 0,
+      });
+    }
+    continuation = res.continuation_token;
+  } while (continuation);
+  // newest first
+  return out.sort((a, b) => b.cycleId - a.cycleId);
 }
 
 // ---------------- writes (via connected wallet) ----------------
