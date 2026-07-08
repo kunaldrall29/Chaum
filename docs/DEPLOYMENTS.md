@@ -61,7 +61,17 @@ Deployed 2026-06-28 (deployer/owner+agent account `0x020cc09b5ceff6ccb001071bbc1
 
 RPC used for deploy: `https://api.cartridge.gg/x/starknet/sepolia`. Explorer:
 [executor on Voyager](https://sepolia.voyager.online/contract/0x1df66554167bba9647ed4c5e08054fbd00101e543cc29adb99ea6142a5d0712).
-Policy: per-payee cap 1,000,000 · per-cycle cap 10,000,000 · cadence 60s · 5 payees.
+Policy: per-payee cap 1,000,000 · per-cycle cap 10,000,000 · cadence 60s.
+
+### Executed cycles (real on-chain disbursements)
+
+| Cycle | Payees (users) | Total | verify_aggregate | Tx |
+| --- | --- | --- | --- | --- |
+| #1 | 5 | 1,000 | ✓ | [`0x407413…`](https://sepolia.voyager.online/tx/0x40741368a3c6b4866a660a7fe68e2a45e0a91b7583da41e0450dbdb21ee7c40) |
+| #2 | 12 | 30,610 | ✓ | [`0x15eb74…`](https://sepolia.voyager.online/tx/0x15eb746c96e2587469ddcbacf3d31513211c78dec86951c11357251d27ca643) |
+| #3 | 12 | 30,610 | ✓ | [`0x1b4c96…`](https://sepolia.voyager.online/tx/0x1b4c9688ea31028b26f9b93aa8382492bc0ef989f817f2be608be6d57a9f31) |
+
+Payee set updated on-chain to 12 demo users (`update_payees`, root `0x51641c…`). Each cycle's per-payee amounts are hidden (commitments); the aggregate is verified on-chain. The console reads all of this live.
 
 | Resource | URL |
 | --- | --- |
