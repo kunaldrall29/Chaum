@@ -1,8 +1,10 @@
 # Chaum
 
-**Private payroll & treasury disbursement on Starknet.** A treasury funds a vault, defines a payee set and a policy, and delegates **one scoped session key** to an autonomous agent that runs disbursement cycles. The agent *proposes*; the contract *disposes* — every condition is re-validated on-chain before any token moves.
+**The confidential operating account for onchain organizations.** A treasury funds a vault, defines a role registry and a policy, and delegates **one scoped session key** to an autonomous agent that runs disbursement cycles across **streams** (payroll / vendor / grant). The agent *proposes*; the contract *disposes* — every condition is re-validated on-chain before any token moves.
 
-> **Individual amounts are private. The aggregate is provable.**
+Three modules, in strict sequence: **Disburse** (the wedge) → **Prove** (the moat) → **Grow** (the T3 engine, present today as a seam).
+
+> **Individual amounts are private. The aggregate — and each category — is provable, to exactly the right party.**
 
 Named for David Chaum — blind signatures and digital cash.
 
@@ -12,15 +14,17 @@ Built for the STRK20 Request for Startups #11.
 
 ## Live deployment
 
-Fully deployed and running on **Starknet Sepolia**, with a console that reads live on-chain state.
-
 | | |
 | --- | --- |
 | **Console** (functional, live Sepolia data) | **https://beta.chaum.fun** · [chaum-app.vercel.app](https://chaum-app.vercel.app) |
 | **Landing** (selective-disclosure demo) | [chaum-landing.vercel.app](https://chaum-landing.vercel.app) |
 | **Repo** | [github.com/kunaldrall29/Chaum](https://github.com/kunaldrall29/Chaum) |
 
-### Contracts on Starknet Sepolia
+### What's live vs. staged
+
+The **payroll-era V1** is deployed and running on **Starknet Sepolia** with a real executed private cycle and a console reading live on-chain state (addresses below). The **operating-account build** — streams, roles, role-scoped disclosure, execution-window jitter, and the KYT gate — is complete, `snforge`-green, and demoable on devnet; its Sepolia redeploy (`scripts/deploy-and-seed.ts`, 12 users across streams) is **staged and gated on testnet funds** (Sepolia declare fees spiked ~10×). See [docs/DEPLOYMENTS.md](docs/DEPLOYMENTS.md).
+
+### Contracts on Starknet Sepolia (payroll-era V1)
 
 | Contract | Address (Voyager) |
 | --- | --- |
@@ -38,18 +42,19 @@ Policy: per-payee cap 1,000,000 · per-cycle cap 10,000,000 · cadence 60s · 5 
 
 ## Why
 
-Treasuries that run payroll on-chain face a dilemma: automate disbursement and either (a) hand an agent a hot wallet that can drain everything, or (b) leak every employee's salary to the entire world, forever. Chaum refuses both.
+Organizations that run treasury operations on-chain face a dilemma: automate disbursement and either (a) hand an agent a hot wallet that can drain everything, or (b) leak every salary, vendor invoice, and grant to the entire world, forever. Chaum refuses both.
 
-- **Bounded delegation.** The agent holds a session key scoped to exactly one action — `execute_cycle` — against a fixed payee set, under per-payee and per-cycle caps and a minimum cadence. A compromised agent key **cannot** withdraw, redirect funds, pay a non-payee, or exceed caps. The contract re-checks every rule on every call.
-- **Selective privacy.** Per-payee amounts are hidden behind additively-homomorphic Pedersen commitments. The protocol proves `Σ amounts = disbursed total` without revealing the split. Each payee can open *only their own* commitment; an auditor can verify *only the aggregate*.
+- **Bounded delegation (Disburse).** The agent holds a session key scoped to exactly one action — `execute_cycle` — against a fixed payee set, under per-payee and per-cycle caps, a minimum cadence, and an execution window it must land inside. Every payout is classified into a stream (payroll / vendor / grant) and screened by a KYT gate before it settles. A compromised agent key **cannot** withdraw, redirect funds, pay a non-payee, or exceed caps. The contract re-checks every rule on every call.
+- **Role-scoped selective disclosure (Prove).** Per-payee amounts are hidden behind additively-homomorphic Pedersen commitments. The protocol proves `Σ amounts = disbursed total` without revealing the split — and proves each *category* subtotal independently. Disclosure is role-gated by the on-chain registry: an **auditor** verifies only the aggregate, a **stakeholder** verifies only a stream's subtotal, a **payee** opens only their own line — and each scope is isolation-tested against the others.
 
 ## What's private vs. provable
 
 | Fact | Who can learn it | How |
 | --- | --- | --- |
-| The set of approved payees | Public | Merkle root in `PayrollRegistry` |
-| Per-payee, per-cycle, cadence caps | Public | Policy in `PayrollRegistry` |
-| The cycle's **aggregate** total | Anyone / auditor | `verify_aggregate(cycle_id)` over the homomorphic commitment sum |
+| The set of approved payees + their stream | Public (as a Merkle root) | root over `(payee, stream)` leaves in `PayrollRegistry` |
+| Per-payee, per-cycle, cadence caps, exec window | Public | Policy in `PayrollRegistry` |
+| The cycle's **aggregate** total | Auditor role | `verify_aggregate(cycle_id)` over the homomorphic commitment sum |
+| A **stream's** subtotal (payroll / vendor / grant) | Stakeholder role | `verify_stream_aggregate(cycle_id, stream)` over the per-stream commitment |
 | An **individual** payee's amount | That payee only | `open_own(cycle_id, payee, amount, blinding)` — reverts for anyone else |
 | The split of the total across payees | **No one** (commitment layer) | Pedersen commitments are perfectly hiding |
 | The amount actually transferred | Depends on the transfer adapter — see below | — |
@@ -65,13 +70,14 @@ Chaum's *own* events never carry cleartext amounts — only commitment coordinat
 
 ## What the agent **cannot** do
 
-A compromised or malicious agent session key can **only** do exactly one thing: call `execute_cycle` to pay the **already-registered** payee set, from the **already-funded** vault, **within caps**, **no more often than the cadence**. Specifically it **cannot**:
+A compromised or malicious agent session key can **only** do exactly one thing: call `execute_cycle` to pay the **already-registered** payee set, from the **already-funded** vault, **within caps**, **no more often than the cadence**, **inside the execution window**. Specifically it **cannot**:
 
 - Withdraw funds to itself or any non-payee address — there is no fund path out of the vault except to a Merkle-proven payee or back to the owner.
-- Add, remove, or change payees, or raise any cap — those are owner-only and the agent key is rejected.
-- Pay any address not in the committed Merkle payee set — membership is proven on-chain per payout.
-- Exceed `max_per_payee` or `max_per_cycle`, or run a cycle before the cadence elapses.
-- Call any entrypoint other than `execute_cycle`.
+- Add, remove, or change payees, assign a role, raise any cap, or change the window — those are owner-only and the agent key is rejected.
+- Pay any address not in the committed `(payee, stream)` Merkle set — membership is proven on-chain per payout.
+- Exceed `max_per_payee` or `max_per_cycle`, run a cycle before the cadence elapses, or land outside the execution window.
+- Bypass the KYT screen — a denied payee is skipped-and-logged (or the cycle reverts, per policy).
+- Call any entrypoint other than `execute_cycle`, or grant itself any disclosure scope beyond its role.
 - Act after the owner calls `revoke` (which zeroes the session key) or `pause`.
 
 The owner can revoke at any time. The agent never holds custody.
@@ -81,28 +87,31 @@ The owner can revoke at any time. The agent never holds custody.
 ```mermaid
 flowchart TD
     Owner[Treasury Owner] -->|deposit / withdraw| Vault[DisbursementVault]
-    Owner -->|create/update policy, payees, caps, cadence| Registry[PayrollRegistry]
-    Owner -->|register / revoke session key| Registry
+    Owner -->|policy, payees, caps, cadence, exec_window| Registry[PayrollRegistry]
+    Owner -->|set_role, register / revoke session key| Registry
     Agent[Autonomous Agent - scoped session key] -->|execute_cycle| Exec[DisbursementExecutor]
-    Exec -->|re-validate caller, cadence, caps, merkle, sum| Registry
+    Exec -->|re-validate caller, cadence+window, caps, merkle, sum, roles| Registry
+    Exec -->|screen payee| Kyt{IKytOracle}
     Exec -->|pull funds| Vault
     Exec -->|transfer| Adapter{IShieldedTransfer}
     Adapter -->|devnet/demo| Pub[PublicTransferAdapter - ERC20]
     Adapter -->|testnet T2| Strk[Strk20TransferAdapter - shielded]
+    Vault -.->|Grow seam T3| Yield{IYieldAdapter - stub}
     Exec -->|store commitments + attestation| Reg8004[ERC-8004 registry]
     Payee[Payee] -->|open_own| Exec
+    Stakeholder[Stakeholder] -->|verify_stream_aggregate| Exec
     Auditor[Auditor] -->|verify_aggregate| Exec
 ```
 
 ## Repository layout
 
 ```
-contracts/   Cairo (Scarb): registry, vault, executor, commitments, merkle, adapters, mocks, vendor/
-agent/        TypeScript agent runtime: deterministic cycle engine, no LLM in the hot path
-scripts/      deploy + run-cycle (pnpm demo)
-dashboard/    Vite + React console (5 pages) reading LIVE Sepolia data via starknet.js
+contracts/   Cairo (Scarb): registry (policy+roles), vault, executor (streams+KYT), commitments, merkle, interfaces/, adapters/ (public, strk20 stub, mock KYT, yield stub), mocks, vendor/
+agent/        TypeScript agent runtime: deterministic engine, streams, jitter, anomaly-halt, audit packets — no LLM in the hot path
+scripts/      deploy, run-cycle, deploy-and-seed (12 users across streams)
+dashboard/    Vite + React console reading LIVE Sepolia data via starknet.js
 landing/      marketing + selective-disclosure demo (static, design-system)
-docs/         ARCHITECTURE, COMPLIANCE_MODEL, POLICY_MODEL, DECISIONS, GRANT_MILESTONES, DEPLOYMENTS
+docs/         ARCHITECTURE, COMPLIANCE_MODEL, POLICY_MODEL, PRIVACY_THREAT_MODEL, GROW_DESIGN, DECISIONS, GRANT_MILESTONES, DEPLOYMENTS
 ```
 
 ## Quickstart
@@ -134,17 +143,19 @@ The console reads the deployed Sepolia contracts directly — vault balance, pol
 ## Documentation
 
 - [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) — components and data flow
-- [docs/COMPLIANCE_MODEL.md](docs/COMPLIANCE_MODEL.md) — the commitment scheme, disclosure guarantees, exactly what each party learns
-- [docs/POLICY_MODEL.md](docs/POLICY_MODEL.md) — the policy object and its enforcement
+- [docs/COMPLIANCE_MODEL.md](docs/COMPLIANCE_MODEL.md) — the commitment scheme, role-scoped disclosure guarantees, KYT screening, exactly what each party learns
+- [docs/POLICY_MODEL.md](docs/POLICY_MODEL.md) — the policy object (streams, roles, window, anomaly) and its enforcement
+- [docs/PRIVACY_THREAT_MODEL.md](docs/PRIVACY_THREAT_MODEL.md) — the honest scope: what's private, what leaks, per adapter
+- [docs/GROW_DESIGN.md](docs/GROW_DESIGN.md) — the `IYieldAdapter` seam and the T3 Grow module
 - [docs/DECISIONS.md](docs/DECISIONS.md) — key technical decisions and tradeoffs
-- [docs/GRANT_MILESTONES.md](docs/GRANT_MILESTONES.md) — T1 / T2 / T3 roadmap
+- [docs/GRANT_MILESTONES.md](docs/GRANT_MILESTONES.md) — Disburse / Prove / Grow across T1 / T2 / T3
 - [docs/DEPLOYMENTS.md](docs/DEPLOYMENTS.md) — toolchain versions and deployed addresses
 
 ## Status
 
-Proof of concept (T1) — **deployed and live on Starknet Sepolia** with a real executed cycle and a live console (links above). 52 `snforge` tests green; `pnpm demo` passes end-to-end on devnet; commitment math cross-verified Cairo ↔ TypeScript.
+Proof of concept (T1: Disburse + Prove). The payroll-era V1 is **deployed and live on Starknet Sepolia** with a real executed cycle and a live console (links above). The operating-account build (streams, roles, role-scoped disclosure, execution window, KYT gate, Grow/bridge seams) is complete: **61 `snforge` tests green** (revert matrix + role-scope isolation + stream subtotals), **16 agent tests** (jitter / anomaly / packets), `pnpm demo` passes end-to-end on devnet, and commitment math is cross-verified Cairo ↔ TypeScript. Its Sepolia redeploy is staged (see [docs/DEPLOYMENTS.md](docs/DEPLOYMENTS.md)).
 
-Strict non-goals for V1: yield, lending, cards, consumer/mass-market payroll, multi-chain, token, mainnet, LLM in the execution path, recipient-side accounts.
+Strict non-goals for V1: live yield, bridge implementation, Lyapunov, cards, consumer/mass-market payroll, multi-chain runtime, token, mainnet, LLM in the execution path, recipient-side accounts.
 
 ## License
 

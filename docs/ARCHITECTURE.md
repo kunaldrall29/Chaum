@@ -53,7 +53,7 @@ execution time), `anomaly` (both-threshold halt), `packets` (audit-packet zip),
 retries), `scheduler` (poll loop), `state` (sqlite), plus optional `explain`
 (post-hoc Claude summary) and `notify` (webhook/Telegram).
 
-### Interfaces (`app/`, `landing/`)
+### Interfaces (`dashboard/`, `landing/`)
 
 Console (Vite + React + `@starknet-io/get-starknet`, live RPC reads): Treasury /
 Policy / Cycle (per-stream redaction bars) / **Prove** (role-scoped disclosure
