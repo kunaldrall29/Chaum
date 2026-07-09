@@ -67,22 +67,30 @@ async function declareDeploy(
   calldata: Record<string, any>,
 ): Promise<string> {
   const { sierra, casm } = artifact(name);
+  const classHash = hash.computeContractClassHash(sierra);
 
-  // Idempotent declare: skip if the class is already on-chain.
-  let classHash: string;
+  // Idempotent + fee-efficient: skip declare entirely if the class is already
+  // on-chain (avoids paying/estimating a declare for unchanged contracts).
+  let onChain = false;
   try {
-    const dRes = await withRetry(`declare ${name}`, () =>
-      account.declare({ contract: sierra, casm }),
-    );
-    classHash = dRes.class_hash;
-    await waitSlow(provider, dRes.transaction_hash);
-    console.log(`  declared ${name} (${classHash})`);
-  } catch (e) {
-    if (/already declared|is already/i.test(String(e))) {
-      classHash = hash.computeContractClassHash(sierra);
-      console.log(`  ${name} already declared (${classHash})`);
-    } else {
-      throw e;
+    await provider.getClassByHash(classHash);
+    onChain = true;
+  } catch {
+    onChain = false;
+  }
+  if (onChain) {
+    console.log(`  ${name} already declared (${classHash})`);
+  } else {
+    try {
+      const dRes = await withRetry(`declare ${name}`, () => account.declare({ contract: sierra, casm }));
+      await waitSlow(provider, dRes.transaction_hash);
+      console.log(`  declared ${name} (${classHash})`);
+    } catch (e) {
+      if (/already declared|is already/i.test(String(e))) {
+        console.log(`  ${name} already declared (${classHash})`);
+      } else {
+        throw e;
+      }
     }
   }
 
