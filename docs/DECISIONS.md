@@ -73,12 +73,14 @@ adapter-agnostic, and works whether the agent uses the vendored session account 
 ## D5 — Merkle payee set: self-contained commutative Poseidon
 
 **Decision.** A small in-repo Merkle module ([`merkle.cairo`](../contracts/src/merkle.cairo)):
-`leaf = Poseidon([payee])`, nodes = commutative Poseidon `Poseidon([min, max])`,
+`leaf = Poseidon([payee, stream])`, nodes = commutative Poseidon `Poseidon([min, max])`,
 verify folds proof siblings into the leaf.
 
 **Why.** Owning both sides guarantees the on-chain verify and the off-chain
 (TypeScript) tree builder match exactly, with no left/right proof flags
-(commutative hashing). Poseidon is the STARK-native, cheaper hash.
+(commutative hashing). Poseidon is the STARK-native, cheaper hash. Binding the
+stream into the leaf (see D7) means membership proves not just *who* is approved
+but *under which stream* — the agent cannot reclassify a payee's payout.
 
 ## D6 — No LLM in the execution path
 
@@ -91,3 +93,74 @@ Chaum is that the *contract* re-validates everything; the agent must be boring,
 reproducible, and incapable of surprising the policy. A model in the hot path
 would add nondeterminism, prompt-injection surface, and an unauditable decision
 step — for no benefit, since the contract is the source of truth.
+
+## D7 — Streams as a first-class payout classifier + per-stream subtotals
+
+**Decision.** Every payout carries a `Stream` (`Payroll` / `Vendor` / `Grant`);
+the payee-set leaf binds `(payee, stream)` (D5); and the executor accumulates a
+per-stream subtotal commitment alongside the grand total, exposed via
+`verify_stream_aggregate(cycle_id, stream)`.
+
+**Why.** An operating account pays payroll, vendors, and grants — categories with
+different disclosure audiences. Committing a subtotal per stream lets a
+stakeholder verify "grants totalled X this cycle" without seeing payroll, which a
+single grand-total commitment cannot do. Binding the stream into the membership
+leaf makes the classification unforgeable by the agent.
+
+## D8 — Role-scoped selective disclosure via an on-chain role registry
+
+**Decision.** `PayrollRegistry` maps each address to a `Role` (`Owner` /
+`Operator` / `Auditor` / `Payee` / `Stakeholder`); the executor reads it to gate
+disclosure: `verify_aggregate` (auditor), `verify_stream_aggregate`
+(stakeholder), `open_own` (payee). The owner is always Owner-role. Scope
+isolation is asserted in tests — no scope leaks another.
+
+**Why.** "Prove" is the moat, and a proof is only useful if it goes to *exactly*
+the right party. Encoding roles on-chain (rather than in the UI) makes the
+disclosure boundary contract-enforced, not advisory — the same trust model as the
+disbursement rules.
+
+## D9 — KYT compliance as a swappable oracle seam, skip-and-log by default
+
+**Decision.** An `IKytOracle` interface ([`i_kyt_oracle.cairo`](../contracts/src/interfaces/i_kyt_oracle.cairo)),
+with `MockKytOracle` on testnet. The executor screens each payee pre-transfer;
+default policy **skips-and-logs** a denied payee (`PayoutDenied` event) while
+paying the rest, or reverts the whole cycle when the `KYT_DENY` policy flag is
+set.
+
+**Why.** Real orgs need compliance screening, but the *provider* is a deployment
+choice (Chainalysis-style oracle, allowlist, etc.) — so it must be a seam, not a
+baked-in dependency. Skip-and-log is the safer default: one flagged address should
+not strand an entire payroll run, but the denial must be on-chain and auditable.
+Revert-on-deny stays available for stricter policies.
+
+## D10 — Timing privacy: on-chain execution window + off-chain deterministic jitter, plus anomaly-halt
+
+**Decision.** The policy carries an `exec_window` (`exec_window < cadence`); the
+executor requires each cycle to land in `[due, due + exec_window]`. The agent
+picks a deterministic-but-random-looking time inside that window, seeded by
+`cycle_id` (survives restarts). Separately, before submitting, the agent halts
+if the payee set **and** the cycle total both shift beyond
+`anomaly_*_delta_bps` and requires owner acknowledgement.
+
+**Why.** A fixed cadence leaks a predictable heartbeat (and correlates cycles
+across chains). A window the contract enforces plus off-chain jitter breaks that
+timing signal without weakening any on-chain guarantee. Anomaly-halt is a
+belt-and-suspenders check against a compromised agent making a large, structurally
+unusual payout that still fits within caps — it is off-chain because it is a
+*policy heuristic*, not a hard invariant, and must fail safe (halt), never
+silently pass.
+
+## D11 — Grow ships as an interface seam, not a live module, in V1
+
+**Decision.** `IYieldAdapter` / `IBridgeIn` interfaces exist and are wired
+through the console as an "IN DEVELOPMENT" panel, but `StubYieldAdapter`
+**reverts** on `deposit`/`withdraw` (`'GROW: not live in V1 (T3)'`) and returns
+zero positions. No funds move into yield in V1.
+
+**Why.** Grow is the T3 revenue engine and a real design commitment (see
+[GROW_DESIGN.md](GROW_DESIGN.md)), but shipping live yield now would violate the
+strict V1 non-goals and add custody risk before an audit. Landing the *seam*
+proves the architecture accommodates it (adapter swap, not redesign) while the
+stub makes the not-live status unfakeable — a deposit call fails loudly rather
+than pretending.

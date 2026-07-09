@@ -73,6 +73,26 @@ Policy: per-payee cap 1,000,000 · per-cycle cap 10,000,000 · cadence 60s.
 
 Payee set updated on-chain to 12 demo users (`update_payees`, root `0x51641c…`). Each cycle's per-payee amounts are hidden (commitments); the aggregate is verified on-chain. The console reads all of this live.
 
+### Operating-account redeploy (staged — gated on testnet funds)
+
+The addresses above are the **payroll-era V1**. The operating-account build
+(streams, roles, role-scoped disclosure, `exec_window`, KYT gate,
+`MockKytOracle`, `StubYieldAdapter`) is complete and `snforge`-green, with a
+one-shot fresh-deploy-and-seed script:
+
+```bash
+cd scripts
+RPC_URL=<sepolia-rpc> DEPLOYER_ADDRESS=<addr> DEPLOYER_PRIVATE_KEY=<key> \
+pnpm tsx deploy-and-seed.ts   # fresh deploy + 12 users across streams, roles, KYT-deny node, 2 cycles
+```
+
+**Status: blocked on funds.** Sepolia declare fees spiked ~10× (executor class
+declare ≈ 62 STRK against a 31.5 STRK balance; ~90–100 STRK needed for the full
+suite), and the public faucet is address-cooldowned. `deploy.ts` now pre-checks
+`getClassByHash` to skip already-declared classes, so a retry only pays for
+genuinely new classes. Retry when the deployer is funded or gas normalizes; the
+new addresses + seeded cycles get recorded here on success.
+
 | Resource | URL |
 | --- | --- |
 | Landing (Vercel) | https://chaum-landing.vercel.app |
