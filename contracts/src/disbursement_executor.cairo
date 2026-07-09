@@ -20,7 +20,7 @@ pub mod DisbursementExecutor {
     use crate::commitments::{Commitment, commit, add};
     use crate::generators::CURVE_ORDER;
     use crate::merkle;
-    use crate::types::{PayoutInput, CycleSummary};
+    use crate::types::{PayoutInput, CycleSummary, Stream, stream_felt, stream_index, Role, role_index};
     use crate::interfaces::i_executor::{
         IDisbursementExecutor, IExecutorAdmin, IPayrollRegistryDispatcher,
         IPayrollRegistryDispatcherTrait, IDisbursementVaultDispatcher,
@@ -57,6 +57,11 @@ pub mod DisbursementExecutor {
         total_amount: Map<u64, u256>,
         total_blinding: Map<u64, felt252>,
         executed_at: Map<u64, u64>,
+        // per-stream subtotals per cycle, keyed by (cycle_id, stream_index)
+        stream_commit: Map<(u64, u8), Commitment>,
+        stream_amount: Map<(u64, u8), u256>,
+        stream_blinding: Map<(u64, u8), felt252>,
+        stream_has: Map<(u64, u8), bool>,
         #[substorage(v0)]
         ownable: OwnableComponent::Storage,
         #[substorage(v0)]
@@ -123,6 +128,8 @@ pub mod DisbursementExecutor {
         pub const NOT_EXECUTED: felt252 = 'CHAUM: cycle not found';
         pub const ONLY_PAYEE: felt252 = 'CHAUM: caller not payee';
         pub const BAD_OPENING: felt252 = 'CHAUM: bad opening';
+        pub const WINDOW: felt252 = 'CHAUM: past exec window';
+        pub const FORBIDDEN: felt252 = 'CHAUM: role not permitted';
     }
 
     #[constructor]
@@ -156,11 +163,17 @@ pub mod DisbursementExecutor {
             let caller = get_caller_address();
             assert(caller == policy.agent || caller == policy.owner, Errors::UNAUTHORIZED);
 
-            // 2. Cadence.
+            // 2. Cadence + execution window (jitter room): once a first cycle has run,
+            //    a cycle must land in [due, due + exec_window].
             let now = get_block_timestamp();
             assert(now >= policy.last_cycle_at + policy.cadence, Errors::CADENCE);
+            if policy.exec_window != 0 && policy.last_cycle_at != 0 {
+                assert(
+                    now <= policy.last_cycle_at + policy.cadence + policy.exec_window, Errors::WINDOW,
+                );
+            }
 
-            // 3. Validate every payout; accumulate totals + commitment sum; store.
+            // 3. Validate every payout; accumulate grand + per-stream totals; store.
             let mut total_amount: u256 = 0;
             let mut blind_sum: u256 = 0;
             let mut running: Commitment = Commitment { x: 0, y: 0 };
@@ -168,12 +181,13 @@ pub mod DisbursementExecutor {
             while i != n {
                 let p = payouts.at(i);
                 let payee = *p.payee;
+                let stream = *p.stream;
                 let amount = *p.amount;
                 let blinding = *p.blinding;
                 let c = *p.commitment;
 
-                // membership
-                let leaf = merkle::hash_leaf(payee);
+                // membership over the (payee, stream) leaf
+                let leaf = merkle::hash_leaf(payee, stream_felt(stream));
                 assert(merkle::verify(policy.payee_root, leaf, *p.merkle_proof), Errors::NOT_MEMBER);
                 // caps + binding
                 assert(amount <= policy.max_per_payee, Errors::OVER_PAYEE);
@@ -181,7 +195,7 @@ pub mod DisbursementExecutor {
                 let amount_felt: felt252 = amount.try_into().expect(Errors::AMOUNT_RANGE);
                 assert(commit(amount_felt, blinding) == c, Errors::BAD_COMMIT);
 
-                // accumulate
+                // accumulate grand totals
                 total_amount += amount;
                 blind_sum = (blind_sum + (blinding.into() % CURVE_ORDER)) % CURVE_ORDER;
                 running = if i == 0 {
@@ -190,7 +204,23 @@ pub mod DisbursementExecutor {
                     add(running, c)
                 };
 
-                // store
+                // accumulate the stream subtotal (read-modify-write)
+                let si = stream_index(stream);
+                let key = (cycle_id, si);
+                let s_new = if self.stream_has.entry(key).read() {
+                    add(self.stream_commit.entry(key).read(), c)
+                } else {
+                    self.stream_has.entry(key).write(true);
+                    c
+                };
+                self.stream_commit.entry(key).write(s_new);
+                self.stream_amount.entry(key).write(self.stream_amount.entry(key).read() + amount);
+                let sb = (self.stream_blinding.entry(key).read().into() + (blinding.into() % CURVE_ORDER))
+                    % CURVE_ORDER;
+                let sb_felt: felt252 = sb.try_into().unwrap();
+                self.stream_blinding.entry(key).write(sb_felt);
+
+                // store per-payee
                 self.payee_at.entry((cycle_id, i)).write(payee);
                 self.commit_of.entry((cycle_id, payee)).write(c);
                 self.emit(PayoutCommitted { cycle_id, payee, commit_x: c.x, commit_y: c.y });
@@ -276,6 +306,25 @@ pub mod DisbursementExecutor {
             running == stored_total && stored_total == commit(total_amount_felt, total_blinding)
         }
 
+        fn verify_stream_aggregate(self: @ContractState, cycle_id: u64, stream: Stream) -> bool {
+            assert(self.executed.entry(cycle_id).read(), Errors::NOT_EXECUTED);
+            // Role gate: Stakeholder scope (and above) may see category totals; a bare
+            // Payee or an unassigned address may not.
+            let registry = IPayrollRegistryDispatcher { contract_address: self.registry.read() };
+            let ri = role_index(registry.get_role(get_caller_address()));
+            assert(ri != role_index(Role::None) && ri != role_index(Role::Payee), Errors::FORBIDDEN);
+
+            let key = (cycle_id, stream_index(stream));
+            if !self.stream_has.entry(key).read() {
+                return false;
+            }
+            // The stored stream subtotal must open to the recorded stream amount/blinding.
+            let sc = self.stream_commit.entry(key).read();
+            let sa_felt: felt252 = self.stream_amount.entry(key).read().try_into().unwrap();
+            let sb = self.stream_blinding.entry(key).read();
+            sc == commit(sa_felt, sb)
+        }
+
         fn open_own(
             ref self: ContractState,
             cycle_id: u64,
@@ -307,6 +356,10 @@ pub mod DisbursementExecutor {
 
         fn total_commitment(self: @ContractState, cycle_id: u64) -> Commitment {
             self.total_commit.entry(cycle_id).read()
+        }
+
+        fn stream_commitment(self: @ContractState, cycle_id: u64, stream: Stream) -> Commitment {
+            self.stream_commit.entry((cycle_id, stream_index(stream))).read()
         }
     }
 

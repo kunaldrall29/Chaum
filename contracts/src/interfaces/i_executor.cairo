@@ -2,7 +2,7 @@
 //! executor (cycle execution + disclosure).
 
 use starknet::ContractAddress;
-use crate::types::{Policy, PayoutInput, CycleSummary};
+use crate::types::{Policy, PayoutInput, CycleSummary, Role, Stream};
 use crate::commitments::Commitment;
 
 #[starknet::interface]
@@ -23,11 +23,21 @@ pub trait IPayrollRegistry<TContractState> {
     fn update_payees(ref self: TContractState, new_root: felt252);
     fn set_agent(ref self: TContractState, agent: ContractAddress, agent_session_pubkey: felt252);
     fn set_executor(ref self: TContractState, executor: ContractAddress);
+    /// Jitter window + anomaly-halt thresholds (window < cadence).
+    fn set_execution(
+        ref self: TContractState,
+        exec_window: u64,
+        anomaly_payee_delta_bps: u16,
+        anomaly_total_delta_bps: u16,
+    );
+    /// Assign an org role (gates disclosure scopes).
+    fn set_role(ref self: TContractState, account: ContractAddress, role: Role);
     fn pause(ref self: TContractState);
     fn unpause(ref self: TContractState);
     fn revoke(ref self: TContractState);
     // --- views ---
     fn get_policy(self: @TContractState) -> Policy;
+    fn get_role(self: @TContractState, account: ContractAddress) -> Role;
     fn get_executor(self: @TContractState) -> ContractAddress;
     fn is_paused(self: @TContractState) -> bool;
     // --- executor-only ---
@@ -63,8 +73,11 @@ pub trait IDisbursementExecutor<TContractState> {
     /// The single agent-callable entrypoint. Re-validates the entire policy
     /// on-chain, stores commitments, executes transfers via the adapter.
     fn execute_cycle(ref self: TContractState, cycle_id: u64, payouts: Array<PayoutInput>);
-    /// Anyone/auditor: Σ per-payee commitments == cycle-total commitment.
+    /// Auditor scope (open to anyone): Σ per-payee commitments == cycle-total.
     fn verify_aggregate(self: @TContractState, cycle_id: u64) -> bool;
+    /// Stakeholder scope: a stream's subtotal is consistent, without revealing any
+    /// individual split. Caller must hold Stakeholder/Auditor/Operator/Owner role.
+    fn verify_stream_aggregate(self: @TContractState, cycle_id: u64, stream: Stream) -> bool;
     /// A payee proves their own amount; reverts for any other caller.
     fn open_own(
         ref self: TContractState,
@@ -79,4 +92,5 @@ pub trait IDisbursementExecutor<TContractState> {
         self: @TContractState, cycle_id: u64, payee: ContractAddress,
     ) -> Commitment;
     fn total_commitment(self: @TContractState, cycle_id: u64) -> Commitment;
+    fn stream_commitment(self: @TContractState, cycle_id: u64, stream: Stream) -> Commitment;
 }

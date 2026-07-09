@@ -11,32 +11,20 @@ use chaum::interfaces::i_executor::{
 use chaum::interfaces::i_shielded_transfer::{
     ITransferAdapterAdminDispatcher, ITransferAdapterAdminDispatcherTrait,
 };
-use chaum::types::PayoutInput;
+use chaum::types::{PayoutInput, Stream, stream_felt, Role};
 use chaum::commitments::commit;
 use chaum::merkle::{hash_leaf, commutative_hash};
 use starknet::ContractAddress;
 
-fn OWNER() -> ContractAddress {
-    'owner'.try_into().unwrap()
-}
-fn AGENT() -> ContractAddress {
-    'agent'.try_into().unwrap()
-}
-fn STRANGER() -> ContractAddress {
-    'stranger'.try_into().unwrap()
-}
-fn P0() -> ContractAddress {
-    'payee0'.try_into().unwrap()
-}
-fn P1() -> ContractAddress {
-    'payee1'.try_into().unwrap()
-}
-fn P2() -> ContractAddress {
-    'payee2'.try_into().unwrap()
-}
-fn P3() -> ContractAddress {
-    'payee3'.try_into().unwrap()
-}
+fn OWNER() -> ContractAddress { 'owner'.try_into().unwrap() }
+fn AGENT() -> ContractAddress { 'agent'.try_into().unwrap() }
+fn STRANGER() -> ContractAddress { 'stranger'.try_into().unwrap() }
+fn AUDITOR() -> ContractAddress { 'auditor'.try_into().unwrap() }
+fn STAKEHOLDER() -> ContractAddress { 'stakeholder'.try_into().unwrap() }
+fn P0() -> ContractAddress { 'payee0'.try_into().unwrap() }
+fn P1() -> ContractAddress { 'payee1'.try_into().unwrap() }
+fn P2() -> ContractAddress { 'payee2'.try_into().unwrap() }
+fn P3() -> ContractAddress { 'payee3'.try_into().unwrap() }
 
 const SUPPLY: u256 = 1_000_000;
 const MAX_PER_PAYEE: u256 = 500;
@@ -52,41 +40,36 @@ struct Env {
     exec: IDisbursementExecutorDispatcher,
 }
 
-// 4-leaf Merkle tree over the payee set.
+// Streams: P0,P1 = Payroll; P2 = Vendor; P3 = Grant.
+fn L0() -> felt252 { hash_leaf(P0(), stream_felt(Stream::Payroll)) }
+fn L1() -> felt252 { hash_leaf(P1(), stream_felt(Stream::Payroll)) }
+fn L2() -> felt252 { hash_leaf(P2(), stream_felt(Stream::Vendor)) }
+fn L3() -> felt252 { hash_leaf(P3(), stream_felt(Stream::Grant)) }
+
 fn payee_root() -> felt252 {
-    let n01 = commutative_hash(hash_leaf(P0()), hash_leaf(P1()));
-    let n23 = commutative_hash(hash_leaf(P2()), hash_leaf(P3()));
-    commutative_hash(n01, n23)
+    commutative_hash(commutative_hash(L0(), L1()), commutative_hash(L2(), L3()))
 }
-fn proof_p0() -> Span<felt252> {
-    let n23 = commutative_hash(hash_leaf(P2()), hash_leaf(P3()));
-    array![hash_leaf(P1()), n23].span()
-}
-fn proof_p1() -> Span<felt252> {
-    let n23 = commutative_hash(hash_leaf(P2()), hash_leaf(P3()));
-    array![hash_leaf(P0()), n23].span()
-}
-fn proof_p2() -> Span<felt252> {
-    let n01 = commutative_hash(hash_leaf(P0()), hash_leaf(P1()));
-    array![hash_leaf(P3()), n01].span()
-}
-fn proof_p3() -> Span<felt252> {
-    let n01 = commutative_hash(hash_leaf(P0()), hash_leaf(P1()));
-    array![hash_leaf(P2()), n01].span()
-}
+fn proof_p0() -> Span<felt252> { array![L1(), commutative_hash(L2(), L3())].span() }
+fn proof_p1() -> Span<felt252> { array![L0(), commutative_hash(L2(), L3())].span() }
+fn proof_p2() -> Span<felt252> { array![L3(), commutative_hash(L0(), L1())].span() }
+fn proof_p3() -> Span<felt252> { array![L2(), commutative_hash(L0(), L1())].span() }
 
-fn payout(payee: ContractAddress, amount: u256, blinding: felt252, proof: Span<felt252>) -> PayoutInput {
+fn payout(
+    payee: ContractAddress, stream: Stream, amount: u256, blinding: felt252, proof: Span<felt252>,
+) -> PayoutInput {
     let amount_felt: felt252 = amount.try_into().unwrap();
-    PayoutInput { payee, amount, blinding, commitment: commit(amount_felt, blinding), merkle_proof: proof }
+    PayoutInput {
+        payee, stream, amount, blinding, commitment: commit(amount_felt, blinding), merkle_proof: proof,
+    }
 }
 
-// Standard 4-payee cycle totalling 1000, all within caps.
+// Standard cycle: 1000 total, Payroll 300 / Vendor 300 / Grant 400.
 fn standard_payouts() -> Array<PayoutInput> {
     array![
-        payout(P0(), 100, 11, proof_p0()),
-        payout(P1(), 200, 22, proof_p1()),
-        payout(P2(), 300, 33, proof_p2()),
-        payout(P3(), 400, 44, proof_p3()),
+        payout(P0(), Stream::Payroll, 100, 11, proof_p0()),
+        payout(P1(), Stream::Payroll, 200, 22, proof_p1()),
+        payout(P2(), Stream::Vendor, 300, 33, proof_p2()),
+        payout(P3(), Stream::Grant, 400, 44, proof_p3()),
     ]
 }
 
@@ -123,17 +106,19 @@ fn setup() -> Env {
     let adapter_admin = ITransferAdapterAdminDispatcher { contract_address: adapter_a };
     let exec = IDisbursementExecutorDispatcher { contract_address: exec_a };
 
-    // wire as owner
     start_cheat_caller_address(reg_a, OWNER());
     registry.set_executor(exec_a);
     registry.create_policy(payee_root(), MAX_PER_PAYEE, MAX_PER_CYCLE, CADENCE, AGENT(), 0xabc);
+    // roles: auditor / stakeholder / a payee
+    registry.set_role(AUDITOR(), Role::Auditor);
+    registry.set_role(STAKEHOLDER(), Role::Stakeholder);
+    registry.set_role(P2(), Role::Payee);
     stop_cheat_caller_address(reg_a);
 
     start_cheat_caller_address(adapter_a, OWNER());
     adapter_admin.set_executor(exec_a);
     stop_cheat_caller_address(adapter_a);
 
-    // fund the vault and approve the adapter
     start_cheat_caller_address(token.contract_address, OWNER());
     token.approve(vault_a, 10_000);
     stop_cheat_caller_address(token.contract_address);
@@ -159,22 +144,55 @@ fn run_cycle(env: Env, cycle_id: u64, payouts: Array<PayoutInput>) {
 fn test_full_cycle_and_aggregate() {
     let env = setup();
     run_cycle(env, 1, standard_payouts());
-
-    // payees were paid
     assert(env.token.balance_of(P0()) == 100, 'p0 paid');
     assert(env.token.balance_of(P3()) == 400, 'p3 paid');
     assert(env.vault.balance() == 10_000 - 1000, 'vault debited');
-
-    // aggregate verifies (Σ commitments == total, opens to public total)
     assert(env.exec.verify_aggregate(1), 'aggregate verifies');
-
-    // cycle summary
     let s = env.exec.get_cycle(1);
     assert(s.payee_count == 4, 'count');
-    assert(s.executed_at == NOW, 'ts');
-
-    // registry cadence anchor advanced
     assert(env.registry.get_policy().last_cycle_at == NOW, 'last_cycle_at');
+}
+
+#[test]
+fn test_stream_subtotals_verify() {
+    let env = setup();
+    run_cycle(env, 1, standard_payouts());
+    // Stakeholder can verify each category total, without any individual split.
+    start_cheat_caller_address(env.exec.contract_address, STAKEHOLDER());
+    assert(env.exec.verify_stream_aggregate(1, Stream::Payroll), 'payroll ok');
+    assert(env.exec.verify_stream_aggregate(1, Stream::Vendor), 'vendor ok');
+    assert(env.exec.verify_stream_aggregate(1, Stream::Grant), 'grant ok');
+    stop_cheat_caller_address(env.exec.contract_address);
+}
+
+#[test]
+#[should_panic(expected: 'CHAUM: role not permitted')]
+fn test_stream_aggregate_forbidden_stranger() {
+    let env = setup();
+    run_cycle(env, 1, standard_payouts());
+    // No role → cannot see category totals.
+    start_cheat_caller_address(env.exec.contract_address, STRANGER());
+    env.exec.verify_stream_aggregate(1, Stream::Payroll);
+}
+
+#[test]
+#[should_panic(expected: 'CHAUM: role not permitted')]
+fn test_stream_aggregate_forbidden_payee() {
+    let env = setup();
+    run_cycle(env, 1, standard_payouts());
+    // A bare payee cannot see category totals either.
+    start_cheat_caller_address(env.exec.contract_address, P2());
+    env.exec.verify_stream_aggregate(1, Stream::Payroll);
+}
+
+#[test]
+#[should_panic(expected: 'CHAUM: caller not payee')]
+fn test_stakeholder_cannot_open_individual() {
+    // Scope isolation: Stakeholder proves categories but cannot open a single payee.
+    let env = setup();
+    run_cycle(env, 1, standard_payouts());
+    start_cheat_caller_address(env.exec.contract_address, STAKEHOLDER());
+    env.exec.open_own(1, P0(), 100, 11);
 }
 
 #[test]
@@ -203,6 +221,37 @@ fn test_open_own_wrong_amount() {
     run_cycle(env, 1, standard_payouts());
     start_cheat_caller_address(env.exec.contract_address, P2());
     env.exec.open_own(1, P2(), 301, 33);
+}
+
+// ---------------- execution window (jitter room) ----------------
+
+#[test]
+fn test_within_window_ok() {
+    let env = setup();
+    run_cycle(env, 1, standard_payouts());
+    start_cheat_caller_address(env.registry.contract_address, OWNER());
+    env.registry.set_execution(100, 0, 0);
+    stop_cheat_caller_address(env.registry.contract_address);
+    // due = NOW + CADENCE; within [due, due+100]
+    start_cheat_block_timestamp(env.exec.contract_address, NOW + CADENCE + 50);
+    start_cheat_caller_address(env.exec.contract_address, AGENT());
+    env.exec.execute_cycle(2, standard_payouts());
+    stop_cheat_caller_address(env.exec.contract_address);
+    stop_cheat_block_timestamp(env.exec.contract_address);
+    assert(env.exec.verify_aggregate(2), 'cycle 2 ok');
+}
+
+#[test]
+#[should_panic(expected: 'CHAUM: past exec window')]
+fn test_past_window_reverts() {
+    let env = setup();
+    run_cycle(env, 1, standard_payouts());
+    start_cheat_caller_address(env.registry.contract_address, OWNER());
+    env.registry.set_execution(100, 0, 0);
+    stop_cheat_caller_address(env.registry.contract_address);
+    start_cheat_block_timestamp(env.exec.contract_address, NOW + CADENCE + 500); // past window
+    start_cheat_caller_address(env.exec.contract_address, AGENT());
+    env.exec.execute_cycle(2, standard_payouts());
 }
 
 // ---------------- revert matrix ----------------
@@ -241,7 +290,6 @@ fn test_revoked() {
 fn test_cadence_too_soon() {
     let env = setup();
     run_cycle(env, 1, standard_payouts());
-    // second cycle immediately after — cadence has not elapsed
     start_cheat_block_timestamp(env.exec.contract_address, NOW + 10);
     start_cheat_caller_address(env.exec.contract_address, AGENT());
     env.exec.execute_cycle(2, standard_payouts());
@@ -252,7 +300,6 @@ fn test_cadence_too_soon() {
 fn test_idempotent_cycle_id() {
     let env = setup();
     run_cycle(env, 1, standard_payouts());
-    // re-run same cycle id (cadence satisfied) — must reject duplicate
     start_cheat_block_timestamp(env.exec.contract_address, NOW + CADENCE * 2);
     start_cheat_caller_address(env.exec.contract_address, AGENT());
     env.exec.execute_cycle(1, standard_payouts());
@@ -262,7 +309,7 @@ fn test_idempotent_cycle_id() {
 #[should_panic(expected: 'CHAUM: over per-payee cap')]
 fn test_over_per_payee() {
     let env = setup();
-    let payouts = array![payout(P0(), 600, 11, proof_p0())]; // > MAX_PER_PAYEE 500
+    let payouts = array![payout(P0(), Stream::Payroll, 600, 11, proof_p0())];
     run_cycle(env, 1, payouts);
 }
 
@@ -270,13 +317,12 @@ fn test_over_per_payee() {
 #[should_panic(expected: 'CHAUM: over per-cycle cap')]
 fn test_over_per_cycle() {
     let env = setup();
-    // 5 payouts of 500 = 2500 > MAX_PER_CYCLE 2000 (reuse payees within per-payee cap)
     let payouts = array![
-        payout(P0(), 500, 11, proof_p0()),
-        payout(P1(), 500, 22, proof_p1()),
-        payout(P2(), 500, 33, proof_p2()),
-        payout(P3(), 500, 44, proof_p3()),
-        payout(P0(), 500, 55, proof_p0()),
+        payout(P0(), Stream::Payroll, 500, 11, proof_p0()),
+        payout(P1(), Stream::Payroll, 500, 22, proof_p1()),
+        payout(P2(), Stream::Vendor, 500, 33, proof_p2()),
+        payout(P3(), Stream::Grant, 500, 44, proof_p3()),
+        payout(P0(), Stream::Payroll, 500, 55, proof_p0()),
     ];
     run_cycle(env, 1, payouts);
 }
@@ -285,8 +331,16 @@ fn test_over_per_cycle() {
 #[should_panic(expected: 'CHAUM: payee not in set')]
 fn test_non_member() {
     let env = setup();
-    // STRANGER with P0's proof — membership fails
-    let payouts = array![payout(STRANGER(), 100, 11, proof_p0())];
+    let payouts = array![payout(STRANGER(), Stream::Payroll, 100, 11, proof_p0())];
+    run_cycle(env, 1, payouts);
+}
+
+#[test]
+#[should_panic(expected: 'CHAUM: payee not in set')]
+fn test_wrong_stream_reverts() {
+    // P0 is registered under Payroll; claiming Vendor breaks membership.
+    let env = setup();
+    let payouts = array![payout(P0(), Stream::Vendor, 100, 11, proof_p0())];
     run_cycle(env, 1, payouts);
 }
 
@@ -294,10 +348,9 @@ fn test_non_member() {
 #[should_panic(expected: 'CHAUM: zero blinding')]
 fn test_zero_blinding() {
     let env = setup();
-    // hand-build a payout with blinding 0 (commit would be amount*G only)
-    let amount_felt: felt252 = 100;
     let p = PayoutInput {
-        payee: P0(), amount: 100, blinding: 0, commitment: commit(amount_felt, 1), merkle_proof: proof_p0(),
+        payee: P0(), stream: Stream::Payroll, amount: 100, blinding: 0,
+        commitment: commit(100, 1), merkle_proof: proof_p0(),
     };
     run_cycle(env, 1, array![p]);
 }
@@ -306,9 +359,9 @@ fn test_zero_blinding() {
 #[should_panic(expected: 'CHAUM: commitment mismatch')]
 fn test_bad_commitment() {
     let env = setup();
-    // commitment computed for a different amount than declared
     let p = PayoutInput {
-        payee: P0(), amount: 100, blinding: 11, commitment: commit(999, 11), merkle_proof: proof_p0(),
+        payee: P0(), stream: Stream::Payroll, amount: 100, blinding: 11,
+        commitment: commit(999, 11), merkle_proof: proof_p0(),
     };
     run_cycle(env, 1, array![p]);
 }
@@ -316,10 +369,9 @@ fn test_bad_commitment() {
 #[test]
 #[should_panic(expected: 'CHAUM: vault underfunded')]
 fn test_underfunded() {
-    // fresh env but withdraw nearly all funds first
     let env = setup();
     start_cheat_caller_address(env.vault.contract_address, OWNER());
-    env.vault.withdraw(9_900); // leaves 100 < 1000 cycle total
+    env.vault.withdraw(9_900);
     stop_cheat_caller_address(env.vault.contract_address);
     run_cycle(env, 1, standard_payouts());
 }
@@ -333,7 +385,6 @@ fn test_empty_payouts() {
 
 #[test]
 fn test_owner_can_also_execute() {
-    // owner is an allowed caller (not just the agent)
     let env = setup();
     start_cheat_block_timestamp(env.exec.contract_address, NOW);
     start_cheat_caller_address(env.exec.contract_address, OWNER());

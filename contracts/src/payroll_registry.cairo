@@ -6,10 +6,13 @@
 #[starknet::contract]
 pub mod PayrollRegistry {
     use openzeppelin::access::ownable::OwnableComponent;
-    use starknet::storage::{StoragePointerReadAccess, StoragePointerWriteAccess};
+    use starknet::storage::{
+        Map, StorageMapReadAccess, StorageMapWriteAccess, StoragePointerReadAccess,
+        StoragePointerWriteAccess,
+    };
     use starknet::{ContractAddress, get_caller_address};
     use core::num::traits::Zero;
-    use crate::types::Policy;
+    use crate::types::{Policy, Role, role_index, role_from_index};
     use crate::interfaces::i_executor::IPayrollRegistry;
 
     component!(path: OwnableComponent, storage: ownable, event: OwnableEvent);
@@ -25,11 +28,15 @@ pub mod PayrollRegistry {
         max_per_payee: u256,
         max_per_cycle: u256,
         cadence: u64,
+        exec_window: u64,
         last_cycle_at: u64,
         paused: bool,
         agent: ContractAddress,
         agent_session_pubkey: felt252,
+        anomaly_payee_delta_bps: u16,
+        anomaly_total_delta_bps: u16,
         executor: ContractAddress,
+        roles: Map<ContractAddress, u8>,
         #[substorage(v0)]
         ownable: OwnableComponent::Storage,
     }
@@ -46,6 +53,8 @@ pub mod PayrollRegistry {
         Unpaused: Unpaused,
         Revoked: Revoked,
         CycleRecorded: CycleRecorded,
+        RoleSet: RoleSet,
+        ExecutionSet: ExecutionSet,
         #[flat]
         OwnableEvent: OwnableComponent::Event,
     }
@@ -87,6 +96,17 @@ pub mod PayrollRegistry {
     struct CycleRecorded {
         timestamp: u64,
     }
+    #[derive(Drop, starknet::Event)]
+    struct RoleSet {
+        account: ContractAddress,
+        role: u8,
+    }
+    #[derive(Drop, starknet::Event)]
+    struct ExecutionSet {
+        exec_window: u64,
+        anomaly_payee_delta_bps: u16,
+        anomaly_total_delta_bps: u16,
+    }
 
     pub mod Errors {
         pub const ALREADY_INIT: felt252 = 'CHAUM: already initialized';
@@ -95,6 +115,7 @@ pub mod PayrollRegistry {
         pub const CAP_ORDER: felt252 = 'CHAUM: per-payee > per-cycle';
         pub const ROOT_ZERO: felt252 = 'CHAUM: payee root is zero';
         pub const ONLY_EXECUTOR: felt252 = 'CHAUM: caller not executor';
+        pub const WINDOW_ORDER: felt252 = 'CHAUM: window >= cadence';
     }
 
     #[constructor]
@@ -192,11 +213,49 @@ pub mod PayrollRegistry {
                 max_per_payee: self.max_per_payee.read(),
                 max_per_cycle: self.max_per_cycle.read(),
                 cadence: self.cadence.read(),
+                exec_window: self.exec_window.read(),
                 last_cycle_at: self.last_cycle_at.read(),
                 paused: self.paused.read(),
                 agent: self.agent.read(),
                 agent_session_pubkey: self.agent_session_pubkey.read(),
+                anomaly_payee_delta_bps: self.anomaly_payee_delta_bps.read(),
+                anomaly_total_delta_bps: self.anomaly_total_delta_bps.read(),
             }
+        }
+
+        /// Owner: set the jitter window + anomaly-halt thresholds. `exec_window`
+        /// must be < cadence (a cycle lands in [due, due+window]).
+        fn set_execution(
+            ref self: ContractState,
+            exec_window: u64,
+            anomaly_payee_delta_bps: u16,
+            anomaly_total_delta_bps: u16,
+        ) {
+            self.ownable.assert_only_owner();
+            assert(exec_window < self.cadence.read(), Errors::WINDOW_ORDER);
+            self.exec_window.write(exec_window);
+            self.anomaly_payee_delta_bps.write(anomaly_payee_delta_bps);
+            self.anomaly_total_delta_bps.write(anomaly_total_delta_bps);
+            self
+                .emit(
+                    ExecutionSet { exec_window, anomaly_payee_delta_bps, anomaly_total_delta_bps },
+                );
+        }
+
+        /// Owner: assign an organizational role (gates disclosure scopes).
+        fn set_role(ref self: ContractState, account: ContractAddress, role: Role) {
+            self.ownable.assert_only_owner();
+            let idx = role_index(role);
+            self.roles.write(account, idx);
+            self.emit(RoleSet { account, role: idx });
+        }
+
+        fn get_role(self: @ContractState, account: ContractAddress) -> Role {
+            // The owner is always Owner-role, regardless of explicit assignment.
+            if account == self.ownable.owner() {
+                return Role::Owner;
+            }
+            role_from_index(self.roles.read(account))
         }
 
         fn get_executor(self: @ContractState) -> ContractAddress {

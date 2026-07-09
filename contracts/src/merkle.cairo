@@ -9,10 +9,11 @@
 use core::poseidon::poseidon_hash_span;
 use starknet::ContractAddress;
 
-/// Leaf hash for a payee. Single-element Poseidon over the address felt.
-pub fn hash_leaf(payee: ContractAddress) -> felt252 {
+/// Leaf hash for a (payee, stream) pair. The payee set is committed over these
+/// pairs, so membership binds a payee to the stream it was approved under.
+pub fn hash_leaf(payee: ContractAddress, stream_tag: felt252) -> felt252 {
     let p: felt252 = payee.into();
-    poseidon_hash_span(array![p].span())
+    poseidon_hash_span(array![p, stream_tag].span())
 }
 
 /// Order-independent hash of two nodes (sorted by numeric value).
