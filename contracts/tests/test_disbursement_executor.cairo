@@ -11,6 +11,8 @@ use chaum::interfaces::i_executor::{
 use chaum::interfaces::i_shielded_transfer::{
     ITransferAdapterAdminDispatcher, ITransferAdapterAdminDispatcherTrait,
 };
+use chaum::interfaces::i_executor::{IExecutorAdminDispatcher, IExecutorAdminDispatcherTrait};
+use chaum::interfaces::i_kyt_oracle::{IMockKytDispatcher, IMockKytDispatcherTrait};
 use chaum::types::{PayoutInput, Stream, stream_felt, Role};
 use chaum::commitments::commit;
 use chaum::merkle::{hash_leaf, commutative_hash};
@@ -404,4 +406,41 @@ fn test_second_cycle_after_cadence() {
     stop_cheat_block_timestamp(env.exec.contract_address);
     assert(env.exec.verify_aggregate(2), 'cycle 2 verifies');
     assert(env.token.balance_of(P0()) == 200, 'p0 paid twice');
+}
+
+// ---------------- KYT compliance gate ----------------
+
+fn wire_kyt(env: Env, revert_on_deny: bool) -> IMockKytDispatcher {
+    let oc = declare("MockKytOracle").unwrap().contract_class();
+    let (oa, _) = oc.deploy(@array![OWNER().into()]).unwrap();
+    let admin = IExecutorAdminDispatcher { contract_address: env.exec.contract_address };
+    start_cheat_caller_address(env.exec.contract_address, OWNER());
+    admin.set_compliance(oa, revert_on_deny);
+    stop_cheat_caller_address(env.exec.contract_address);
+    let kyt = IMockKytDispatcher { contract_address: oa };
+    start_cheat_caller_address(oa, OWNER());
+    kyt.set_verdict(P2(), 2); // deny P2 (vendor)
+    stop_cheat_caller_address(oa);
+    kyt
+}
+
+#[test]
+fn test_kyt_skip_and_log() {
+    // Denied payee is skipped; the rest are paid; the cycle still verifies.
+    let env = setup();
+    wire_kyt(env, false);
+    run_cycle(env, 1, standard_payouts());
+    assert(env.token.balance_of(P2()) == 0, 'p2 denied unpaid');
+    assert(env.token.balance_of(P0()) == 100, 'p0 paid');
+    assert(env.exec.get_cycle(1).payee_count == 3, 'paid count 3');
+    assert(env.vault.balance() == 10_000 - 700, 'vault debited 700');
+    assert(env.exec.verify_aggregate(1), 'aggregate verifies');
+}
+
+#[test]
+#[should_panic(expected: 'CHAUM: payee screening denied')]
+fn test_kyt_revert_on_deny() {
+    let env = setup();
+    wire_kyt(env, true);
+    run_cycle(env, 1, standard_payouts());
 }

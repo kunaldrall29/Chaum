@@ -29,6 +29,7 @@ pub mod DisbursementExecutor {
     use crate::interfaces::i_shielded_transfer::{
         IShieldedTransferDispatcher, IShieldedTransferDispatcherTrait,
     };
+    use crate::interfaces::i_kyt_oracle::{IKytOracleDispatcher, IKytOracleDispatcherTrait, KYT_DENY};
     use erc8004::interfaces::validation_registry::{
         IValidationRegistryDispatcher, IValidationRegistryDispatcherTrait,
     };
@@ -48,6 +49,8 @@ pub mod DisbursementExecutor {
         adapter: ContractAddress,
         validation_registry: ContractAddress,
         agent_id: u256,
+        kyt_oracle: ContractAddress,
+        kyt_revert_on_deny: bool,
         // per-cycle commitment ledger
         executed: Map<u64, bool>,
         payee_count: Map<u64, u32>,
@@ -73,8 +76,10 @@ pub mod DisbursementExecutor {
     enum Event {
         CycleExecuted: CycleExecuted,
         PayoutCommitted: PayoutCommitted,
+        PayoutDenied: PayoutDenied,
         AdapterSet: AdapterSet,
         AttestationSet: AttestationSet,
+        ComplianceSet: ComplianceSet,
         #[flat]
         OwnableEvent: OwnableComponent::Event,
         #[flat]
@@ -101,8 +106,20 @@ pub mod DisbursementExecutor {
         commit_y: felt252,
     }
     #[derive(Drop, starknet::Event)]
+    struct PayoutDenied {
+        #[key]
+        cycle_id: u64,
+        #[key]
+        payee: ContractAddress,
+    }
+    #[derive(Drop, starknet::Event)]
     struct AdapterSet {
         adapter: ContractAddress,
+    }
+    #[derive(Drop, starknet::Event)]
+    struct ComplianceSet {
+        kyt_oracle: ContractAddress,
+        revert_on_deny: bool,
     }
     #[derive(Drop, starknet::Event)]
     struct AttestationSet {
@@ -130,6 +147,7 @@ pub mod DisbursementExecutor {
         pub const BAD_OPENING: felt252 = 'CHAUM: bad opening';
         pub const WINDOW: felt252 = 'CHAUM: past exec window';
         pub const FORBIDDEN: felt252 = 'CHAUM: role not permitted';
+        pub const SCREEN_DENIED: felt252 = 'CHAUM: payee screening denied';
     }
 
     #[constructor]
@@ -173,10 +191,16 @@ pub mod DisbursementExecutor {
                 );
             }
 
-            // 3. Validate every payout; accumulate grand + per-stream totals; store.
+            // 3. Screen + validate each payout; accumulate grand + per-stream totals.
+            //    A KYT-denied payee is skipped-and-logged (default) or reverts the
+            //    whole cycle (policy flag). Only paid payouts enter the ledger.
+            let oracle_addr = self.kyt_oracle.read();
+            let revert_on_deny = self.kyt_revert_on_deny.read();
             let mut total_amount: u256 = 0;
             let mut blind_sum: u256 = 0;
             let mut running: Commitment = Commitment { x: 0, y: 0 };
+            let mut to_pay: Array<(ContractAddress, u256)> = array![];
+            let mut paid: u32 = 0;
             let mut i: u32 = 0;
             while i != n {
                 let p = payouts.at(i);
@@ -186,47 +210,64 @@ pub mod DisbursementExecutor {
                 let blinding = *p.blinding;
                 let c = *p.commitment;
 
-                // membership over the (payee, stream) leaf
-                let leaf = merkle::hash_leaf(payee, stream_felt(stream));
-                assert(merkle::verify(policy.payee_root, leaf, *p.merkle_proof), Errors::NOT_MEMBER);
-                // caps + binding
-                assert(amount <= policy.max_per_payee, Errors::OVER_PAYEE);
-                assert(blinding != 0, Errors::ZERO_BLINDING);
-                let amount_felt: felt252 = amount.try_into().expect(Errors::AMOUNT_RANGE);
-                assert(commit(amount_felt, blinding) == c, Errors::BAD_COMMIT);
+                // KYT screening
+                let mut denied = false;
+                if !oracle_addr.is_zero() {
+                    let verdict = IKytOracleDispatcher { contract_address: oracle_addr }.screen(payee);
+                    if verdict == KYT_DENY {
+                        assert(!revert_on_deny, Errors::SCREEN_DENIED);
+                        self.emit(PayoutDenied { cycle_id, payee });
+                        denied = true;
+                    }
+                }
 
-                // accumulate grand totals
-                total_amount += amount;
-                blind_sum = (blind_sum + (blinding.into() % CURVE_ORDER)) % CURVE_ORDER;
-                running = if i == 0 {
-                    c
-                } else {
-                    add(running, c)
-                };
+                if !denied {
+                    // membership over the (payee, stream) leaf
+                    let leaf = merkle::hash_leaf(payee, stream_felt(stream));
+                    assert(
+                        merkle::verify(policy.payee_root, leaf, *p.merkle_proof), Errors::NOT_MEMBER,
+                    );
+                    assert(amount <= policy.max_per_payee, Errors::OVER_PAYEE);
+                    assert(blinding != 0, Errors::ZERO_BLINDING);
+                    let amount_felt: felt252 = amount.try_into().expect(Errors::AMOUNT_RANGE);
+                    assert(commit(amount_felt, blinding) == c, Errors::BAD_COMMIT);
 
-                // accumulate the stream subtotal (read-modify-write)
-                let si = stream_index(stream);
-                let key = (cycle_id, si);
-                let s_new = if self.stream_has.entry(key).read() {
-                    add(self.stream_commit.entry(key).read(), c)
-                } else {
-                    self.stream_has.entry(key).write(true);
-                    c
-                };
-                self.stream_commit.entry(key).write(s_new);
-                self.stream_amount.entry(key).write(self.stream_amount.entry(key).read() + amount);
-                let sb = (self.stream_blinding.entry(key).read().into() + (blinding.into() % CURVE_ORDER))
-                    % CURVE_ORDER;
-                let sb_felt: felt252 = sb.try_into().unwrap();
-                self.stream_blinding.entry(key).write(sb_felt);
+                    total_amount += amount;
+                    blind_sum = (blind_sum + (blinding.into() % CURVE_ORDER)) % CURVE_ORDER;
+                    running = if paid == 0 {
+                        c
+                    } else {
+                        add(running, c)
+                    };
 
-                // store per-payee
-                self.payee_at.entry((cycle_id, i)).write(payee);
-                self.commit_of.entry((cycle_id, payee)).write(c);
-                self.emit(PayoutCommitted { cycle_id, payee, commit_x: c.x, commit_y: c.y });
+                    // stream subtotal (read-modify-write)
+                    let key = (cycle_id, stream_index(stream));
+                    let s_new = if self.stream_has.entry(key).read() {
+                        add(self.stream_commit.entry(key).read(), c)
+                    } else {
+                        self.stream_has.entry(key).write(true);
+                        c
+                    };
+                    self.stream_commit.entry(key).write(s_new);
+                    self
+                        .stream_amount
+                        .entry(key)
+                        .write(self.stream_amount.entry(key).read() + amount);
+                    let sb = (self.stream_blinding.entry(key).read().into()
+                        + (blinding.into() % CURVE_ORDER))
+                        % CURVE_ORDER;
+                    self.stream_blinding.entry(key).write(sb.try_into().unwrap());
 
+                    self.payee_at.entry((cycle_id, paid)).write(payee);
+                    self.commit_of.entry((cycle_id, payee)).write(c);
+                    self.emit(PayoutCommitted { cycle_id, payee, commit_x: c.x, commit_y: c.y });
+                    to_pay.append((payee, amount));
+                    paid += 1;
+                }
                 i += 1;
             }
+            // A cycle that pays no one (e.g. all denied) is rejected.
+            assert(paid != 0, Errors::EMPTY);
 
             // 4. Cycle-level caps + funding.
             assert(total_amount <= policy.max_per_cycle, Errors::OVER_CYCLE);
@@ -240,34 +281,30 @@ pub mod DisbursementExecutor {
 
             // 6. Persist cycle record.
             self.executed.entry(cycle_id).write(true);
-            self.payee_count.entry(cycle_id).write(n);
+            self.payee_count.entry(cycle_id).write(paid);
             self.total_commit.entry(cycle_id).write(running);
             self.total_amount.entry(cycle_id).write(total_amount);
             self.total_blinding.entry(cycle_id).write(blind_sum_felt);
             self.executed_at.entry(cycle_id).write(now);
 
-            // 7. Execute transfers via the adapter (after all validation passed).
+            // 7. Execute transfers (paid list only) via the adapter.
             let adapter = IShieldedTransferDispatcher { contract_address: self.adapter.read() };
             let note: Span<felt252> = array![].span();
-            let mut j: u32 = 0;
-            while j != n {
-                let p = payouts.at(j);
-                adapter.transfer(*p.payee, *p.amount, note);
-                j += 1;
+            let mut k: u32 = 0;
+            while k != to_pay.len() {
+                let (payee, amount) = *to_pay.at(k);
+                adapter.transfer(payee, amount, note);
+                k += 1;
             }
 
-            // 8. Record the cycle in the registry (cadence anchor).
+            // 8. Record + attest + emit.
             registry.record_cycle(now);
-
-            // 9. Optional ERC-8004 attestation (self-validated cycle execution).
             self.attest(cycle_id, running);
-
-            // 10. Emit.
             self
                 .emit(
                     CycleExecuted {
                         cycle_id,
-                        payee_count: n,
+                        payee_count: paid,
                         total_commit_x: running.x,
                         total_commit_y: running.y,
                         caller,
@@ -380,6 +417,15 @@ pub mod DisbursementExecutor {
             self.emit(AttestationSet { validation_registry, agent_id });
         }
 
+        fn set_compliance(
+            ref self: ContractState, kyt_oracle: ContractAddress, revert_on_deny: bool,
+        ) {
+            self.ownable.assert_only_owner();
+            self.kyt_oracle.write(kyt_oracle);
+            self.kyt_revert_on_deny.write(revert_on_deny);
+            self.emit(ComplianceSet { kyt_oracle, revert_on_deny });
+        }
+
         fn registry(self: @ContractState) -> ContractAddress {
             self.registry.read()
         }
@@ -388,6 +434,9 @@ pub mod DisbursementExecutor {
         }
         fn adapter(self: @ContractState) -> ContractAddress {
             self.adapter.read()
+        }
+        fn compliance_oracle(self: @ContractState) -> ContractAddress {
+            self.kyt_oracle.read()
         }
     }
 

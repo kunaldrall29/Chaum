@@ -63,9 +63,15 @@ pub trait IExecutorAdmin<TContractState> {
     fn set_attestation(
         ref self: TContractState, validation_registry: ContractAddress, agent_id: u256,
     );
+    /// Wire the KYT oracle. `revert_on_deny=false` skips-and-logs a denied payee;
+    /// `true` reverts the whole cycle. Set oracle to 0 to disable screening.
+    fn set_compliance(
+        ref self: TContractState, kyt_oracle: ContractAddress, revert_on_deny: bool,
+    );
     fn registry(self: @TContractState) -> ContractAddress;
     fn vault(self: @TContractState) -> ContractAddress;
     fn adapter(self: @TContractState) -> ContractAddress;
+    fn compliance_oracle(self: @TContractState) -> ContractAddress;
 }
 
 #[starknet::interface]
