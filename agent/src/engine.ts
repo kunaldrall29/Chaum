@@ -3,7 +3,8 @@
 // and returned to be persisted). No network, no LLM — pure and testable.
 
 import { commit, addCommitments, randomBlinding, type Commitment } from "./commitments.ts";
-import { buildTree } from "./merkle.ts";
+import { buildTree, hashLeaf } from "./merkle.ts";
+import { streamFelt, type Stream } from "./streams.ts";
 import type { Payee } from "./payroll.ts";
 
 export interface Policy {
@@ -18,10 +19,16 @@ export interface Policy {
 
 export interface PlannedPayout {
   payee: string;
+  stream: Stream;
   amount: bigint;
   blinding: bigint;
   commitment: Commitment;
   proof: bigint[];
+}
+
+/** (payee, stream) leaves for a payee set — the on-chain membership commitment. */
+export function leavesFor(payees: Payee[]): bigint[] {
+  return payees.map((p) => hashLeaf(BigInt(p.address), streamFelt(p.stream)));
 }
 
 export interface CyclePlan {
@@ -71,7 +78,7 @@ export function buildCyclePlan(payees: Payee[], maxPerPayee: bigint): CyclePlan 
       throw new Error(`payee ${p.address} amount ${p.amount} exceeds per-payee cap ${maxPerPayee}`);
   }
 
-  const tree = buildTree(payees.map((p) => BigInt(p.address)));
+  const tree = buildTree(leavesFor(payees));
 
   let totalAmount = 0n;
   let totalBlinding = 0n;
@@ -82,7 +89,7 @@ export function buildCyclePlan(payees: Payee[], maxPerPayee: bigint): CyclePlan 
     acc = acc === null ? c : addCommitments(acc, c);
     totalAmount += p.amount;
     totalBlinding += blinding;
-    return { payee: p.address, amount: p.amount, blinding, commitment: c, proof: tree.proof(i) };
+    return { payee: p.address, stream: p.stream, amount: p.amount, blinding, commitment: c, proof: tree.proof(i) };
   });
 
   return {
@@ -96,5 +103,5 @@ export function buildCyclePlan(payees: Payee[], maxPerPayee: bigint): CyclePlan 
 
 /** The payee Merkle root the policy must commit to for this payee set. */
 export function payeeRootFor(payees: Payee[]): bigint {
-  return buildTree(payees.map((p) => BigInt(p.address))).root;
+  return buildTree(leavesFor(payees)).root;
 }

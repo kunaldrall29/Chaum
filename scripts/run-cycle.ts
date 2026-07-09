@@ -4,7 +4,7 @@
 // an over-cap payout reverts. Exits non-zero on any failed assertion (CI-grade).
 
 import { readFileSync } from "node:fs";
-import { Account, Contract, RpcProvider, logger } from "starknet";
+import { Account, Contract, RpcProvider, CairoCustomEnum, logger } from "starknet";
 
 // Silence starknet.js tip-estimation warnings (noisy on a fresh devnet).
 logger.setLogLevel("ERROR");
@@ -13,7 +13,8 @@ import { deployAll } from "./src/deploy.ts";
 import { artifact } from "./src/artifacts.ts";
 import { buildTree } from "@chaum/agent/merkle";
 import { commit, randomBlinding, type Commitment } from "@chaum/agent/crypto";
-import { buildCyclePlan } from "@chaum/agent/engine";
+import { buildCyclePlan, leavesFor } from "@chaum/agent/engine";
+import { type Stream } from "@chaum/agent/streams";
 
 let failures = 0;
 const ok = (cond: boolean, msg: string) => {
@@ -24,13 +25,19 @@ const short = (x: bigint) => {
   const h = "0x" + x.toString(16);
   return h.length > 18 ? `${h.slice(0, 10)}…${h.slice(-6)}` : h;
 };
+const streamCairo = (s: Stream) =>
+  new CairoCustomEnum({
+    Payroll: s === "payroll" ? {} : undefined,
+    Vendor: s === "vendor" ? {} : undefined,
+    Grant: s === "grant" ? {} : undefined,
+  });
 
-const PAYEES = [
-  { label: "Alice", address: "0x1001", amount: 100n },
-  { label: "Bob", address: "0x1002", amount: 200n },
-  { label: "Carol", address: "", amount: 150n }, // filled with a signable devnet acct
-  { label: "Dave", address: "0x1004", amount: 300n },
-  { label: "Erin", address: "0x1005", amount: 250n },
+const PAYEES: { label: string; address: string; stream: Stream; amount: bigint }[] = [
+  { label: "Alice", address: "0x1001", stream: "payroll", amount: 100n },
+  { label: "Bob", address: "0x1002", stream: "payroll", amount: 200n },
+  { label: "Carol", address: "", stream: "payroll", amount: 150n }, // filled with a signable devnet acct
+  { label: "Dave", address: "0x1004", stream: "vendor", amount: 300n },
+  { label: "Erin", address: "0x1005", stream: "grant", amount: 250n },
 ];
 const MAX_PER_PAYEE = 500n;
 const MAX_PER_CYCLE = 2000n;
@@ -62,8 +69,8 @@ async function main() {
     const agentAcct = new Account({ provider, address: agent.address, signer: agent.privateKey });
     const carolAcct = new Account({ provider, address: carol.address, signer: carol.privateKey });
 
-    const payeesForTree = PAYEES.map((p) => ({ address: p.address, amount: p.amount }));
-    const tree = buildTree(PAYEES.map((p) => BigInt(p.address)));
+    const payeesForTree = PAYEES.map((p) => ({ address: p.address, stream: p.stream, amount: p.amount }));
+    const tree = buildTree(leavesFor(payeesForTree));
 
     console.log("⛓  deploying contracts…");
     const a = await deployAll(ownerAcct, provider, {
@@ -73,11 +80,15 @@ async function main() {
       payeeRoot: tree.root,
       maxPerPayee: MAX_PER_PAYEE,
       maxPerCycle: MAX_PER_CYCLE,
-      cadence: 0n,
+      cadence: 1n,
       tokenName: "Mock USD",
       tokenSymbol: "mUSD",
       initialSupply: 1_000_000n,
       fundAmount: 10_000n,
+      execWindow: 0n,
+      anomalyPayeeBps: 0,
+      anomalyTotalBps: 0,
+      kytRevertOnDeny: false,
     });
     console.log(`   registry ${a.registry}`);
     console.log(`   vault    ${a.vault}`);
@@ -91,10 +102,11 @@ async function main() {
     const token = new Contract({ abi: tokAbi, address: a.token, providerOrAccount: provider });
 
     const toCalldata = (
-      payouts: { payee: string; amount: bigint; blinding: bigint; commitment: Commitment; proof: bigint[] }[],
+      payouts: { payee: string; stream: Stream; amount: bigint; blinding: bigint; commitment: Commitment; proof: bigint[] }[],
     ) =>
       payouts.map((p) => ({
         payee: p.payee,
+        stream: streamCairo(p.stream),
         amount: p.amount,
         blinding: p.blinding,
         commitment: { x: p.commitment.x, y: p.commitment.y },
@@ -107,7 +119,7 @@ async function main() {
     {
       const b = randomBlinding();
       const payouts = [
-        { payee: PAYEES[0].address, amount: 600n, blinding: b, commitment: commit(600n, b), proof: tree.proof(0) },
+        { payee: PAYEES[0].address, stream: PAYEES[0].stream, amount: 600n, blinding: b, commitment: commit(600n, b), proof: tree.proof(0) },
       ];
       let reverted = false;
       let reason = "";
@@ -125,7 +137,7 @@ async function main() {
     {
       const b = randomBlinding();
       const payouts = [
-        { payee: "0xBAD", amount: 100n, blinding: b, commitment: commit(100n, b), proof: tree.proof(0) },
+        { payee: "0xBAD", stream: "payroll" as Stream, amount: 100n, blinding: b, commitment: commit(100n, b), proof: tree.proof(0) },
       ];
       let reverted = false;
       let reason = "";

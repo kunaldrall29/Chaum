@@ -50,6 +50,10 @@ async function main() {
     tokenSymbol: opt("TOKEN_SYMBOL", "cUSD"),
     initialSupply: BigInt(opt("INITIAL_SUPPLY", "1000000000000000000000000")),
     fundAmount: BigInt(opt("FUND_AMOUNT", "100000000000000000000000")),
+    execWindow: BigInt(opt("EXEC_WINDOW", "3600")),
+    anomalyPayeeBps: Number(opt("ANOMALY_PAYEE_BPS", "5000")),
+    anomalyTotalBps: Number(opt("ANOMALY_TOTAL_BPS", "5000")),
+    kytRevertOnDeny: opt("KYT_REVERT_ON_DENY", "false") === "true",
   });
 
   const out = { rpc: req("RPC_URL"), payeeRoot: "0x" + payeeRoot.toString(16), ...addrs };

@@ -10,6 +10,7 @@
     ".": "./src/index.ts",
     "./crypto": "./src/commitments.ts",
     "./merkle": "./src/merkle.ts",
+    "./streams": "./src/streams.ts",
     "./engine": "./src/engine.ts",
     "./payroll": "./src/payroll.ts",
     "./chain": "./src/chain.ts",

@@ -15,6 +15,7 @@ export interface Addresses {
   vault: string;
   adapter: string;
   executor: string;
+  kyt: string;
 }
 
 export interface DeployParams {
@@ -29,6 +30,10 @@ export interface DeployParams {
   tokenSymbol: string;
   initialSupply: bigint;
   fundAmount: bigint;
+  execWindow: bigint;
+  anomalyPayeeBps: number;
+  anomalyTotalBps: number;
+  kytRevertOnDeny: boolean;
 }
 
 const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
@@ -122,11 +127,13 @@ export async function deployAll(
     vault,
     adapter,
   });
+  const kyt = await declareDeploy(account, provider, "MockKytOracle", { owner: p.owner });
 
   const reg = connect(account, "PayrollRegistry", registry);
   const vlt = connect(account, "DisbursementVault", vault);
   const adp = connect(account, "PublicTransferAdapter", adapter);
   const tok = connect(account, "MockERC20", token);
+  const exe = connect(account, "DisbursementExecutor", executor);
 
   // Wire executor + register the policy (owner multicall).
   const tx1 = await withRetry("wire", () =>
@@ -146,16 +153,26 @@ export async function deployAll(
   await waitSlow(provider, tx1.transaction_hash);
   console.log("  wired executor + policy");
 
+  // Execution window + anomaly thresholds + compliance (owner multicall).
+  const tx2 = await withRetry("config", () =>
+    account.execute([
+      reg.populate("set_execution", [p.execWindow, p.anomalyPayeeBps, p.anomalyTotalBps]),
+      exe.populate("set_compliance", [kyt, p.kytRevertOnDeny]),
+    ]),
+  );
+  await waitSlow(provider, tx2.transaction_hash);
+  console.log("  set execution window + compliance");
+
   // Fund the vault and approve the adapter (owner multicall).
-  const tx2 = await withRetry("fund", () =>
+  const tx3 = await withRetry("fund", () =>
     account.execute([
       tok.populate("approve", [vault, p.fundAmount]),
       vlt.populate("deposit", [p.fundAmount]),
       vlt.populate("set_spender", [adapter]),
     ]),
   );
-  await waitSlow(provider, tx2.transaction_hash);
+  await waitSlow(provider, tx3.transaction_hash);
   console.log("  funded vault + approved adapter");
 
-  return { token, registry, vault, adapter, executor };
+  return { token, registry, vault, adapter, executor, kyt };
 }
