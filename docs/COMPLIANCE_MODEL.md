@@ -47,11 +47,21 @@ Poseidon is still used in Chaum — for the NUMS derivation of `H` and for Merkl
 
 ---
 
-## 2. The three disclosure guarantees
+## 2. Role-scoped selective disclosure (the Prove moat)
 
-These mirror STRK20's viewing-key semantics: a public aggregate proof, a holder-only opening, and nothing else.
+STRK20 viewing keys are account-scoped and all-or-nothing. Organizations need **graduated** disclosure — the layer Chaum adds. Five viewer scopes, each a real on-chain check gated by the caller's role in `PayrollRegistry`:
 
-### G1 — Aggregate verifiability (public)
+| Viewer (role) | Sees | Mechanism |
+| --- | --- | --- |
+| **Public** | Only aggregate totals | Redacted commitments on-chain |
+| **Auditor** | Aggregate proven correct; no split | `verify_aggregate` (G1) |
+| **Stakeholder** | Category totals (payroll / vendor / grant); no split | `verify_stream_aggregate` per stream (G1-S) |
+| **Payee** | Their own amount only | `open_own` (G2) |
+| **Owner / Operator** | Everything | Full key custody |
+
+**Scope isolation is a tested invariant:** the snforge suite proves the Auditor path never reveals an individual, the Stakeholder path never reveals a payee, and the Payee path reveals exactly one — including a `role not permitted` revert for callers without the scope.
+
+### G1 — Aggregate verifiability (auditor)
 
 `verify_aggregate(cycle_id) -> bool` lets **anyone** (in practice, an auditor) confirm that the per-payee commitments stored for a cycle sum exactly to the recorded cycle-total commitment:
 
@@ -60,6 +70,16 @@ assert  Σ_i C_i  ==  C_total
 ```
 
 In `PublicTransferAdapter` mode the contract also stores `Σ amount_i` and `Σ blinding_i`, so the verifier additionally confirms `C_total` opens to that public total — binding the homomorphic commitment to the actually-disbursed sum. **No individual amount is revealed by this check.**
+
+### G1-S — Category verifiability (stakeholder)
+
+`verify_stream_aggregate(cycle_id, stream) -> bool` (gated to `Stakeholder` and above) proves the **per-category** subtotal — `Σ` over just the payroll, vendor, or grant payouts — is consistent, without revealing any individual split within the category:
+
+```
+assert  Σ_{i in stream} C_i  ==  C_stream_total[cycle_id][stream]
+```
+
+This is quarterly-style reporting to token holders — "payroll was X, vendors Y, grants Z" — with no single salary or vendor rate exposed. Each payout is bound to its stream by the Merkle leaf `Poseidon(payee, stream)`, so a payout can't be re-classified after the fact.
 
 ### G2 — Self-disclosure (payee-only)
 
@@ -101,6 +121,10 @@ In the **devnet/demo and the initial Sepolia deployment**, the token movement us
 4. An **adapter-agnostic** event stream: Chaum's own events carry only commitment coordinates, never amounts.
 
 Because (4) holds, swapping in `Strk20TransferAdapter` (T2) upgrades the system to true end-to-end amount confidentiality with **zero change** to the commitment, proof, or event schema. The privacy leak in V1 is isolated to exactly one swappable component, by design.
+
+### Pre-pay compliance screening (KYT)
+
+Confidentiality is paired with screening, not evasion (the GENIUS-era shape). The executor consults an `IKytOracle` per payee **before** value moves — `MockKytOracle` on testnet, a TRM/Chainalysis-class provider in production, behind the same interface so the executor is untouched by the swap. A denied payee is **skipped and logged** (`PayoutDenied` event; default) or **reverts the cycle** (policy flag `kyt_revert_on_deny`). Payee allowlist attestations and exportable audit packets complete the rail. This is *what turns "we hid the numbers" into "we can show exactly the right numbers to exactly the right people"* — the phrase that wins institutional and grant audiences.
 
 ---
 

@@ -1,38 +1,46 @@
 # Grant Milestones
 
-Three tranches. T1 is this proof of concept. T2 and T3 are scoped but not built here.
+Chaum is the **confidential operating account for onchain organizations** — three modules in strict sequence: **Disburse** (the wedge), **Prove** (the moat), **Grow** (the engine). T1 builds Disburse + Prove; Grow ships as a seam.
 
-## T1 — Proof of concept (this repository)
+## T1 — Disburse + Prove on testnet (this repository)
 
-**Goal:** a working private-disbursement cycle on testnet, with the commitment layer and the autonomous agent fully functional and the public-transfer leg carrying the demo.
+**Goal:** agentic disbursement under on-chain policy, with role-scoped selective disclosure and compliance screening — the two SDK-independent modules, fully working.
 
-- [x] Cairo contracts compiling under Scarb (`PayrollRegistry`, `DisbursementVault`, `DisbursementExecutor`, `commitments`, adapters, mock ERC-20).
-- [x] Additively-homomorphic EC Pedersen commitments with on-chain aggregate verification and selective disclosure (`verify_aggregate`, `open_own`).
-- [x] Bounded-delegation executor: session-key auth, caps, cadence, Merkle membership all re-validated on-chain.
-- [x] `snforge` test suite green, including the full revert matrix and the homomorphic-sum tamper test.
-- [x] Deterministic TypeScript agent: simulate-before-submit, nonce management, retry/backoff, sqlite idempotency, structured logs.
-- [x] Dashboard (Treasury / Policy / Cycle / Disclosure / Activity) with redaction bars and the proof center.
-- [x] `pnpm demo`: one command boots devnet, deploys, funds, registers a policy + 5 payees, runs a private cycle, and proves the guarantees end-to-end.
-- [ ] Deployed to **Starknet Sepolia**; agent running against Sepolia; dashboard on Vercel (credential-gated final step).
+### Disburse
+- [x] Cairo contracts under Scarb: `PayrollRegistry` (policy + roles), `DisbursementVault`, `DisbursementExecutor`, `commitments`, `merkle`, adapters, mock ERC-20.
+- [x] Streams (`Payroll` / `Vendor` / `Grant`): every payout classified; membership on `(payee, stream)` leaves.
+- [x] Bounded-delegation executor: session-key auth, per-payee/per-cycle caps, cadence **+ execution window**, Merkle membership, homomorphic-sum consistency — all re-validated on-chain.
+- [x] **Compliance gate:** `IKytOracle` seam (`MockKytOracle` on testnet); denied payee skip-and-log (default) or revert-cycle (policy flag).
+- [x] Deterministic TypeScript agent: simulate-before-submit, nonce mgmt, retry/backoff, sqlite idempotency, structured logs; **timing jitter** (windowed execution) + **anomaly-halt** (payee-set × total thresholds) + **audit-packet** export.
+- [x] `pnpm demo`: boots devnet, deploys, runs a private multi-stream cycle, proves the guarantees end-to-end.
 
-**Transfer leg:** `PublicTransferAdapter` (ERC-20). Amount privacy is demonstrated via commitments; the transfer itself is public — see [COMPLIANCE_MODEL.md](COMPLIANCE_MODEL.md).
+### Prove
+- [x] Additively-homomorphic EC Pedersen commitments; on-chain `verify_aggregate` (auditor), **`verify_stream_aggregate` per category (stakeholder)**, `open_own` (payee) — with **role-scope isolation tests** proving no scope leaks another.
+- [x] Roles registry (`Owner` / `Operator` / `Auditor` / `Payee` / `Stakeholder`) gating disclosure.
+- [x] Audit-packet `.zip` (commitments + stream totals + on-chain verify instructions; no opening secrets).
+- [x] `snforge` suite green (revert matrix + role-scope isolation + stream subtotals).
 
-## T2 — STRK20 shielded-transfer integration
+### Live
+- [x] Deployed to **Starknet Sepolia**; console + landing on Vercel (payroll-era build live; operating-account redeploy gated on testnet funds — see [DEPLOYMENTS.md](DEPLOYMENTS.md)).
 
-**Goal:** true end-to-end amount confidentiality and compliance parity, plus reliability hardening.
+**Transfer leg:** `PublicTransferAdapter` (ERC-20). Amount privacy is demonstrated via commitments; the transfer itself is public — see [PRIVACY_THREAT_MODEL.md](PRIVACY_THREAT_MODEL.md).
 
-- Integrate the real STRK20 shielded-transfer interface into `Strk20TransferAdapter` once the STRK20 developer SDK / wallet API ships (it was "next phase" at T1 build time — see [DECISIONS.md](DECISIONS.md)). Because the commitment layer and the adapter seam are already in place, this is an adapter swap, not a redesign.
-- **Viewing-key parity:** align `verify_aggregate` / `open_own` with STRK20's encrypted viewing-key disclosure path so auditor and payee disclosure work uniformly across the commitment layer and the shielded transfer layer.
-- On-chain cap enforcement for hidden amounts: a bounded range-proof verifier (or denomination buckets) so caps hold without revealing amounts.
-- Reliability hardening: alerting (`notify.ts` to webhook/Telegram on cycle executed / failed / vault below one cycle's max), richer retry/observability, key-rotation runbook.
+## T2 — STRK20 transport + design partners + bridge-in
 
-## T3 — Scale & multi-asset
+**Goal:** true end-to-end amount confidentiality, real orgs live, distribution.
 
-**Goal:** production-shaped operation.
+- Integrate the real **STRK20 shielded-transfer** interface into `Strk20TransferAdapter` once the SDK ships (adapter swap, not a redesign — the commitment/disclosure core is already in place). Support both single-proof fan-out and sequential-transfer modes.
+- **Viewing-key parity:** align `verify_aggregate` / `verify_stream_aggregate` / `open_own` with STRK20's encrypted viewing-key path.
+- On-chain cap enforcement for hidden amounts: bounded range-proof verifier or denomination buckets.
+- **Bridge-in v1** (`IBridgeIn`, RFS #6): fund the pool from Ethereum / L2s / Solana; withdrawals exit to any chain with no on-chain link.
+- **5+ design-partner orgs** live (DAOs / protocol teams / foundations); reliability hardening + alerting; external-review prep.
 
-- Recurring schedules at scale: many policies, many payees, batched cycles, gas-optimized commitment storage.
-- Multi-asset payout (beyond a single ERC-20 / STRK20 asset).
-- External security review / audit of the contracts and the commitment scheme.
-- Operational maturity: monitoring, SLOs, incident runbooks.
+## T3 — Grow + mainnet
 
-> **Out of scope across all tranches (V1 non-goals):** yield, lending, cards, consumer/mass-market payroll, multi-chain, a token, mainnet (until audited), any LLM in the execution path, and recipient-side accounts / neobank features (reserved).
+**Goal:** the revenue engine + production.
+
+- **Grow v1:** `IYieldAdapter` live for Vesu (lending) / Endur (staking); positions shielded, solvency provable via viewing roles; **Lyapunov** position-defense module on the shared executor. See [GROW_DESIGN.md](GROW_DESIGN.md).
+- Prove SaaS tier (auditor seats, attestations, packet automation); recurring schedules at scale; multi-asset.
+- External security audit; mainnet.
+
+> **V1 non-goals (strict):** live yield, bridge implementation, Lyapunov, mainnet, LLM in the execution path, consumer/mass-market payroll, a token, multi-chain runtime, recipient-side accounts.
