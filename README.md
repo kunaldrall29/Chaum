@@ -20,23 +20,28 @@ Built for the STRK20 Request for Startups #11.
 | **Landing** (selective-disclosure demo) | [chaum-landing.vercel.app](https://chaum-landing.vercel.app) |
 | **Repo** | [github.com/kunaldrall29/Chaum](https://github.com/kunaldrall29/Chaum) |
 
-### What's live vs. staged
+### Contracts on Starknet Sepolia (operating-account build — live)
 
-The **payroll-era V1** is deployed and running on **Starknet Sepolia** with a real executed private cycle and a console reading live on-chain state (addresses below). The **operating-account build** — streams, roles, role-scoped disclosure, execution-window jitter, and the KYT gate — is complete, `snforge`-green, and demoable on devnet; its Sepolia redeploy (`scripts/deploy-and-seed.ts`, 12 users across streams) is **staged and gated on testnet funds** (Sepolia declare fees spiked ~10×). See [docs/DEPLOYMENTS.md](docs/DEPLOYMENTS.md).
-
-### Contracts on Starknet Sepolia (payroll-era V1)
+The full operating-account build — **streams, roles, role-scoped disclosure, execution-window jitter, and the KYT gate** — is deployed and running on **Starknet Sepolia**, seeded with 12 users across payroll/vendor/grant and two real verified cycles.
 
 | Contract | Address (Voyager) |
 | --- | --- |
-| `MockERC20` (demo payout asset) | [`0xff9112…73125c`](https://sepolia.voyager.online/contract/0xff9112d96316df8195468051fd8e3702e91b03ca5e87a32cd43c686b73125c) |
-| `PayrollRegistry` | [`0xec11ea…e2b5ce`](https://sepolia.voyager.online/contract/0xec11eaca97ecc712e664ba746182685349d6edf39460ca76060a9a54e2b5ce) |
-| `DisbursementVault` | [`0x299aa4…558d571`](https://sepolia.voyager.online/contract/0x299aa4e037605d293c4be086bd8b46d587c7772f2f536eb24cc2247f558d571) |
-| `PublicTransferAdapter` | [`0x51de94…ced84e7`](https://sepolia.voyager.online/contract/0x51de9449725a1f5cc9cc77700a157f9ab90869e79d0c930c40d3b9a1ced84e7) |
-| `DisbursementExecutor` | [`0x1df665…a5d0712`](https://sepolia.voyager.online/contract/0x1df66554167bba9647ed4c5e08054fbd00101e543cc29adb99ea6142a5d0712) |
+| `MockERC20` — Chaum USD (`cUSD`) | [`0xdfe246…92556c`](https://sepolia.voyager.online/contract/0xdfe2463b1350496e9615dd777226e699535d2850cb8af2d5c63b13e092556c) |
+| `PayrollRegistry` (policy + roles) | [`0x612669…c9f212`](https://sepolia.voyager.online/contract/0x6126696449e1d97009b02cc0e8bb9f354def6bc21bc389bf91ee0de7bc9f212) |
+| `DisbursementVault` | [`0x188299…e10849a`](https://sepolia.voyager.online/contract/0x1882996f9033b26e39533255fac09ebada3a436460cff470d0347472e10849a) |
+| `PublicTransferAdapter` | [`0x7e027a…df7b6e4`](https://sepolia.voyager.online/contract/0x7e027a60d854183381dd1013d8d9fb4bf78408d0139f970ddbbd4e55df7b6e4) |
+| `DisbursementExecutor` (streams + KYT) | [`0x7712ac…3e4aa49`](https://sepolia.voyager.online/contract/0x7712ac81ab58d76e89431ec6938db95c4dcd7b1b4f2792614b799c063e4aa49) |
+| `MockKytOracle` | [`0x544421…384d89d1`](https://sepolia.voyager.online/contract/0x544421e64a22a2ad4bb68d2f8bb29bc58992e58028b26372266242d384d89d1) |
 
-Owner / agent account: [`0x020cc0…0de4f2`](https://sepolia.voyager.online/contract/0x020cc09b5ceff6ccb001071bbc1507a8224892e4bde893501de0e69fe10de4f2) ·
-First real private cycle (5 payees, `verify_aggregate = true`): [tx `0x407413…ee7c40`](https://sepolia.voyager.online/tx/0x40741368a3c6b4866a660a7fe68e2a45e0a91b7583da41e0450dbdb21ee7c40).
-Policy: per-payee cap 1,000,000 · per-cycle cap 10,000,000 · cadence 60s · 5 payees. Full record in [docs/DEPLOYMENTS.md](docs/DEPLOYMENTS.md).
+Owner / agent account: [`0x020cc0…0de4f2`](https://sepolia.voyager.online/contract/0x020cc09b5ceff6ccb001071bbc1507a8224892e4bde893501de0e69fe10de4f2). Roles set for an auditor, a stakeholder, and a payee; `node-ops.stark` is KYT-denied (skip-and-logged, not paid).
+
+Two real multi-stream cycles, both `verify_aggregate = true`:
+- Cycle 1: [tx `0x5bb46e…f90c7d`](https://sepolia.voyager.online/tx/0x5bb46ee32a6651611b3e2e74125ee839db55d6fbb1129c703101ebc52f90c7d) — 11 paid (1 KYT-denied): payroll 17,110 · vendor 8,200 · grant 13,000.
+- Cycle 2: [tx `0x29b624…13822ea`](https://sepolia.voyager.online/tx/0x29b62418d811680962885c7c1746b45b770e330834a1625e4a600b1b13822ea).
+
+Policy: per-payee cap 1,000,000 · per-cycle cap 10,000,000 · cadence 60s · exec_window 50s. Full record in [docs/DEPLOYMENTS.md](docs/DEPLOYMENTS.md).
+
+> The live [console](https://chaum-app.vercel.app) still renders the payroll-era build; the operating-account console (streams + role-scoped **Prove** center, reading these addresses) is the next step. The prior payroll-era contracts are retired — see [docs/DEPLOYMENTS.md](docs/DEPLOYMENTS.md).
 
 ---
 
@@ -153,7 +158,7 @@ The console reads the deployed Sepolia contracts directly — vault balance, pol
 
 ## Status
 
-Proof of concept (T1: Disburse + Prove). The payroll-era V1 is **deployed and live on Starknet Sepolia** with a real executed cycle and a live console (links above). The operating-account build (streams, roles, role-scoped disclosure, execution window, KYT gate, Grow/bridge seams) is complete: **61 `snforge` tests green** (revert matrix + role-scope isolation + stream subtotals), **16 agent tests** (jitter / anomaly / packets), `pnpm demo` passes end-to-end on devnet, and commitment math is cross-verified Cairo ↔ TypeScript. Its Sepolia redeploy is staged (see [docs/DEPLOYMENTS.md](docs/DEPLOYMENTS.md)).
+Proof of concept (T1: Disburse + Prove). The operating-account build (streams, roles, role-scoped disclosure, execution window, KYT gate, Grow/bridge seams) is **deployed and live on Starknet Sepolia** — 12 users across payroll/vendor/grant, a KYT-denied payee, and two real cycles both `verify_aggregate = true` (addresses above). **61 `snforge` tests green** (revert matrix + role-scope isolation + stream subtotals), **16 agent tests** (jitter / anomaly / packets), `pnpm demo` passes end-to-end on devnet, and commitment math is cross-verified Cairo ↔ TypeScript. Next: point the console at the live operating-account addresses (streams + role-scoped Prove center).
 
 Strict non-goals for V1: live yield, bridge implementation, Lyapunov, cards, consumer/mass-market payroll, multi-chain runtime, token, mainnet, LLM in the execution path, recipient-side accounts.
 

@@ -73,32 +73,58 @@ Policy: per-payee cap 1,000,000 · per-cycle cap 10,000,000 · cadence 60s.
 
 Payee set updated on-chain to 12 demo users (`update_payees`, root `0x51641c…`). Each cycle's per-payee amounts are hidden (commitments); the aggregate is verified on-chain. The console reads all of this live.
 
-### Operating-account redeploy (staged — gated on testnet funds)
+> **The payroll-era V1 above is retired.** It is superseded by the
+> operating-account deployment below (fresh redeploy, per decision D7–D11).
 
-The addresses above are the **payroll-era V1**. The operating-account build
-(streams, roles, role-scoped disclosure, `exec_window`, KYT gate,
-`MockKytOracle`, `StubYieldAdapter`) is complete and `snforge`-green, with a
-one-shot fresh-deploy-and-seed script:
+### Operating-account build — live on Sepolia (2026-07-10)
 
-```bash
-cd scripts
-RPC_URL=<sepolia-rpc> DEPLOYER_ADDRESS=<addr> DEPLOYER_PRIVATE_KEY=<key> \
-pnpm tsx deploy-and-seed.ts   # fresh deploy + 12 users across streams, roles, KYT-deny node, 2 cycles
-```
+The full operating-account build (streams, roles, role-scoped disclosure,
+`exec_window`, KYT gate, `MockKytOracle`) deployed fresh via
+[`scripts/deploy-and-seed.ts`](../scripts/deploy-and-seed.ts) — all six classes
+were already declared, so the run paid **zero declare fees**. Deployer /
+owner / agent account `0x020cc09b5ceff6ccb001071bbc1507a8224892e4bde893501de0e69fe10de4f2`.
 
-**Status: blocked on funds.** Sepolia declare fees spiked ~10× (executor class
-declare ≈ 62 STRK against a 31.5 STRK balance; ~90–100 STRK needed for the full
-suite), and the public faucet is address-cooldowned. `deploy.ts` now pre-checks
-`getClassByHash` to skip already-declared classes, so a retry only pays for
-genuinely new classes. Retry when the deployer is funded or gas normalizes; the
-new addresses + seeded cycles get recorded here on success.
+| Contract | Address |
+| --- | --- |
+| `MockERC20` — Chaum USD (`cUSD`) | `0xdfe2463b1350496e9615dd777226e699535d2850cb8af2d5c63b13e092556c` |
+| `PayrollRegistry` (policy + roles) | `0x6126696449e1d97009b02cc0e8bb9f354def6bc21bc389bf91ee0de7bc9f212` |
+| `DisbursementVault` | `0x1882996f9033b26e39533255fac09ebada3a436460cff470d0347472e10849a` |
+| `PublicTransferAdapter` | `0x7e027a60d854183381dd1013d8d9fb4bf78408d0139f970ddbbd4e55df7b6e4` |
+| `DisbursementExecutor` (streams + KYT) | `0x7712ac81ab58d76e89431ec6938db95c4dcd7b1b4f2792614b799c063e4aa49` |
+| `MockKytOracle` | `0x544421e64a22a2ad4bb68d2f8bb29bc58992e58028b26372266242d384d89d1` |
+
+Policy: per-payee cap 1,000,000 · per-cycle cap 10,000,000 · cadence 60s ·
+`exec_window` 50s · anomaly 5000/5000 bps · KYT skip-and-log. Payee root
+`0x36368bf390ee9dae8ccc230eac9ff4ff858088cdefee775a5e8ba1066181d85` over
+`(payee, stream)` leaves. Roles: auditor `0x6dccc5…`, stakeholder `0x392e5a…`,
+payee `0x132f8e…` (alice). KYT-denied: `node-ops.stark`
+`0x1fde91…` (skip-and-logged, never paid). Written to
+`scripts/deployments.sepolia.json` + `scripts/sepolia-demo.json` (the console's
+data source).
+
+#### Seeded users (12, across streams)
+
+- **Payroll (7):** alice, ben, cyo, dave, erin, frank, grace
+- **Vendor (3):** atlas-audit, node-ops *(KYT-denied)*, cloud-host
+- **Grant (2):** grant-014, grant-022
+
+#### Executed cycles (real on-chain, both `verify_aggregate = true`)
+
+| Cycle | Paid / seeded | Per-stream paid (cycle 1) | Tx |
+| --- | --- | --- | --- |
+| #1 | 11 / 12 (1 KYT-denied) | payroll 17,110 · vendor 8,200 · grant 13,000 | [`0x5bb46e…f90c7d`](https://sepolia.voyager.online/tx/0x5bb46ee32a6651611b3e2e74125ee839db55d6fbb1129c703101ebc52f90c7d) |
+| #2 | 11 / 12 (1 KYT-denied) | (same schedule) | [`0x29b624…13822ea`](https://sepolia.voyager.online/tx/0x29b62418d811680962885c7c1746b45b770e330834a1625e4a600b1b13822ea) |
+
+Per-payee amounts are hidden (Pedersen commitments); the aggregate and each
+stream subtotal are verifiable on-chain by the auditor / stakeholder roles.
 
 | Resource | URL |
 | --- | --- |
 | Landing (Vercel) | https://chaum-landing.vercel.app |
-| Console — functional, live Sepolia data (Vercel) | https://chaum-app.vercel.app · https://beta.chaum.fun |
-| RPC endpoint | _TBD (Sepolia)_ |
-| Voyager / Starkscan | _TBD (Sepolia)_ |
+| Media kit (Vercel) | https://chaum-media-kit.vercel.app |
+| Console (Vercel) — payroll-era build; operating-account rebuild is next | https://chaum-app.vercel.app · https://beta.chaum.fun |
+| RPC endpoint | https://api.cartridge.gg/x/starknet/sepolia |
+| Explorer | https://sepolia.voyager.online/ |
 
 ### Vercel (static — no build)
 

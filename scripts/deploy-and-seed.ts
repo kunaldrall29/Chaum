@@ -83,7 +83,7 @@ async function main() {
     maxPerPayee: 1_000_000n, maxPerCycle: 10_000_000n, cadence: 60n,
     tokenName: "Chaum USD", tokenSymbol: "cUSD",
     initialSupply: 100_000_000_000n, fundAmount: 1_000_000_000n,
-    execWindow: 3600n, anomalyPayeeBps: 5000, anomalyTotalBps: 5000, kytRevertOnDeny: false,
+    execWindow: 50n, anomalyPayeeBps: 5000, anomalyTotalBps: 5000, kytRevertOnDeny: false,
   });
   console.log("  addresses:", a);
 

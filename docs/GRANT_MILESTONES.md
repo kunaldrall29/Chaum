@@ -21,7 +21,8 @@ Chaum is the **confidential operating account for onchain organizations** — th
 - [x] `snforge` suite green (revert matrix + role-scope isolation + stream subtotals).
 
 ### Live
-- [x] Deployed to **Starknet Sepolia**; console + landing on Vercel (payroll-era build live; operating-account redeploy gated on testnet funds — see [DEPLOYMENTS.md](DEPLOYMENTS.md)).
+- [x] Operating-account build **deployed to Starknet Sepolia** (streams + roles + role-scoped disclosure + exec-window + KYT gate), seeded with 12 users across payroll/vendor/grant, a KYT-denied payee, and two real cycles both `verify_aggregate = true` — see [DEPLOYMENTS.md](DEPLOYMENTS.md).
+- [x] Landing + media kit on Vercel; console redeploy against the live operating-account addresses is the next step.
 
 **Transfer leg:** `PublicTransferAdapter` (ERC-20). Amount privacy is demonstrated via commitments; the transfer itself is public — see [PRIVACY_THREAT_MODEL.md](PRIVACY_THREAT_MODEL.md).
 
