@@ -1,1 +1,680 @@
-[{"type": "impl", "name": "ExecutorImpl", "interface_name": "chaum::interfaces::i_executor::IDisbursementExecutor"}, {"type": "struct", "name": "core::integer::u256", "members": [{"name": "low", "type": "core::integer::u128"}, {"name": "high", "type": "core::integer::u128"}]}, {"type": "struct", "name": "chaum::commitments::Commitment", "members": [{"name": "x", "type": "core::felt252"}, {"name": "y", "type": "core::felt252"}]}, {"type": "struct", "name": "core::array::Span::<core::felt252>", "members": [{"name": "snapshot", "type": "@core::array::Array::<core::felt252>"}]}, {"type": "struct", "name": "chaum::types::PayoutInput", "members": [{"name": "payee", "type": "core::starknet::contract_address::ContractAddress"}, {"name": "amount", "type": "core::integer::u256"}, {"name": "blinding", "type": "core::felt252"}, {"name": "commitment", "type": "chaum::commitments::Commitment"}, {"name": "merkle_proof", "type": "core::array::Span::<core::felt252>"}]}, {"type": "enum", "name": "core::bool", "variants": [{"name": "False", "type": "()"}, {"name": "True", "type": "()"}]}, {"type": "struct", "name": "chaum::types::CycleSummary", "members": [{"name": "cycle_id", "type": "core::integer::u64"}, {"name": "payee_count", "type": "core::integer::u32"}, {"name": "total_commitment", "type": "chaum::commitments::Commitment"}, {"name": "executed_at", "type": "core::integer::u64"}]}, {"type": "interface", "name": "chaum::interfaces::i_executor::IDisbursementExecutor", "items": [{"type": "function", "name": "execute_cycle", "inputs": [{"name": "cycle_id", "type": "core::integer::u64"}, {"name": "payouts", "type": "core::array::Array::<chaum::types::PayoutInput>"}], "outputs": [], "state_mutability": "external"}, {"type": "function", "name": "verify_aggregate", "inputs": [{"name": "cycle_id", "type": "core::integer::u64"}], "outputs": [{"type": "core::bool"}], "state_mutability": "view"}, {"type": "function", "name": "open_own", "inputs": [{"name": "cycle_id", "type": "core::integer::u64"}, {"name": "payee", "type": "core::starknet::contract_address::ContractAddress"}, {"name": "amount", "type": "core::integer::u256"}, {"name": "blinding", "type": "core::felt252"}], "outputs": [{"type": "core::bool"}], "state_mutability": "external"}, {"type": "function", "name": "get_cycle", "inputs": [{"name": "cycle_id", "type": "core::integer::u64"}], "outputs": [{"type": "chaum::types::CycleSummary"}], "state_mutability": "view"}, {"type": "function", "name": "commitment_of", "inputs": [{"name": "cycle_id", "type": "core::integer::u64"}, {"name": "payee", "type": "core::starknet::contract_address::ContractAddress"}], "outputs": [{"type": "chaum::commitments::Commitment"}], "state_mutability": "view"}, {"type": "function", "name": "total_commitment", "inputs": [{"name": "cycle_id", "type": "core::integer::u64"}], "outputs": [{"type": "chaum::commitments::Commitment"}], "state_mutability": "view"}]}, {"type": "impl", "name": "ExecutorAdminImpl", "interface_name": "chaum::interfaces::i_executor::IExecutorAdmin"}, {"type": "interface", "name": "chaum::interfaces::i_executor::IExecutorAdmin", "items": [{"type": "function", "name": "set_adapter", "inputs": [{"name": "adapter", "type": "core::starknet::contract_address::ContractAddress"}], "outputs": [], "state_mutability": "external"}, {"type": "function", "name": "set_attestation", "inputs": [{"name": "validation_registry", "type": "core::starknet::contract_address::ContractAddress"}, {"name": "agent_id", "type": "core::integer::u256"}], "outputs": [], "state_mutability": "external"}, {"type": "function", "name": "registry", "inputs": [], "outputs": [{"type": "core::starknet::contract_address::ContractAddress"}], "state_mutability": "view"}, {"type": "function", "name": "vault", "inputs": [], "outputs": [{"type": "core::starknet::contract_address::ContractAddress"}], "state_mutability": "view"}, {"type": "function", "name": "adapter", "inputs": [], "outputs": [{"type": "core::starknet::contract_address::ContractAddress"}], "state_mutability": "view"}]}, {"type": "impl", "name": "OwnableImpl", "interface_name": "openzeppelin_interfaces::access::ownable::IOwnable"}, {"type": "interface", "name": "openzeppelin_interfaces::access::ownable::IOwnable", "items": [{"type": "function", "name": "owner", "inputs": [], "outputs": [{"type": "core::starknet::contract_address::ContractAddress"}], "state_mutability": "view"}, {"type": "function", "name": "transfer_ownership", "inputs": [{"name": "new_owner", "type": "core::starknet::contract_address::ContractAddress"}], "outputs": [], "state_mutability": "external"}, {"type": "function", "name": "renounce_ownership", "inputs": [], "outputs": [], "state_mutability": "external"}]}, {"type": "constructor", "name": "constructor", "inputs": [{"name": "owner", "type": "core::starknet::contract_address::ContractAddress"}, {"name": "registry", "type": "core::starknet::contract_address::ContractAddress"}, {"name": "vault", "type": "core::starknet::contract_address::ContractAddress"}, {"name": "adapter", "type": "core::starknet::contract_address::ContractAddress"}]}, {"type": "event", "name": "chaum::disbursement_executor::DisbursementExecutor::CycleExecuted", "kind": "struct", "members": [{"name": "cycle_id", "type": "core::integer::u64", "kind": "key"}, {"name": "payee_count", "type": "core::integer::u32", "kind": "data"}, {"name": "total_commit_x", "type": "core::felt252", "kind": "data"}, {"name": "total_commit_y", "type": "core::felt252", "kind": "data"}, {"name": "caller", "type": "core::starknet::contract_address::ContractAddress", "kind": "data"}, {"name": "timestamp", "type": "core::integer::u64", "kind": "data"}]}, {"type": "event", "name": "chaum::disbursement_executor::DisbursementExecutor::PayoutCommitted", "kind": "struct", "members": [{"name": "cycle_id", "type": "core::integer::u64", "kind": "key"}, {"name": "payee", "type": "core::starknet::contract_address::ContractAddress", "kind": "key"}, {"name": "commit_x", "type": "core::felt252", "kind": "data"}, {"name": "commit_y", "type": "core::felt252", "kind": "data"}]}, {"type": "event", "name": "chaum::disbursement_executor::DisbursementExecutor::AdapterSet", "kind": "struct", "members": [{"name": "adapter", "type": "core::starknet::contract_address::ContractAddress", "kind": "data"}]}, {"type": "event", "name": "chaum::disbursement_executor::DisbursementExecutor::AttestationSet", "kind": "struct", "members": [{"name": "validation_registry", "type": "core::starknet::contract_address::ContractAddress", "kind": "data"}, {"name": "agent_id", "type": "core::integer::u256", "kind": "data"}]}, {"type": "event", "name": "openzeppelin_access::ownable::ownable::OwnableComponent::OwnershipTransferred", "kind": "struct", "members": [{"name": "previous_owner", "type": "core::starknet::contract_address::ContractAddress", "kind": "key"}, {"name": "new_owner", "type": "core::starknet::contract_address::ContractAddress", "kind": "key"}]}, {"type": "event", "name": "openzeppelin_access::ownable::ownable::OwnableComponent::OwnershipTransferStarted", "kind": "struct", "members": [{"name": "previous_owner", "type": "core::starknet::contract_address::ContractAddress", "kind": "key"}, {"name": "new_owner", "type": "core::starknet::contract_address::ContractAddress", "kind": "key"}]}, {"type": "event", "name": "openzeppelin_access::ownable::ownable::OwnableComponent::Event", "kind": "enum", "variants": [{"name": "OwnershipTransferred", "type": "openzeppelin_access::ownable::ownable::OwnableComponent::OwnershipTransferred", "kind": "nested"}, {"name": "OwnershipTransferStarted", "type": "openzeppelin_access::ownable::ownable::OwnableComponent::OwnershipTransferStarted", "kind": "nested"}]}, {"type": "event", "name": "openzeppelin_security::reentrancyguard::ReentrancyGuardComponent::Event", "kind": "enum", "variants": []}, {"type": "event", "name": "chaum::disbursement_executor::DisbursementExecutor::Event", "kind": "enum", "variants": [{"name": "CycleExecuted", "type": "chaum::disbursement_executor::DisbursementExecutor::CycleExecuted", "kind": "nested"}, {"name": "PayoutCommitted", "type": "chaum::disbursement_executor::DisbursementExecutor::PayoutCommitted", "kind": "nested"}, {"name": "AdapterSet", "type": "chaum::disbursement_executor::DisbursementExecutor::AdapterSet", "kind": "nested"}, {"name": "AttestationSet", "type": "chaum::disbursement_executor::DisbursementExecutor::AttestationSet", "kind": "nested"}, {"name": "OwnableEvent", "type": "openzeppelin_access::ownable::ownable::OwnableComponent::Event", "kind": "flat"}, {"name": "ReentrancyEvent", "type": "openzeppelin_security::reentrancyguard::ReentrancyGuardComponent::Event", "kind": "flat"}]}]
+[
+  {
+    "type": "impl",
+    "name": "ExecutorImpl",
+    "interface_name": "chaum::interfaces::i_executor::IDisbursementExecutor"
+  },
+  {
+    "type": "enum",
+    "name": "chaum::types::Stream",
+    "variants": [
+      {
+        "name": "Payroll",
+        "type": "()"
+      },
+      {
+        "name": "Vendor",
+        "type": "()"
+      },
+      {
+        "name": "Grant",
+        "type": "()"
+      }
+    ]
+  },
+  {
+    "type": "struct",
+    "name": "core::integer::u256",
+    "members": [
+      {
+        "name": "low",
+        "type": "core::integer::u128"
+      },
+      {
+        "name": "high",
+        "type": "core::integer::u128"
+      }
+    ]
+  },
+  {
+    "type": "struct",
+    "name": "chaum::commitments::Commitment",
+    "members": [
+      {
+        "name": "x",
+        "type": "core::felt252"
+      },
+      {
+        "name": "y",
+        "type": "core::felt252"
+      }
+    ]
+  },
+  {
+    "type": "struct",
+    "name": "core::array::Span::<core::felt252>",
+    "members": [
+      {
+        "name": "snapshot",
+        "type": "@core::array::Array::<core::felt252>"
+      }
+    ]
+  },
+  {
+    "type": "struct",
+    "name": "chaum::types::PayoutInput",
+    "members": [
+      {
+        "name": "payee",
+        "type": "core::starknet::contract_address::ContractAddress"
+      },
+      {
+        "name": "stream",
+        "type": "chaum::types::Stream"
+      },
+      {
+        "name": "amount",
+        "type": "core::integer::u256"
+      },
+      {
+        "name": "blinding",
+        "type": "core::felt252"
+      },
+      {
+        "name": "commitment",
+        "type": "chaum::commitments::Commitment"
+      },
+      {
+        "name": "merkle_proof",
+        "type": "core::array::Span::<core::felt252>"
+      }
+    ]
+  },
+  {
+    "type": "enum",
+    "name": "core::bool",
+    "variants": [
+      {
+        "name": "False",
+        "type": "()"
+      },
+      {
+        "name": "True",
+        "type": "()"
+      }
+    ]
+  },
+  {
+    "type": "struct",
+    "name": "chaum::types::CycleSummary",
+    "members": [
+      {
+        "name": "cycle_id",
+        "type": "core::integer::u64"
+      },
+      {
+        "name": "payee_count",
+        "type": "core::integer::u32"
+      },
+      {
+        "name": "total_commitment",
+        "type": "chaum::commitments::Commitment"
+      },
+      {
+        "name": "executed_at",
+        "type": "core::integer::u64"
+      }
+    ]
+  },
+  {
+    "type": "interface",
+    "name": "chaum::interfaces::i_executor::IDisbursementExecutor",
+    "items": [
+      {
+        "type": "function",
+        "name": "execute_cycle",
+        "inputs": [
+          {
+            "name": "cycle_id",
+            "type": "core::integer::u64"
+          },
+          {
+            "name": "payouts",
+            "type": "core::array::Array::<chaum::types::PayoutInput>"
+          }
+        ],
+        "outputs": [],
+        "state_mutability": "external"
+      },
+      {
+        "type": "function",
+        "name": "verify_aggregate",
+        "inputs": [
+          {
+            "name": "cycle_id",
+            "type": "core::integer::u64"
+          }
+        ],
+        "outputs": [
+          {
+            "type": "core::bool"
+          }
+        ],
+        "state_mutability": "view"
+      },
+      {
+        "type": "function",
+        "name": "verify_stream_aggregate",
+        "inputs": [
+          {
+            "name": "cycle_id",
+            "type": "core::integer::u64"
+          },
+          {
+            "name": "stream",
+            "type": "chaum::types::Stream"
+          }
+        ],
+        "outputs": [
+          {
+            "type": "core::bool"
+          }
+        ],
+        "state_mutability": "view"
+      },
+      {
+        "type": "function",
+        "name": "open_own",
+        "inputs": [
+          {
+            "name": "cycle_id",
+            "type": "core::integer::u64"
+          },
+          {
+            "name": "payee",
+            "type": "core::starknet::contract_address::ContractAddress"
+          },
+          {
+            "name": "amount",
+            "type": "core::integer::u256"
+          },
+          {
+            "name": "blinding",
+            "type": "core::felt252"
+          }
+        ],
+        "outputs": [
+          {
+            "type": "core::bool"
+          }
+        ],
+        "state_mutability": "external"
+      },
+      {
+        "type": "function",
+        "name": "get_cycle",
+        "inputs": [
+          {
+            "name": "cycle_id",
+            "type": "core::integer::u64"
+          }
+        ],
+        "outputs": [
+          {
+            "type": "chaum::types::CycleSummary"
+          }
+        ],
+        "state_mutability": "view"
+      },
+      {
+        "type": "function",
+        "name": "commitment_of",
+        "inputs": [
+          {
+            "name": "cycle_id",
+            "type": "core::integer::u64"
+          },
+          {
+            "name": "payee",
+            "type": "core::starknet::contract_address::ContractAddress"
+          }
+        ],
+        "outputs": [
+          {
+            "type": "chaum::commitments::Commitment"
+          }
+        ],
+        "state_mutability": "view"
+      },
+      {
+        "type": "function",
+        "name": "total_commitment",
+        "inputs": [
+          {
+            "name": "cycle_id",
+            "type": "core::integer::u64"
+          }
+        ],
+        "outputs": [
+          {
+            "type": "chaum::commitments::Commitment"
+          }
+        ],
+        "state_mutability": "view"
+      },
+      {
+        "type": "function",
+        "name": "stream_commitment",
+        "inputs": [
+          {
+            "name": "cycle_id",
+            "type": "core::integer::u64"
+          },
+          {
+            "name": "stream",
+            "type": "chaum::types::Stream"
+          }
+        ],
+        "outputs": [
+          {
+            "type": "chaum::commitments::Commitment"
+          }
+        ],
+        "state_mutability": "view"
+      }
+    ]
+  },
+  {
+    "type": "impl",
+    "name": "ExecutorAdminImpl",
+    "interface_name": "chaum::interfaces::i_executor::IExecutorAdmin"
+  },
+  {
+    "type": "interface",
+    "name": "chaum::interfaces::i_executor::IExecutorAdmin",
+    "items": [
+      {
+        "type": "function",
+        "name": "set_adapter",
+        "inputs": [
+          {
+            "name": "adapter",
+            "type": "core::starknet::contract_address::ContractAddress"
+          }
+        ],
+        "outputs": [],
+        "state_mutability": "external"
+      },
+      {
+        "type": "function",
+        "name": "set_attestation",
+        "inputs": [
+          {
+            "name": "validation_registry",
+            "type": "core::starknet::contract_address::ContractAddress"
+          },
+          {
+            "name": "agent_id",
+            "type": "core::integer::u256"
+          }
+        ],
+        "outputs": [],
+        "state_mutability": "external"
+      },
+      {
+        "type": "function",
+        "name": "set_compliance",
+        "inputs": [
+          {
+            "name": "kyt_oracle",
+            "type": "core::starknet::contract_address::ContractAddress"
+          },
+          {
+            "name": "revert_on_deny",
+            "type": "core::bool"
+          }
+        ],
+        "outputs": [],
+        "state_mutability": "external"
+      },
+      {
+        "type": "function",
+        "name": "registry",
+        "inputs": [],
+        "outputs": [
+          {
+            "type": "core::starknet::contract_address::ContractAddress"
+          }
+        ],
+        "state_mutability": "view"
+      },
+      {
+        "type": "function",
+        "name": "vault",
+        "inputs": [],
+        "outputs": [
+          {
+            "type": "core::starknet::contract_address::ContractAddress"
+          }
+        ],
+        "state_mutability": "view"
+      },
+      {
+        "type": "function",
+        "name": "adapter",
+        "inputs": [],
+        "outputs": [
+          {
+            "type": "core::starknet::contract_address::ContractAddress"
+          }
+        ],
+        "state_mutability": "view"
+      },
+      {
+        "type": "function",
+        "name": "compliance_oracle",
+        "inputs": [],
+        "outputs": [
+          {
+            "type": "core::starknet::contract_address::ContractAddress"
+          }
+        ],
+        "state_mutability": "view"
+      }
+    ]
+  },
+  {
+    "type": "impl",
+    "name": "OwnableImpl",
+    "interface_name": "openzeppelin_interfaces::access::ownable::IOwnable"
+  },
+  {
+    "type": "interface",
+    "name": "openzeppelin_interfaces::access::ownable::IOwnable",
+    "items": [
+      {
+        "type": "function",
+        "name": "owner",
+        "inputs": [],
+        "outputs": [
+          {
+            "type": "core::starknet::contract_address::ContractAddress"
+          }
+        ],
+        "state_mutability": "view"
+      },
+      {
+        "type": "function",
+        "name": "transfer_ownership",
+        "inputs": [
+          {
+            "name": "new_owner",
+            "type": "core::starknet::contract_address::ContractAddress"
+          }
+        ],
+        "outputs": [],
+        "state_mutability": "external"
+      },
+      {
+        "type": "function",
+        "name": "renounce_ownership",
+        "inputs": [],
+        "outputs": [],
+        "state_mutability": "external"
+      }
+    ]
+  },
+  {
+    "type": "constructor",
+    "name": "constructor",
+    "inputs": [
+      {
+        "name": "owner",
+        "type": "core::starknet::contract_address::ContractAddress"
+      },
+      {
+        "name": "registry",
+        "type": "core::starknet::contract_address::ContractAddress"
+      },
+      {
+        "name": "vault",
+        "type": "core::starknet::contract_address::ContractAddress"
+      },
+      {
+        "name": "adapter",
+        "type": "core::starknet::contract_address::ContractAddress"
+      }
+    ]
+  },
+  {
+    "type": "event",
+    "name": "chaum::disbursement_executor::DisbursementExecutor::CycleExecuted",
+    "kind": "struct",
+    "members": [
+      {
+        "name": "cycle_id",
+        "type": "core::integer::u64",
+        "kind": "key"
+      },
+      {
+        "name": "payee_count",
+        "type": "core::integer::u32",
+        "kind": "data"
+      },
+      {
+        "name": "total_commit_x",
+        "type": "core::felt252",
+        "kind": "data"
+      },
+      {
+        "name": "total_commit_y",
+        "type": "core::felt252",
+        "kind": "data"
+      },
+      {
+        "name": "caller",
+        "type": "core::starknet::contract_address::ContractAddress",
+        "kind": "data"
+      },
+      {
+        "name": "timestamp",
+        "type": "core::integer::u64",
+        "kind": "data"
+      }
+    ]
+  },
+  {
+    "type": "event",
+    "name": "chaum::disbursement_executor::DisbursementExecutor::PayoutCommitted",
+    "kind": "struct",
+    "members": [
+      {
+        "name": "cycle_id",
+        "type": "core::integer::u64",
+        "kind": "key"
+      },
+      {
+        "name": "payee",
+        "type": "core::starknet::contract_address::ContractAddress",
+        "kind": "key"
+      },
+      {
+        "name": "commit_x",
+        "type": "core::felt252",
+        "kind": "data"
+      },
+      {
+        "name": "commit_y",
+        "type": "core::felt252",
+        "kind": "data"
+      }
+    ]
+  },
+  {
+    "type": "event",
+    "name": "chaum::disbursement_executor::DisbursementExecutor::PayoutDenied",
+    "kind": "struct",
+    "members": [
+      {
+        "name": "cycle_id",
+        "type": "core::integer::u64",
+        "kind": "key"
+      },
+      {
+        "name": "payee",
+        "type": "core::starknet::contract_address::ContractAddress",
+        "kind": "key"
+      }
+    ]
+  },
+  {
+    "type": "event",
+    "name": "chaum::disbursement_executor::DisbursementExecutor::AdapterSet",
+    "kind": "struct",
+    "members": [
+      {
+        "name": "adapter",
+        "type": "core::starknet::contract_address::ContractAddress",
+        "kind": "data"
+      }
+    ]
+  },
+  {
+    "type": "event",
+    "name": "chaum::disbursement_executor::DisbursementExecutor::AttestationSet",
+    "kind": "struct",
+    "members": [
+      {
+        "name": "validation_registry",
+        "type": "core::starknet::contract_address::ContractAddress",
+        "kind": "data"
+      },
+      {
+        "name": "agent_id",
+        "type": "core::integer::u256",
+        "kind": "data"
+      }
+    ]
+  },
+  {
+    "type": "event",
+    "name": "chaum::disbursement_executor::DisbursementExecutor::ComplianceSet",
+    "kind": "struct",
+    "members": [
+      {
+        "name": "kyt_oracle",
+        "type": "core::starknet::contract_address::ContractAddress",
+        "kind": "data"
+      },
+      {
+        "name": "revert_on_deny",
+        "type": "core::bool",
+        "kind": "data"
+      }
+    ]
+  },
+  {
+    "type": "event",
+    "name": "openzeppelin_access::ownable::ownable::OwnableComponent::OwnershipTransferred",
+    "kind": "struct",
+    "members": [
+      {
+        "name": "previous_owner",
+        "type": "core::starknet::contract_address::ContractAddress",
+        "kind": "key"
+      },
+      {
+        "name": "new_owner",
+        "type": "core::starknet::contract_address::ContractAddress",
+        "kind": "key"
+      }
+    ]
+  },
+  {
+    "type": "event",
+    "name": "openzeppelin_access::ownable::ownable::OwnableComponent::OwnershipTransferStarted",
+    "kind": "struct",
+    "members": [
+      {
+        "name": "previous_owner",
+        "type": "core::starknet::contract_address::ContractAddress",
+        "kind": "key"
+      },
+      {
+        "name": "new_owner",
+        "type": "core::starknet::contract_address::ContractAddress",
+        "kind": "key"
+      }
+    ]
+  },
+  {
+    "type": "event",
+    "name": "openzeppelin_access::ownable::ownable::OwnableComponent::Event",
+    "kind": "enum",
+    "variants": [
+      {
+        "name": "OwnershipTransferred",
+        "type": "openzeppelin_access::ownable::ownable::OwnableComponent::OwnershipTransferred",
+        "kind": "nested"
+      },
+      {
+        "name": "OwnershipTransferStarted",
+        "type": "openzeppelin_access::ownable::ownable::OwnableComponent::OwnershipTransferStarted",
+        "kind": "nested"
+      }
+    ]
+  },
+  {
+    "type": "event",
+    "name": "openzeppelin_security::reentrancyguard::ReentrancyGuardComponent::Event",
+    "kind": "enum",
+    "variants": []
+  },
+  {
+    "type": "event",
+    "name": "chaum::disbursement_executor::DisbursementExecutor::Event",
+    "kind": "enum",
+    "variants": [
+      {
+        "name": "CycleExecuted",
+        "type": "chaum::disbursement_executor::DisbursementExecutor::CycleExecuted",
+        "kind": "nested"
+      },
+      {
+        "name": "PayoutCommitted",
+        "type": "chaum::disbursement_executor::DisbursementExecutor::PayoutCommitted",
+        "kind": "nested"
+      },
+      {
+        "name": "PayoutDenied",
+        "type": "chaum::disbursement_executor::DisbursementExecutor::PayoutDenied",
+        "kind": "nested"
+      },
+      {
+        "name": "AdapterSet",
+        "type": "chaum::disbursement_executor::DisbursementExecutor::AdapterSet",
+        "kind": "nested"
+      },
+      {
+        "name": "AttestationSet",
+        "type": "chaum::disbursement_executor::DisbursementExecutor::AttestationSet",
+        "kind": "nested"
+      },
+      {
+        "name": "ComplianceSet",
+        "type": "chaum::disbursement_executor::DisbursementExecutor::ComplianceSet",
+        "kind": "nested"
+      },
+      {
+        "name": "OwnableEvent",
+        "type": "openzeppelin_access::ownable::ownable::OwnableComponent::Event",
+        "kind": "flat"
+      },
+      {
+        "name": "ReentrancyEvent",
+        "type": "openzeppelin_security::reentrancyguard::ReentrancyGuardComponent::Event",
+        "kind": "flat"
+      }
+    ]
+  }
+]

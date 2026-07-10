@@ -2,7 +2,9 @@ import { CFG, getCycle, verifyAggregate, commitmentOf, getCycleEvents, runCycle,
 import { useAsync } from "../lib/useAsync.ts";
 import { useWallet } from "../App.tsx";
 import { useTx, TxFeedback } from "../components/actions.tsx";
-import { Loading, ErrorBox, PageHead } from "../components/ui.tsx";
+import { Loading, ErrorBox, PageHead, fmt } from "../components/ui.tsx";
+
+const STREAM_LABEL: Record<string, string> = { payroll: "Payroll", vendor: "Vendor", grant: "Grant" };
 
 export function Cycle() {
   const wallet = useWallet();
@@ -13,10 +15,12 @@ export function Cycle() {
     const cycle = await getCycle(cycleId);
     const verified = cycle.exists ? await verifyAggregate(cycleId) : false;
     const rows = await Promise.all(
-      CFG.demoCycle.payouts.map(async (p: any) => ({
+      (CFG.demoCycle.payouts as any[]).map(async (p) => ({
         label: p.label ?? "payee",
         payee: p.payee,
-        commitment: cycle.exists ? await commitmentOf(cycleId, p.payee) : { x: 0n, y: 0n },
+        stream: p.stream as string,
+        denied: !!p.denied,
+        commitment: cycle.exists && !p.denied ? await commitmentOf(cycleId, p.payee) : { x: 0n, y: 0n },
       })),
     );
     const tx = events.find((e) => e.cycleId === cycleId)?.txHash ?? CFG.demoCycle.txHash;
@@ -26,18 +30,20 @@ export function Cycle() {
   if (q.loading) return <Loading what="reading cycle" />;
   if (q.error || !q.data) return <ErrorBox msg={q.error ?? "no data"} />;
   const { cycleId, cycle, verified, rows, tx } = q.data;
+  const streamTotals = (CFG.demoCycle as any).streamTotals as Record<string, string>;
 
+  let n = 0;
   return (
     <>
       <PageHead eyebrow={`cycle #${cycleId}`} title="Disbursement — amounts redacted"
-        desc="Every per-payee amount is a commitment on-chain. The split is hidden; the aggregate is legible and verified." />
+        desc="Every per-payee amount is a commitment on-chain, grouped by stream. The split is hidden; the aggregate and each category subtotal are legible and provable." />
 
       {/* Run a fresh cycle — real execute_cycle tx (agent/owner) */}
       <div className="card" style={{ marginBottom: 16, display: "flex", alignItems: "center", gap: 14, flexWrap: "wrap" }}>
         <div style={{ flex: 1, minWidth: 200 }}>
           <div className="label">run a cycle</div>
           <p className="mono" style={{ fontSize: 11.5, color: "var(--muted-2)", margin: "6px 0 0" }}>
-            builds fresh commitments + Merkle proofs in-browser, then calls execute_cycle. The contract re-validates everything.
+            builds fresh commitments + (payee, stream) Merkle proofs in-browser, then calls execute_cycle. The contract re-validates streams, caps, window, membership, KYT, and the homomorphic sum.
           </p>
         </div>
         {wallet.address ? (
@@ -65,14 +71,39 @@ export function Cycle() {
               </tr>
             </thead>
             <tbody>
-              {rows.map((r, i) => (
-                <tr key={r.payee} style={{ borderTop: "1px solid var(--line)" }}>
-                  <td className="mono" style={{ padding: "14px 0", color: "var(--muted-2)" }}>{String(i + 1).padStart(2, "0")}</td>
-                  <td className="mono" style={{ padding: "14px 0" }}>{r.label}<br /><span style={{ color: "var(--muted-2)", fontSize: 11 }}>{short(r.payee)}</span></td>
-                  <td style={{ padding: "14px 0" }}><span className="redaction" title="hidden by Pedersen commitment" /></td>
-                  <td className="mono" style={{ padding: "14px 0", color: "var(--muted)", fontSize: 12 }}>{short(r.commitment.x)}</td>
-                </tr>
-              ))}
+              {CFG.streams.flatMap((stream) => {
+                const group = rows.filter((r) => r.stream === stream);
+                if (!group.length) return [];
+                const out = [
+                  <tr key={"h-" + stream} style={{ borderTop: "1px solid var(--line-2)" }}>
+                    <td />
+                    <td className="label" style={{ padding: "14px 0 8px", color: "var(--paper)" }}>{STREAM_LABEL[stream] ?? stream}</td>
+                    <td colSpan={2} style={{ padding: "14px 0 8px" }}>
+                      <span className="pill" title="per-stream subtotal (provable by a stakeholder)">
+                        subtotal {fmt(BigInt(streamTotals[stream] ?? "0"))} · redacted
+                      </span>
+                    </td>
+                  </tr>,
+                ];
+                for (const r of group) {
+                  n += 1;
+                  out.push(
+                    <tr key={r.payee} style={{ borderTop: "1px solid var(--line)" }}>
+                      <td className="mono" style={{ padding: "14px 0", color: "var(--muted-2)" }}>{String(n).padStart(2, "0")}</td>
+                      <td className="mono" style={{ padding: "14px 0" }}>{r.label}<br /><span style={{ color: "var(--muted-2)", fontSize: 11 }}>{short(r.payee)}</span></td>
+                      <td style={{ padding: "14px 0" }}>
+                        {r.denied
+                          ? <span className="pill warn" title="failed the KYT screen — skipped and logged, never paid">KYT denied · skipped</span>
+                          : <span className="redaction" title="hidden by Pedersen commitment" />}
+                      </td>
+                      <td className="mono" style={{ padding: "14px 0", color: "var(--muted)", fontSize: 12 }}>
+                        {r.denied ? "—" : short(r.commitment.x)}
+                      </td>
+                    </tr>,
+                  );
+                }
+                return out;
+              })}
             </tbody>
           </table>
 

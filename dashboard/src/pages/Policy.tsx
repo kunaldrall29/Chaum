@@ -19,20 +19,51 @@ export function Policy() {
       <PageHead eyebrow="policy" title="The contract the agent is bound by"
         desc="Set by the owner, stored on-chain, re-validated on every cycle. The agent key can change none of this." />
 
-      <Grid min={210}>
+      <Grid min={200}>
         <Stat label="max per payee" value={fmt(p.maxPerPayee)} />
         <Stat label="max per cycle" value={fmt(p.maxPerCycle)} />
-        <Stat label="cadence" value={`${p.cadence}s`} />
+        <Stat label="cadence" value={`${p.cadence}s`} sub="min between cycles" />
+        <Stat label="exec window" value={`${p.execWindow}s`} sub="jitter room after due" />
+        <Stat label="anomaly halt" value={`${p.anomalyPayeeBps / 100}% / ${p.anomalyTotalBps / 100}%`} sub="payee-set / total shift" />
         <Stat label="paused" value={p.paused ? "yes" : "no"} />
       </Grid>
 
       <div className="card" style={{ marginTop: 16 }}>
         <div className="label">plain-language summary</div>
         <p style={{ fontSize: 16, lineHeight: 1.6, margin: "12px 0 0", maxWidth: 70 + "ch" }}>
-          The agent may pay only the <strong>{payees.length}</strong> registered payees, at most{" "}
-          <strong>{fmt(p.maxPerPayee)}</strong> each and <strong>{fmt(p.maxPerCycle)}</strong> per cycle,
-          no more often than every <strong>{p.cadence.toString()}s</strong>. It cannot withdraw, change the
-          payee set, raise a cap, or pay anyone else. Revoke any time.
+          The agent may pay only the <strong>{payees.length}</strong> registered payees (across payroll /
+          vendor / grant), at most <strong>{fmt(p.maxPerPayee)}</strong> each and{" "}
+          <strong>{fmt(p.maxPerCycle)}</strong> per cycle, no more often than every{" "}
+          <strong>{p.cadence.toString()}s</strong>, at a random moment inside a{" "}
+          <strong>{p.execWindow.toString()}s</strong> window. Denied payees are screened out by KYT. It cannot
+          withdraw, change the payee set, raise a cap, or pay anyone else. Revoke any time.
+        </p>
+      </div>
+
+      <div className="card" style={{ marginTop: 16 }}>
+        <div className="label">roles &amp; compliance</div>
+        <table style={{ marginTop: 12 }}>
+          <tbody>
+            <tr style={{ borderTop: "1px solid var(--line)" }}>
+              <td className="mono" style={{ padding: "10px 0", color: "var(--muted)" }}>auditor</td>
+              <td className="mono" style={{ padding: "10px 0" }}>{short(CFG.roles.auditor)}<span className="pill ok" style={{ marginLeft: 10 }}>verify_aggregate</span></td>
+            </tr>
+            <tr style={{ borderTop: "1px solid var(--line)" }}>
+              <td className="mono" style={{ padding: "10px 0", color: "var(--muted)" }}>stakeholder</td>
+              <td className="mono" style={{ padding: "10px 0" }}>{short(CFG.roles.stakeholder)}<span className="pill ok" style={{ marginLeft: 10 }}>verify_stream_aggregate</span></td>
+            </tr>
+            <tr style={{ borderTop: "1px solid var(--line)" }}>
+              <td className="mono" style={{ padding: "10px 0", color: "var(--muted)" }}>payee</td>
+              <td className="mono" style={{ padding: "10px 0" }}>{short(CFG.roles.payee)}<span className="pill ok" style={{ marginLeft: 10 }}>open_own</span></td>
+            </tr>
+            <tr style={{ borderTop: "1px solid var(--line)" }}>
+              <td className="mono" style={{ padding: "10px 0", color: "var(--muted)" }}>KYT denied</td>
+              <td className="mono" style={{ padding: "10px 0" }}>{short(CFG.denied)}<span className="pill warn" style={{ marginLeft: 10 }}>skip &amp; log</span></td>
+            </tr>
+          </tbody>
+        </table>
+        <p className="mono" style={{ fontSize: 11.5, color: "var(--muted-2)", marginTop: 12 }}>
+          disclosure scopes are enforced on-chain by the role registry (get_role); the KYT gate screens each payee before it settles.
         </p>
       </div>
 

@@ -13,7 +13,7 @@ const NAV: { id: View; label: string }[] = [
   { id: "treasury", label: "Treasury" },
   { id: "policy", label: "Policy" },
   { id: "cycle", label: "Cycle" },
-  { id: "disclosure", label: "Disclosure" },
+  { id: "disclosure", label: "Prove" },
   { id: "activity", label: "Activity" },
 ];
 

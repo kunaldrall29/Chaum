@@ -1,11 +1,15 @@
 // Merkle payee set — twin of contracts/src/merkle.cairo (commutative Poseidon,
-// leaf = Poseidon([payee])). Used to build valid membership proofs in-browser
-// when running a cycle from a connected wallet.
+// leaf = Poseidon([payee, stream])). Used to build valid membership proofs
+// in-browser when running a cycle from a connected wallet.
 
 import { poseidonHashMany } from "@scure/starknet";
 
-export function hashLeaf(payee: bigint): bigint {
-  return poseidonHashMany([payee]);
+// Stream tag — mirror of contracts/src/types.cairo stream_felt (Payroll=0/Vendor=1/Grant=2).
+export type Stream = "payroll" | "vendor" | "grant";
+export const streamFelt = (s: Stream): bigint => (s === "payroll" ? 0n : s === "vendor" ? 1n : 2n);
+
+export function hashLeaf(payee: bigint, stream: Stream = "payroll"): bigint {
+  return poseidonHashMany([payee, streamFelt(stream)]);
 }
 export function commutativeHash(a: bigint, b: bigint): bigint {
   return a <= b ? poseidonHashMany([a, b]) : poseidonHashMany([b, a]);
@@ -16,9 +20,9 @@ export interface MerkleTree {
   proof(index: number): bigint[];
 }
 
-export function buildTree(payees: bigint[]): MerkleTree {
-  if (payees.length === 0) throw new Error("empty payee set");
-  const leaves = payees.map(hashLeaf);
+// Build a tree from pre-hashed leaves (each leaf = hashLeaf(payee, stream)).
+export function buildTreeFromLeaves(leaves: bigint[]): MerkleTree {
+  if (leaves.length === 0) throw new Error("empty payee set");
   const levels: bigint[][] = [leaves.slice()];
   while (levels[levels.length - 1].length > 1) {
     const cur = levels[levels.length - 1];
@@ -43,4 +47,9 @@ export function buildTree(payees: bigint[]): MerkleTree {
       return p;
     },
   };
+}
+
+// Convenience: build from (payee, stream) pairs.
+export function buildTree(payees: { payee: bigint; stream: Stream }[]): MerkleTree {
+  return buildTreeFromLeaves(payees.map((p) => hashLeaf(p.payee, p.stream)));
 }
