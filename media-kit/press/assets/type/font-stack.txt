@@ -1,0 +1,29 @@
+CHAUM — TYPE STACK
+==================
+
+DISPLAY / HEADLINES
+  Family:    Fraunces
+  Weights:   500 (medium), 600 (semibold)
+  Optical:   variable opsz 9..144 (use high opsz for large display)
+  Web:       "Fraunces", Georgia, "Times New Roman", serif
+  Print:     Fraunces; fall back to Georgia
+
+BODY / UI
+  Family:    Hanken Grotesk
+  Weights:   400 (regular), 500 (medium), 600 (semibold)
+  Web:       "Hanken Grotesk", system-ui, -apple-system, "Segoe UI", sans-serif
+
+MONO — FIGURES / ADDRESSES / PROOFS
+  Family:    Spline Sans Mono
+  Weights:   400 (regular), 500 (medium)
+  Web:       "Spline Sans Mono", ui-monospace, "SF Mono", Menlo, Consolas, monospace
+  Rule:      all money is mono.
+
+GOOGLE FONTS
+  https://fonts.google.com/specimen/Fraunces
+  https://fonts.google.com/specimen/Hanken+Grotesk
+  https://fonts.google.com/specimen/Spline+Sans+Mono
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Hanken+Grotesk:wght@400;500;600&family=Spline+Sans+Mono:wght@400;500&display=swap" rel="stylesheet">
