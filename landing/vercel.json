@@ -2,5 +2,12 @@
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "buildCommand": null,
   "outputDirectory": ".",
-  "cleanUrls": true
+  "cleanUrls": true,
+  "redirects": [
+    { "source": "/media-kit", "destination": "/media-kit/", "permanent": false }
+  ],
+  "rewrites": [
+    { "source": "/media-kit/", "destination": "https://chaum-media-kit.vercel.app/" },
+    { "source": "/media-kit/:path*", "destination": "https://chaum-media-kit.vercel.app/:path*" }
+  ]
 }
