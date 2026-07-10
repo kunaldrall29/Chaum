@@ -122,7 +122,7 @@ stream subtotal are verifiable on-chain by the auditor / stakeholder roles.
 | --- | --- |
 | Landing (Vercel) | https://chaum-landing.vercel.app |
 | Media kit (Vercel) | https://chaum-media-kit.vercel.app |
-| Console (Vercel) — payroll-era build; operating-account rebuild is next | https://chaum-app.vercel.app · https://beta.chaum.fun |
+| Console (Vercel) — operating-account build (streams + role-scoped Prove) | https://chaum-app.vercel.app · https://beta.chaum.fun |
 | RPC endpoint | https://api.cartridge.gg/x/starknet/sepolia |
 | Explorer | https://sepolia.voyager.online/ |
 

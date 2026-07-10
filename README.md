@@ -41,7 +41,7 @@ Two real multi-stream cycles, both `verify_aggregate = true`:
 
 Policy: per-payee cap 1,000,000 · per-cycle cap 10,000,000 · cadence 60s · exec_window 50s. Full record in [docs/DEPLOYMENTS.md](docs/DEPLOYMENTS.md).
 
-> The live [console](https://chaum-app.vercel.app) still renders the payroll-era build; the operating-account console (streams + role-scoped **Prove** center, reading these addresses) is the next step. The prior payroll-era contracts are retired — see [docs/DEPLOYMENTS.md](docs/DEPLOYMENTS.md).
+> The live [console](https://chaum-app.vercel.app) reads these addresses directly — streams grouped in the Cycle view, and a role-scoped **Prove** center (auditor aggregate, stakeholder category, payee open). The prior payroll-era contracts are retired — see [docs/DEPLOYMENTS.md](docs/DEPLOYMENTS.md).
 
 ---
 
@@ -158,7 +158,7 @@ The console reads the deployed Sepolia contracts directly — vault balance, pol
 
 ## Status
 
-Proof of concept (T1: Disburse + Prove). The operating-account build (streams, roles, role-scoped disclosure, execution window, KYT gate, Grow/bridge seams) is **deployed and live on Starknet Sepolia** — 12 users across payroll/vendor/grant, a KYT-denied payee, and two real cycles both `verify_aggregate = true` (addresses above). **61 `snforge` tests green** (revert matrix + role-scope isolation + stream subtotals), **16 agent tests** (jitter / anomaly / packets), `pnpm demo` passes end-to-end on devnet, and commitment math is cross-verified Cairo ↔ TypeScript. Next: point the console at the live operating-account addresses (streams + role-scoped Prove center).
+Proof of concept (T1: Disburse + Prove). The operating-account build (streams, roles, role-scoped disclosure, execution window, KYT gate, Grow/bridge seams) is **deployed and live on Starknet Sepolia** — 12 users across payroll/vendor/grant, a KYT-denied payee, and two real cycles both `verify_aggregate = true` (addresses above). **61 `snforge` tests green** (revert matrix + role-scope isolation + stream subtotals), **16 agent tests** (jitter / anomaly / packets), `pnpm demo` passes end-to-end on devnet, and commitment math is cross-verified Cairo ↔ TypeScript. The console reads the live operating-account addresses (streams + role-scoped Prove center).
 
 Strict non-goals for V1: live yield, bridge implementation, Lyapunov, cards, consumer/mass-market payroll, multi-chain runtime, token, mainnet, LLM in the execution path, recipient-side accounts.
 
