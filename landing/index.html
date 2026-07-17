@@ -12,15 +12,15 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%230C0F14'/%3E%3Ccircle cx='16' cy='16' r='9' fill='%238C2F23'/%3E%3Ccircle cx='16' cy='16' r='5.5' fill='none' stroke='%23000' stroke-opacity='0.32' stroke-width='1.2'/%3E%3Ccircle cx='16' cy='16' r='2' fill='%23000' fill-opacity='0.22'/%3E%3C/svg%3E">
   <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Hanken+Grotesk:wght@400;500&family=Spline+Sans+Mono:wght@400;500&display=swap" rel="stylesheet">
-  <title>chaum — private payroll on Starknet</title>
-  <meta name="description" content="Pay contributors on Starknet with per-recipient amounts private and the aggregate provable. An autonomous agent runs each cycle under hard on-chain limits — it never holds your funds.">
+  <title>chaum — the confidential operating account for onchain organizations</title>
+  <meta name="description" content="The confidential operating account for onchain organizations on Starknet. Pay payroll, vendors, and grants with per-recipient amounts private and each total provable — an autonomous agent runs every cycle under hard on-chain limits and never holds your funds.">
   <meta property="og:type" content="website">
-  <meta property="og:title" content="chaum — private payroll on Starknet">
-  <meta property="og:description" content="Every amount private. Every total provable. Private payroll and treasury disbursement on Starknet.">
+  <meta property="og:title" content="chaum — the confidential operating account for onchain organizations">
+  <meta property="og:description" content="Every amount private. Every total provable. The confidential operating account for onchain organizations — Disburse, Prove, Grow on Starknet.">
   <meta property="og:image" content="/og.png">
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="chaum — private payroll on Starknet">
-  <meta name="twitter:description" content="Every amount private. Every total provable. Private payroll on Starknet.">
+  <meta name="twitter:title" content="chaum — the confidential operating account for onchain organizations">
+  <meta name="twitter:description" content="Every amount private. Every total provable. The confidential operating account for onchain organizations on Starknet.">
   <meta name="twitter:image" content="/og.png">
   <style>
     *{box-sizing:border-box}
@@ -65,9 +65,9 @@
     <section id="top" style="padding:clamp(92px,15vh,168px) 0 clamp(56px,9vh,104px);scroll-margin-top:70px">
       <div style="max-width:1100px;margin:0 auto;padding:0 clamp(20px,5vw,40px)">
         <div data-reveal style="max-width:760px">
-          <p style="font-family:'Spline Sans Mono',monospace;font-weight:500;font-size:12px;letter-spacing:0.18em;text-transform:uppercase;color:#D6543E;margin:0 0 22px">private payroll · starknet · strk20</p>
+          <p style="font-family:'Spline Sans Mono',monospace;font-weight:500;font-size:12px;letter-spacing:0.18em;text-transform:uppercase;color:#D6543E;margin:0 0 22px">confidential operating account · starknet · strk20</p>
           <h1 style="font-family:Fraunces,Georgia,serif;font-variation-settings:'opsz' 144;font-weight:600;font-size:clamp(40px,6.4vw,72px);line-height:1.0;letter-spacing:-0.022em;color:#ECE7DD;margin:0;max-width:18ch">Every amount private.<br>Every total provable.</h1>
-          <p style="margin:26px 0 0;max-width:54ch;font-size:clamp(16px,1.7vw,18.5px);line-height:1.62;color:rgba(236,231,221,0.72)">Chaum pays your contributors on Starknet with per-recipient amounts hidden from each other and from the public — while you prove aggregate spend to auditors and each recipient proves their own income. An autonomous agent runs every cycle under hard on-chain limits. It never holds your funds, and it can only pay the people you approved.</p>
+          <p style="margin:26px 0 0;max-width:54ch;font-size:clamp(16px,1.7vw,18.5px);line-height:1.62;color:rgba(236,231,221,0.72)">Chaum is the confidential operating account for onchain organizations. Pay payroll, vendors, and grants on Starknet with per-recipient amounts hidden from each other and the public — while an auditor proves aggregate spend, a stakeholder proves any one category, and each recipient proves only their own income. An autonomous agent runs every cycle under hard on-chain limits. It never holds your funds, and it can only pay the people you approved.</p>
           <div style="display:flex;flex-wrap:wrap;gap:14px;margin-top:34px">
             <button onClick="{{ goDisclosure }}" style="display:inline-flex;align-items:center;gap:9px;background:#8C2F23;color:#ECE7DD;border:1px solid #8C2F23;padding:13px 22px;border-radius:5px;font-family:'Hanken Grotesk',sans-serif;font-size:15px;font-weight:500;cursor:pointer;transition:background .2s ease,border-color .2s ease" style-hover="background:#A1382B;border-color:#A1382B">See selective disclosure <span aria-hidden="true">↓</span></button>
             <a href="{{ githubUrl }}" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;background:transparent;color:#ECE7DD;border:1px solid rgba(236,231,221,0.18);padding:13px 22px;border-radius:5px;font-family:'Hanken Grotesk',sans-serif;font-size:15px;font-weight:500;text-decoration:none;transition:border-color .2s ease" style-hover="border-color:rgba(236,231,221,0.42)">Read the architecture</a>
@@ -134,7 +134,7 @@
           <p data-caption style="margin:18px 0 0;font-size:15px;line-height:1.5;color:rgba(236,231,221,0.72);max-width:60ch">What anyone watching the chain sees.</p>
           <p data-keyline style="margin:8px 0 0;font-family:'Spline Sans Mono',monospace;font-size:12px;letter-spacing:0.04em;color:rgba(236,231,221,0.55);display:none;align-items:center;gap:7px"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#3FA66A" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>viewing key accepted</p>
 
-          <div role="table" aria-label="Payroll cycle" style="margin-top:24px">
+          <div role="table" aria-label="Disbursement cycle" style="margin-top:24px">
             <div role="row" style="display:grid;grid-template-columns:clamp(22px,6vw,32px) 1fr auto;gap:clamp(10px,2vw,16px);padding-bottom:12px">
               <span></span>
               <span style="font-family:'Spline Sans Mono',monospace;font-size:11px;letter-spacing:0.12em;text-transform:uppercase;color:rgba(236,231,221,0.42)">recipient</span>
@@ -225,7 +225,7 @@
             <p style="font-family:'Spline Sans Mono',monospace;font-size:12px;letter-spacing:0.14em;text-transform:uppercase;color:rgba(236,231,221,0.55);margin:0 0 18px">provable</p>
             <div style="display:flex;align-items:flex-start;gap:12px;margin-bottom:14px"><span style="flex:none;margin-top:3px;color:#3FA66A"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#3FA66A" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg></span><p style="margin:0;font-size:15.5px;line-height:1.58;color:rgba(236,231,221,0.82)">Aggregate spend — provable to auditors without the split.</p></div>
             <div style="display:flex;align-items:flex-start;gap:12px;margin-bottom:14px"><span style="flex:none;margin-top:3px;color:#3FA66A"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#3FA66A" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg></span><p style="margin:0;font-size:15.5px;line-height:1.58;color:rgba(236,231,221,0.82)">Each recipient's own income — provable for tax filing.</p></div>
-            <div style="display:flex;align-items:flex-start;gap:12px"><span style="flex:none;margin-top:3px;color:#3FA66A"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#3FA66A" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg></span><p style="margin:0;font-size:15.5px;line-height:1.58;color:rgba(236,231,221,0.82)">The compliance model traditional payroll already uses, on-chain, with no intermediary holding the money.</p></div>
+            <div style="display:flex;align-items:flex-start;gap:12px"><span style="flex:none;margin-top:3px;color:#3FA66A"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#3FA66A" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg></span><p style="margin:0;font-size:15.5px;line-height:1.58;color:rgba(236,231,221,0.82)">The compliance model traditional finance already uses, on-chain, with no intermediary holding the money.</p></div>
           </div>
         </div>
         <p style="margin:24px 0 0;font-family:'Spline Sans Mono',monospace;font-size:13px;letter-spacing:0.04em;color:rgba(236,231,221,0.5)">selective disclosure is math, not policy.</p>
@@ -262,7 +262,7 @@
 
     <section id="contact" style="padding:clamp(72px,12vh,140px) 0;scroll-margin-top:70px">
       <div data-reveal style="max-width:720px;margin:0 auto;padding:0 clamp(20px,5vw,40px)">
-        <h2 style="font-family:Fraunces,Georgia,serif;font-variation-settings:'opsz' 120;font-weight:600;font-size:clamp(30px,4.6vw,48px);line-height:1.04;letter-spacing:-0.018em;color:#ECE7DD;margin:0;max-width:20ch">Put a private payroll on autopilot.</h2>
+        <h2 style="font-family:Fraunces,Georgia,serif;font-variation-settings:'opsz' 120;font-weight:600;font-size:clamp(30px,4.6vw,48px);line-height:1.04;letter-spacing:-0.018em;color:#ECE7DD;margin:0;max-width:20ch">Put your operating account on autopilot.</h2>
         <p style="margin:18px 0 0;font-size:clamp(16px,1.7vw,18px);line-height:1.6;color:rgba(236,231,221,0.72);max-width:54ch">Building on STRK20 and paying contributors who'd rather their comp stayed private? Book a call, or leave an address for testnet access.</p>
         <div style="margin-top:30px">
           <a href="{{ callUrl }}" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;background:#8C2F23;color:#ECE7DD;border:1px solid #8C2F23;padding:13px 24px;border-radius:5px;font-family:'Hanken Grotesk',sans-serif;font-size:15px;font-weight:500;text-decoration:none;transition:background .2s ease,border-color .2s ease" style-hover="background:#A1382B;border-color:#A1382B">book a call</a>
