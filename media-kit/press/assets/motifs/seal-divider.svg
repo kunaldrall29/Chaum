@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="440" height="24" viewBox="0 0 440 24" role="img" aria-label="Seal divider">
+  <line x1="0" y1="12" x2="196" y2="12" stroke="#ECE7DD" stroke-opacity="0.16" stroke-width="1"></line>
+  <g transform="translate(220,12) scale(0.9)"><circle r="9" fill="#8C2F23"></circle><circle r="5.5" fill="none" stroke="#0C0F14" stroke-opacity="0.4" stroke-width="1.2"></circle><circle r="2" fill="#0C0F14" fill-opacity="0.3"></circle></g>
+  <line x1="244" y1="12" x2="440" y2="12" stroke="#ECE7DD" stroke-opacity="0.16" stroke-width="1"></line>
+</svg>

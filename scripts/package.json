@@ -1,0 +1,23 @@
+{
+  "name": "@chaum/scripts",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Chaum deploy + demo scripts",
+  "license": "MIT",
+  "scripts": {
+    "demo": "tsx run-cycle.ts",
+    "deploy": "tsx deploy.ts",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@chaum/agent": "workspace:*",
+    "@scure/starknet": "^2.2.0",
+    "starknet": "^10.0.2"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.2",
+    "tsx": "^4.22.4",
+    "typescript": "^5.7.2"
+  }
+}

@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1000" height="380" viewBox="0 0 1000 380" role="img" aria-label="Treasury distributing redacted payment notes to six recipients">
+  <rect width="1000" height="380" fill="#0C0F14"></rect>
+  <g transform="translate(0,10)">
+    <path d="M500,66 Q290,205 80,291" fill="none" stroke="rgba(236,231,221,0.08)" stroke-width="1"></path>
+    <path d="M500,66 Q374,205 248,291" fill="none" stroke="rgba(236,231,221,0.08)" stroke-width="1"></path>
+    <path d="M500,66 Q458,205 416,291" fill="none" stroke="rgba(236,231,221,0.08)" stroke-width="1"></path>
+    <path d="M500,66 Q542,205 584,291" fill="none" stroke="rgba(236,231,221,0.08)" stroke-width="1"></path>
+    <path d="M500,66 Q626,205 752,291" fill="none" stroke="rgba(236,231,221,0.08)" stroke-width="1"></path>
+    <path d="M500,66 Q710,205 920,291" fill="none" stroke="rgba(236,231,221,0.08)" stroke-width="1"></path>
+    <text x="500" y="15" text-anchor="middle" fill="rgba(236,231,221,0.5)" font-family="&#39;Spline Sans Mono&#39;, monospace" font-size="10" letter-spacing="1">TREASURY</text>
+    <rect x="455" y="24" width="90" height="42" rx="5" fill="#1A1E26" stroke="rgba(236,231,221,0.18)"></rect>
+    <circle cx="500" cy="45" r="4" fill="#8C2F23"></circle>
+    <g>
+      <circle cx="80" cy="300" r="9" fill="#1A1E26" stroke="rgba(236,231,221,0.16)"></circle><rect x="68" y="314" width="24" height="4" rx="1" fill="rgba(236,231,221,0.16)"></rect>
+      <circle cx="248" cy="300" r="9" fill="#1A1E26" stroke="rgba(236,231,221,0.16)"></circle><rect x="236" y="314" width="24" height="4" rx="1" fill="rgba(236,231,221,0.16)"></rect>
+      <circle cx="416" cy="300" r="9" fill="#1A1E26" stroke="rgba(236,231,221,0.16)"></circle><rect x="404" y="314" width="24" height="4" rx="1" fill="rgba(236,231,221,0.16)"></rect>
+      <circle cx="584" cy="300" r="9" fill="#1A1E26" stroke="rgba(236,231,221,0.16)"></circle><rect x="572" y="314" width="24" height="4" rx="1" fill="rgba(236,231,221,0.16)"></rect>
+      <circle cx="752" cy="300" r="9" fill="#1A1E26" stroke="rgba(236,231,221,0.16)"></circle><rect x="740" y="314" width="24" height="4" rx="1" fill="rgba(236,231,221,0.16)"></rect>
+      <circle cx="920" cy="300" r="9" fill="#1A1E26" stroke="rgba(236,231,221,0.16)"></circle><rect x="908" y="314" width="24" height="4" rx="1" fill="rgba(236,231,221,0.16)"></rect>
+    </g>
+    <g>
+      <rect x="348" y="178" width="52" height="28" rx="3" fill="#20252F" stroke="rgba(236,231,221,0.14)"></rect><rect x="355" y="188" width="26" height="8" rx="1" fill="#0E1218"></rect><circle cx="359" cy="185" r="2.2" fill="rgba(236,231,221,0.42)"></circle><circle cx="389" cy="185" r="3" fill="#8C2F23"></circle>
+      <rect x="516" y="178" width="52" height="28" rx="3" fill="#20252F" stroke="rgba(236,231,221,0.14)"></rect><rect x="523" y="188" width="26" height="8" rx="1" fill="#0E1218"></rect><circle cx="527" cy="185" r="2.2" fill="rgba(236,231,221,0.42)"></circle><circle cx="557" cy="185" r="3" fill="#8C2F23"></circle>
+      <rect x="684" y="178" width="52" height="28" rx="3" fill="#20252F" stroke="rgba(236,231,221,0.14)"></rect><rect x="691" y="188" width="26" height="8" rx="1" fill="#0E1218"></rect><circle cx="695" cy="185" r="2.2" fill="rgba(236,231,221,0.42)"></circle><circle cx="725" cy="185" r="3" fill="#8C2F23"></circle>
+    </g>
+  </g>
+</svg>

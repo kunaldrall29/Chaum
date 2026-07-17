@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="760" height="140" viewBox="0 0 760 140" role="img" aria-label="chaum — every amount private, every total provable">
+  <rect width="760" height="140" fill="#0C0F14"></rect>
+  <g transform="translate(64,70)"><circle cx="0" cy="0" r="18" fill="#8C2F23"></circle><circle cx="0" cy="0" r="11" fill="none" stroke="#0C0F14" stroke-opacity="0.4" stroke-width="2.4"></circle><circle cx="0" cy="0" r="4" fill="#0C0F14" fill-opacity="0.3"></circle></g>
+  <text x="104" y="82" font-family="Fraunces, Georgia, serif" font-size="46" font-weight="600" letter-spacing="-1" fill="#ECE7DD">chaum</text>
+  <circle cx="256" cy="78" r="6" fill="#8C2F23"></circle>
+  <line x1="300" y1="42" x2="300" y2="98" stroke="#ECE7DD" stroke-opacity="0.16" stroke-width="1"></line>
+  <text x="326" y="66" font-family="Fraunces, Georgia, serif" font-size="20" font-weight="500" fill="#ECE7DD">Every amount private.</text>
+  <text x="326" y="94" font-family="Fraunces, Georgia, serif" font-size="20" font-weight="500" fill="#ECE7DD">Every total provable.</text>
+</svg>

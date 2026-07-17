@@ -1,0 +1,567 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%230C0F14'/%3E%3Ccircle cx='16' cy='16' r='9' fill='%238C2F23'/%3E%3Ccircle cx='16' cy='16' r='5.5' fill='none' stroke='%23000' stroke-opacity='0.32' stroke-width='1.2'/%3E%3Ccircle cx='16' cy='16' r='2' fill='%23000' fill-opacity='0.22'/%3E%3C/svg%3E">
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Hanken+Grotesk:wght@400;500;600&family=Spline+Sans+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <title>chaum — media kit</title>
+  <meta name="description" content="Brand assets, boilerplate, and usage rules for Chaum — the confidential operating account for onchain organizations.">
+  <style>
+    :root{scroll-behavior:smooth}
+    *{box-sizing:border-box}
+    html,body{margin:0;padding:0}
+    body{background:#0C0F14;color:#ECE7DD;font-family:"Hanken Grotesk",system-ui,-apple-system,sans-serif;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+    :focus-visible{outline:2px solid #8C2F23;outline-offset:3px;border-radius:2px}
+    ::selection{background:rgba(140,47,35,0.92);color:#ECE7DD}
+    img,svg,canvas{display:block}
+    button{font:inherit;color:inherit;margin:0}
+    a{color:#ECE7DD;text-decoration:none}
+    a:hover{color:#C2503E}
+    @media (prefers-reduced-motion: reduce){:root{scroll-behavior:auto} *{transition:none !important}}
+  </style>
+</helmet>
+
+<div ref="{{ rootRef }}" data-screen-label="Chaum media kit" style="background:#0C0F14;color:#ECE7DD;overflow-x:hidden">
+
+  <a href="#hero" style="position:absolute;left:-9999px;top:0;z-index:120;background:#8C2F23;color:#ECE7DD;padding:10px 16px;border-radius:0 0 5px 0;font-family:'Spline Sans Mono',monospace;font-size:13px" style-focus="left:0">skip to content</a>
+
+  <!-- ================= HEADER ================= -->
+  <header style="position:sticky;top:0;z-index:100;background:rgba(12,15,20,0.86);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-bottom:1px solid rgba(236,231,221,0.08)">
+    <div style="max-width:1180px;margin:0 auto;padding:0 clamp(20px,4vw,40px);height:60px;display:flex;align-items:center;gap:20px">
+      <a href="#hero" aria-label="chaum media kit" style="display:inline-flex;align-items:center;gap:11px;flex:none">
+        <svg width="22" height="22" viewBox="-32 -32 64 64" aria-hidden="true"><circle r="18" fill="#8C2F23"/><circle r="11" fill="none" stroke="#0C0F14" stroke-opacity="0.4" stroke-width="2.4"/><circle r="4" fill="#0C0F14" fill-opacity="0.3"/></svg>
+        <span style="display:inline-flex;align-items:baseline;gap:5px;font-family:Fraunces,Georgia,serif;font-weight:600;font-size:21px;letter-spacing:-0.03em;color:#ECE7DD">chaum<span style="width:6px;height:6px;border-radius:50%;background:#8C2F23;display:inline-block"></span></span>
+        <span style="font-family:'Spline Sans Mono',monospace;font-size:11px;letter-spacing:0.14em;text-transform:uppercase;color:rgba(236,231,221,0.42);margin-left:2px;padding-left:12px;border-left:1px solid rgba(236,231,221,0.14)">media kit</span>
+      </a>
+      <nav aria-label="Sections" style="display:flex;align-items:center;gap:2px;flex:1;min-width:0;overflow-x:auto;justify-content:flex-end">
+        <a href="#boilerplates" style="font-size:13.5px;color:rgba(236,231,221,0.6);padding:8px 10px;border-radius:4px;white-space:nowrap;transition:color .18s" style-hover="color:#ECE7DD">boilerplates</a>
+        <a href="#logo" style="font-size:13.5px;color:rgba(236,231,221,0.6);padding:8px 10px;border-radius:4px;white-space:nowrap;transition:color .18s" style-hover="color:#ECE7DD">logo</a>
+        <a href="#color" style="font-size:13.5px;color:rgba(236,231,221,0.6);padding:8px 10px;border-radius:4px;white-space:nowrap;transition:color .18s" style-hover="color:#ECE7DD">color</a>
+        <a href="#type" style="font-size:13.5px;color:rgba(236,231,221,0.6);padding:8px 10px;border-radius:4px;white-space:nowrap;transition:color .18s" style-hover="color:#ECE7DD">type</a>
+        <a href="#motifs" style="font-size:13.5px;color:rgba(236,231,221,0.6);padding:8px 10px;border-radius:4px;white-space:nowrap;transition:color .18s" style-hover="color:#ECE7DD">motifs</a>
+        <a href="#screens" style="font-size:13.5px;color:rgba(236,231,221,0.6);padding:8px 10px;border-radius:4px;white-space:nowrap;transition:color .18s" style-hover="color:#ECE7DD">screens</a>
+        <a href="#voice" style="font-size:13.5px;color:rgba(236,231,221,0.6);padding:8px 10px;border-radius:4px;white-space:nowrap;transition:color .18s" style-hover="color:#ECE7DD">voice</a>
+      </nav>
+      <a href="{{ downloadHref }}" download="chaum-media-kit.zip" style="flex:none;display:inline-flex;align-items:center;gap:8px;background:#8C2F23;color:#ECE7DD;padding:9px 15px;border-radius:5px;font-size:13.5px;font-weight:500;white-space:nowrap;transition:background .18s" style-hover="background:#A4392B;color:#ECE7DD">download <span aria-hidden="true">↓</span></a>
+    </div>
+  </header>
+
+  <!-- ================= HERO ================= -->
+  <section id="hero" style="max-width:1180px;margin:0 auto;padding:clamp(72px,13vh,140px) clamp(20px,4vw,40px) clamp(40px,7vh,72px);scroll-margin-top:70px">
+    <p style="font-family:'Spline Sans Mono',monospace;font-weight:500;font-size:12px;letter-spacing:0.2em;text-transform:uppercase;color:#C2503E;margin:0 0 26px">brand assets · press · usage</p>
+    <div style="display:flex;align-items:center;gap:clamp(18px,3vw,30px);flex-wrap:wrap">
+      <svg width="clamp(56px,9vw,92px)" height="clamp(56px,9vw,92px)" viewBox="-32 -32 64 64" style="width:clamp(56px,9vw,92px);height:clamp(56px,9vw,92px);flex:none" aria-hidden="true"><circle r="18" fill="#8C2F23"/><circle r="11" fill="none" stroke="#0C0F14" stroke-opacity="0.4" stroke-width="2.4"/><circle r="4" fill="#0C0F14" fill-opacity="0.3"/></svg>
+      <span style="display:inline-flex;align-items:baseline;gap:clamp(8px,1.4vw,14px);font-family:Fraunces,Georgia,serif;font-weight:600;font-size:clamp(64px,13vw,132px);line-height:0.9;letter-spacing:-0.04em;color:#ECE7DD">chaum<span style="width:clamp(12px,2vw,20px);height:clamp(12px,2vw,20px);border-radius:50%;background:#8C2F23;display:inline-block"></span></span>
+    </div>
+    <p style="font-family:Fraunces,Georgia,serif;font-weight:500;font-size:clamp(22px,3.2vw,34px);line-height:1.1;letter-spacing:-0.015em;color:rgba(236,231,221,0.82);margin:clamp(28px,4vh,44px) 0 0;max-width:20ch">Every amount private. Every total provable.</p>
+    <p style="font-size:clamp(16px,1.7vw,18.5px);line-height:1.6;color:rgba(236,231,221,0.66);margin:22px 0 0;max-width:52ch">Brand assets, boilerplate, and usage rules for Chaum — the confidential operating account for onchain organizations. Copy-paste correct, so nobody ever eyeballs the oxblood.</p>
+    <div style="display:flex;flex-wrap:wrap;gap:13px;margin-top:34px">
+      <a href="{{ downloadHref }}" download="chaum-media-kit.zip" style="display:inline-flex;align-items:center;gap:10px;background:#8C2F23;color:#ECE7DD;border:1px solid #8C2F23;padding:13px 22px;border-radius:5px;font-size:15px;font-weight:500;transition:background .2s,border-color .2s" style-hover="background:#A4392B;border-color:#A4392B;color:#ECE7DD">download the kit (.zip) <span aria-hidden="true">↓</span></a>
+      <a href="{{ callUrl }}" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;background:transparent;color:#ECE7DD;border:1px solid rgba(236,231,221,0.2);padding:13px 22px;border-radius:5px;font-size:15px;font-weight:500;transition:border-color .2s" style-hover="border-color:rgba(236,231,221,0.44);color:#ECE7DD">book a call</a>
+    </div>
+    <p style="display:inline-flex;align-items:center;gap:9px;margin:30px 0 0;font-family:'Spline Sans Mono',monospace;font-size:12.5px;letter-spacing:0.02em;color:rgba(236,231,221,0.5)"><span style="width:7px;height:7px;border-radius:50%;background:#C9892F;flex:none"></span>please don't imply anonymity — chaum is selective disclosure.</p>
+  </section>
+
+  <div style="max-width:1180px;margin:0 auto;padding:0 clamp(20px,4vw,40px)"><div style="display:flex;align-items:center;gap:18px"><span style="flex:1;height:1px;background:rgba(236,231,221,0.08)"></span><svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9" fill="#8C2F23"/><circle cx="12" cy="12" r="5.5" fill="none" stroke="#0C0F14" stroke-opacity="0.4" stroke-width="1.2"/><circle cx="12" cy="12" r="2" fill="#0C0F14" fill-opacity="0.3"/></svg><span style="flex:1;height:1px;background:rgba(236,231,221,0.08)"></span></div></div>
+
+  <!-- ================= 2 · BOILERPLATES ================= -->
+  <section id="boilerplates" style="max-width:1180px;margin:0 auto;padding:clamp(60px,9vh,110px) clamp(20px,4vw,40px);scroll-margin-top:70px">
+    <p style="font-family:'Spline Sans Mono',monospace;font-weight:500;font-size:12px;letter-spacing:0.18em;text-transform:uppercase;color:#C2503E;margin:0 0 16px">02 — boilerplates</p>
+    <h2 style="font-family:Fraunces,Georgia,serif;font-weight:600;font-size:clamp(28px,4vw,44px);line-height:1.05;letter-spacing:-0.02em;margin:0;color:#ECE7DD;max-width:20ch">Copy-ready descriptions.</h2>
+    <p style="font-size:clamp(15px,1.6vw,17px);line-height:1.6;color:rgba(236,231,221,0.66);margin:16px 0 0;max-width:56ch">Click any block to copy it verbatim. No placeholders, no brackets — approved wording only.</p>
+
+    <div style="margin-top:clamp(32px,5vh,52px);display:grid;gap:16px">
+      <sc-for list="{{ boilers }}" as="b" hint-placeholder-count="3">
+        <button onClick="{{ b.onCopy }}" aria-label="copy boilerplate" style="text-align:left;width:100%;background:rgba(26,30,38,0.5);border:1px solid rgba(236,231,221,0.09);border-radius:8px;padding:clamp(20px,2.6vw,30px);cursor:pointer;transition:border-color .18s,background .18s" style-hover="border-color:rgba(236,231,221,0.22);background:rgba(26,30,38,0.72)">
+          <div style="display:flex;align-items:center;gap:12px;margin-bottom:16px">
+            <span style="font-family:'Spline Sans Mono',monospace;font-size:11px;letter-spacing:0.14em;text-transform:uppercase;color:#C2503E">{{ b.label }}</span>
+            <span style="font-family:'Spline Sans Mono',monospace;font-size:11px;letter-spacing:0.06em;color:rgba(236,231,221,0.4)">{{ b.meta }}</span>
+            <span style="{{ b.ctaStyle }}">{{ b.cta }}</span>
+          </div>
+          <p style="margin:0;font-family:Fraunces,Georgia,serif;font-weight:500;font-size:clamp(16px,1.9vw,20px);line-height:1.5;letter-spacing:-0.005em;color:#ECE7DD">{{ b.text }}</p>
+        </button>
+      </sc-for>
+    </div>
+
+    <div style="margin-top:22px;background:rgba(12,15,20,0.5);border:1px solid rgba(236,231,221,0.09);border-radius:8px;padding:clamp(20px,2.6vw,28px)">
+      <p style="font-family:'Spline Sans Mono',monospace;font-size:11px;letter-spacing:0.14em;text-transform:uppercase;color:rgba(236,231,221,0.5);margin:0 0 16px">descriptor rules</p>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px 28px">
+        <div style="display:flex;gap:11px"><span style="flex:none;margin-top:3px;color:#3FA66A"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#3FA66A" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg></span><p style="margin:0;font-size:14.5px;line-height:1.55;color:rgba(236,231,221,0.82)">First mention is <strong style="font-weight:600;color:#ECE7DD">Chaum</strong>. Lowercase <span style="font-family:Fraunces,serif;font-weight:600">chaum</span> only as the wordmark.</p></div>
+        <div style="display:flex;gap:11px"><span style="flex:none;margin-top:3px;color:#3FA66A"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#3FA66A" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg></span><p style="margin:0;font-size:14.5px;line-height:1.55;color:rgba(236,231,221,0.82)">The category is <strong style="font-weight:600;color:#ECE7DD">confidential operating account</strong>.</p></div>
+        <div style="display:flex;gap:11px"><span style="flex:none;margin-top:2px;color:#B23B3B;font-family:'Spline Sans Mono',monospace;font-weight:500">✗</span><p style="margin:0;font-size:14.5px;line-height:1.55;color:rgba(236,231,221,0.82)">Never <span style="color:rgba(236,231,221,0.56);text-decoration:line-through;text-decoration-color:rgba(178,59,59,0.7)">privacy coin</span>, <span style="color:rgba(236,231,221,0.56);text-decoration:line-through;text-decoration-color:rgba(178,59,59,0.7)">mixer</span>, or <span style="color:rgba(236,231,221,0.56);text-decoration:line-through;text-decoration-color:rgba(178,59,59,0.7)">anonymous payroll</span>.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <div style="max-width:1180px;margin:0 auto;padding:0 clamp(20px,4vw,40px)"><div style="display:flex;align-items:center;gap:18px"><span style="flex:1;height:1px;background:rgba(236,231,221,0.08)"></span><svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9" fill="#8C2F23"/><circle cx="12" cy="12" r="5.5" fill="none" stroke="#0C0F14" stroke-opacity="0.4" stroke-width="1.2"/><circle cx="12" cy="12" r="2" fill="#0C0F14" fill-opacity="0.3"/></svg><span style="flex:1;height:1px;background:rgba(236,231,221,0.08)"></span></div></div>
+
+  <!-- ================= 3 · LOGO ================= -->
+  <section id="logo" style="max-width:1180px;margin:0 auto;padding:clamp(60px,9vh,110px) clamp(20px,4vw,40px);scroll-margin-top:70px">
+    <p style="font-family:'Spline Sans Mono',monospace;font-weight:500;font-size:12px;letter-spacing:0.18em;text-transform:uppercase;color:#C2503E;margin:0 0 16px">03 — logo</p>
+    <h2 style="font-family:Fraunces,Georgia,serif;font-weight:600;font-size:clamp(28px,4vw,44px);line-height:1.05;letter-spacing:-0.02em;margin:0;color:#ECE7DD">The seal is the logo.</h2>
+    <p style="font-size:clamp(15px,1.6vw,17px);line-height:1.6;color:rgba(236,231,221,0.66);margin:16px 0 0;max-width:60ch">Lowercase <span style="font-family:Fraunces,serif;font-weight:600;color:#ECE7DD">chaum</span> set in Fraunces 600 with tight tracking, closed by a single oxblood seal-dot after the “m”. The dot is wax on a document — it never leaves.</p>
+
+    <!-- construction -->
+    <div style="margin-top:clamp(30px,4.5vh,48px);display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:16px">
+      <div style="background:#0C0F14;border:1px solid rgba(236,231,221,0.1);border-radius:8px;padding:clamp(28px,4vw,48px);display:flex;align-items:center;justify-content:center;position:relative;min-height:200px">
+        <sc-if value="{{ guides }}" hint-placeholder-val="{{ true }}">
+          <div style="position:absolute;inset:clamp(18px,3vw,32px);border:1px dashed rgba(236,231,221,0.18)"></div>
+        </sc-if>
+        <div style="position:relative;display:inline-flex;align-items:baseline;gap:10px">
+          <span style="font-family:Fraunces,Georgia,serif;font-weight:600;font-size:clamp(48px,7vw,76px);line-height:1;letter-spacing:-0.03em;color:#ECE7DD">chaum</span>
+          <span style="width:clamp(9px,1.2vw,13px);height:clamp(9px,1.2vw,13px);border-radius:50%;background:#8C2F23;display:inline-block;position:relative">
+            <sc-if value="{{ guides }}" hint-placeholder-val="{{ true }}">
+              <span style="position:absolute;left:50%;top:-30px;transform:translateX(-50%);white-space:nowrap;font-family:'Spline Sans Mono',monospace;font-size:10px;color:#C2503E">seal-dot</span>
+            </sc-if>
+          </span>
+        </div>
+      </div>
+      <div style="display:grid;gap:16px;align-content:start">
+        <div style="background:rgba(26,30,38,0.5);border:1px solid rgba(236,231,221,0.09);border-radius:8px;padding:20px 22px">
+          <p style="font-family:'Spline Sans Mono',monospace;font-size:11px;letter-spacing:0.14em;text-transform:uppercase;color:rgba(236,231,221,0.5);margin:0 0 8px">clearspace</p>
+          <p style="margin:0;font-size:14.5px;line-height:1.55;color:rgba(236,231,221,0.82)">Keep clear space equal to the height of the “c” on all sides.</p>
+        </div>
+        <div style="background:rgba(26,30,38,0.5);border:1px solid rgba(236,231,221,0.09);border-radius:8px;padding:20px 22px">
+          <p style="font-family:'Spline Sans Mono',monospace;font-size:11px;letter-spacing:0.14em;text-transform:uppercase;color:rgba(236,231,221,0.5);margin:0 0 8px">minimum size</p>
+          <p style="margin:0;font-family:'Spline Sans Mono',monospace;font-size:14px;line-height:1.7;color:rgba(236,231,221,0.82)">wordmark · 96px web / 24mm print<br>seal-glyph · 16px</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- variants -->
+    <p style="font-family:'Spline Sans Mono',monospace;font-size:11px;letter-spacing:0.14em;text-transform:uppercase;color:rgba(236,231,221,0.5);margin:clamp(30px,4vh,44px) 0 14px">variants</p>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px">
+      <div style="border:1px solid rgba(236,231,221,0.1);border-radius:8px;overflow:hidden">
+        <div style="background:#0C0F14;padding:40px 24px;display:flex;align-items:center;justify-content:center;min-height:120px"><span style="display:inline-flex;align-items:baseline;gap:7px;font-family:Fraunces,Georgia,serif;font-weight:600;font-size:38px;letter-spacing:-0.03em;color:#ECE7DD">chaum<span style="width:7px;height:7px;border-radius:50%;background:#8C2F23;display:inline-block"></span></span></div>
+        <div style="padding:12px 16px;background:rgba(26,30,38,0.4);border-top:1px solid rgba(236,231,221,0.08)"><span style="font-family:'Spline Sans Mono',monospace;font-size:11.5px;color:rgba(236,231,221,0.62)">wordmark · paper on vault</span></div>
+      </div>
+      <div style="border:1px solid rgba(236,231,221,0.1);border-radius:8px;overflow:hidden">
+        <div style="background:#ECE7DD;padding:40px 24px;display:flex;align-items:center;justify-content:center;min-height:120px"><span style="display:inline-flex;align-items:baseline;gap:7px;font-family:Fraunces,Georgia,serif;font-weight:600;font-size:38px;letter-spacing:-0.03em;color:#0C0F14">chaum<span style="width:7px;height:7px;border-radius:50%;background:#8C2F23;display:inline-block"></span></span></div>
+        <div style="padding:12px 16px;background:rgba(26,30,38,0.4);border-top:1px solid rgba(236,231,221,0.08)"><span style="font-family:'Spline Sans Mono',monospace;font-size:11.5px;color:rgba(236,231,221,0.62)">wordmark · vault on paper</span></div>
+      </div>
+      <div style="border:1px solid rgba(236,231,221,0.1);border-radius:8px;overflow:hidden">
+        <div style="background:#0C0F14;padding:40px 24px;display:flex;align-items:center;justify-content:center;gap:26px;min-height:120px">
+          <svg width="52" height="52" viewBox="-32 -32 64 64" aria-hidden="true"><circle r="18" fill="#8C2F23"/><circle r="11" fill="none" stroke="#0C0F14" stroke-opacity="0.4" stroke-width="2.4"/><circle r="4" fill="#0C0F14" fill-opacity="0.3"/></svg>
+          <svg width="52" height="52" viewBox="-32 -32 64 64" fill="none" stroke="#ECE7DD" aria-hidden="true"><circle r="18" stroke-width="2.6"/><circle r="9" stroke-width="2.6"/><circle r="2.6" fill="#ECE7DD" stroke="none"/></svg>
+        </div>
+        <div style="padding:12px 16px;background:rgba(26,30,38,0.4);border-top:1px solid rgba(236,231,221,0.08)"><span style="font-family:'Spline Sans Mono',monospace;font-size:11.5px;color:rgba(236,231,221,0.62)">seal-glyph · seal + mono</span></div>
+      </div>
+      <div style="border:1px solid rgba(236,231,221,0.1);border-radius:8px;overflow:hidden">
+        <div style="background:#0C0F14;padding:32px 24px;display:flex;align-items:center;gap:18px;min-height:120px">
+          <svg width="40" height="40" viewBox="-32 -32 64 64" style="flex:none" aria-hidden="true"><circle r="18" fill="#8C2F23"/><circle r="11" fill="none" stroke="#0C0F14" stroke-opacity="0.4" stroke-width="2.4"/><circle r="4" fill="#0C0F14" fill-opacity="0.3"/></svg>
+          <div style="min-width:0">
+            <span style="display:inline-flex;align-items:baseline;gap:5px;font-family:Fraunces,Georgia,serif;font-weight:600;font-size:26px;letter-spacing:-0.03em;color:#ECE7DD">chaum<span style="width:5px;height:5px;border-radius:50%;background:#8C2F23;display:inline-block"></span></span>
+            <div style="font-family:'Spline Sans Mono',monospace;font-size:10.5px;letter-spacing:0.02em;color:rgba(236,231,221,0.56);margin-top:3px">every amount private.</div>
+          </div>
+        </div>
+        <div style="padding:12px 16px;background:rgba(26,30,38,0.4);border-top:1px solid rgba(236,231,221,0.08)"><span style="font-family:'Spline Sans Mono',monospace;font-size:11.5px;color:rgba(236,231,221,0.62)">horizontal lockup · tagline</span></div>
+      </div>
+    </div>
+
+    <!-- don'ts -->
+    <p style="font-family:'Spline Sans Mono',monospace;font-size:11px;letter-spacing:0.14em;text-transform:uppercase;color:#B23B3B;margin:clamp(30px,4vh,44px) 0 14px">don't</p>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:14px">
+      <div style="border:1px solid rgba(178,59,59,0.28);border-radius:8px;overflow:hidden">
+        <div style="background:#0C0F14;height:104px;display:flex;align-items:center;justify-content:center"><span style="display:inline-flex;align-items:baseline;gap:6px;font-family:Fraunces,serif;font-weight:600;font-size:30px;letter-spacing:-0.03em;color:#ECE7DD">chaum<span style="width:6px;height:6px;border-radius:50%;background:#3FA66A;display:inline-block"></span></span></div>
+        <div style="padding:11px 14px;background:rgba(178,59,59,0.07);border-top:1px solid rgba(178,59,59,0.22);display:flex;gap:8px;align-items:flex-start"><span style="color:#B23B3B;font-family:'Spline Sans Mono',monospace;font-size:12px;flex:none">✗</span><span style="font-size:12.5px;line-height:1.4;color:rgba(236,231,221,0.7)">recolor the seal</span></div>
+      </div>
+      <div style="border:1px solid rgba(178,59,59,0.28);border-radius:8px;overflow:hidden">
+        <div style="background:#0C0F14;height:104px;display:flex;align-items:center;justify-content:center"><span style="display:inline-flex;align-items:baseline;gap:6px;font-family:Fraunces,serif;font-weight:600;font-size:30px;letter-spacing:-0.03em;background:linear-gradient(90deg,#8C2F23,#3FA66A);-webkit-background-clip:text;background-clip:text;color:transparent">chaum<span style="width:6px;height:6px;border-radius:50%;background:#8C2F23;display:inline-block;-webkit-text-fill-color:#8C2F23"></span></span></div>
+        <div style="padding:11px 14px;background:rgba(178,59,59,0.07);border-top:1px solid rgba(178,59,59,0.22);display:flex;gap:8px;align-items:flex-start"><span style="color:#B23B3B;font-family:'Spline Sans Mono',monospace;font-size:12px;flex:none">✗</span><span style="font-size:12.5px;line-height:1.4;color:rgba(236,231,221,0.7)">add gradients</span></div>
+      </div>
+      <div style="border:1px solid rgba(178,59,59,0.28);border-radius:8px;overflow:hidden">
+        <div style="background:#0C0F14;height:104px;display:flex;align-items:center;justify-content:center"><span style="display:inline-flex;align-items:baseline;gap:6px;font-family:Fraunces,serif;font-weight:600;font-size:30px;letter-spacing:-0.03em;color:#ECE7DD;text-shadow:0 6px 14px rgba(0,0,0,0.9),0 2px 4px rgba(0,0,0,0.8)">chaum<span style="width:6px;height:6px;border-radius:50%;background:#8C2F23;display:inline-block"></span></span></div>
+        <div style="padding:11px 14px;background:rgba(178,59,59,0.07);border-top:1px solid rgba(178,59,59,0.22);display:flex;gap:8px;align-items:flex-start"><span style="color:#B23B3B;font-family:'Spline Sans Mono',monospace;font-size:12px;flex:none">✗</span><span style="font-size:12.5px;line-height:1.4;color:rgba(236,231,221,0.7)">add drop shadows</span></div>
+      </div>
+      <div style="border:1px solid rgba(178,59,59,0.28);border-radius:8px;overflow:hidden">
+        <div style="background:#cdbfa3;height:104px;display:flex;align-items:center;justify-content:center"><span style="display:inline-flex;align-items:baseline;gap:6px;font-family:Fraunces,serif;font-weight:600;font-size:30px;letter-spacing:-0.03em;color:#0C0F14">chaum<span style="width:6px;height:6px;border-radius:50%;background:#8C2F23;display:inline-block"></span></span></div>
+        <div style="padding:11px 14px;background:rgba(178,59,59,0.07);border-top:1px solid rgba(178,59,59,0.22);display:flex;gap:8px;align-items:flex-start"><span style="color:#B23B3B;font-family:'Spline Sans Mono',monospace;font-size:12px;flex:none">✗</span><span style="font-size:12.5px;line-height:1.4;color:rgba(236,231,221,0.7)">set on off-brand cream</span></div>
+      </div>
+      <div style="border:1px solid rgba(178,59,59,0.28);border-radius:8px;overflow:hidden">
+        <div style="background:#0C0F14;height:104px;display:flex;align-items:center;justify-content:center"><span style="display:inline-flex;align-items:baseline;gap:6px;font-family:Fraunces,serif;font-weight:600;font-size:30px;letter-spacing:-0.03em;color:#ECE7DD;transform:rotate(-9deg)">chaum<span style="width:6px;height:6px;border-radius:50%;background:#8C2F23;display:inline-block"></span></span></div>
+        <div style="padding:11px 14px;background:rgba(178,59,59,0.07);border-top:1px solid rgba(178,59,59,0.22);display:flex;gap:8px;align-items:flex-start"><span style="color:#B23B3B;font-family:'Spline Sans Mono',monospace;font-size:12px;flex:none">✗</span><span style="font-size:12.5px;line-height:1.4;color:rgba(236,231,221,0.7)">rotate the lockup</span></div>
+      </div>
+      <div style="border:1px solid rgba(178,59,59,0.28);border-radius:8px;overflow:hidden">
+        <div style="background:#0C0F14;height:104px;display:flex;align-items:center;justify-content:center"><span style="display:inline-flex;align-items:baseline;gap:6px;font-family:Fraunces,serif;font-weight:600;font-size:30px;letter-spacing:-0.03em;color:transparent;-webkit-text-stroke:1px #ECE7DD">chaum<span style="width:6px;height:6px;border-radius:50%;background:#8C2F23;display:inline-block;-webkit-text-fill-color:#8C2F23"></span></span></div>
+        <div style="padding:11px 14px;background:rgba(178,59,59,0.07);border-top:1px solid rgba(178,59,59,0.22);display:flex;gap:8px;align-items:flex-start"><span style="color:#B23B3B;font-family:'Spline Sans Mono',monospace;font-size:12px;flex:none">✗</span><span style="font-size:12.5px;line-height:1.4;color:rgba(236,231,221,0.7)">outline the wordmark</span></div>
+      </div>
+      <div style="border:1px solid rgba(178,59,59,0.28);border-radius:8px;overflow:hidden">
+        <div style="height:104px;display:flex;align-items:center;justify-content:center;background:linear-gradient(120deg,#6b4a2a,#3a6b57,#7a3b30,#4a4a6b)"><span style="display:inline-flex;align-items:baseline;gap:6px;font-family:Fraunces,serif;font-weight:600;font-size:30px;letter-spacing:-0.03em;color:#ECE7DD">chaum<span style="width:6px;height:6px;border-radius:50%;background:#8C2F23;display:inline-block"></span></span></div>
+        <div style="padding:11px 14px;background:rgba(178,59,59,0.07);border-top:1px solid rgba(178,59,59,0.22);display:flex;gap:8px;align-items:flex-start"><span style="color:#B23B3B;font-family:'Spline Sans Mono',monospace;font-size:12px;flex:none">✗</span><span style="font-size:12.5px;line-height:1.4;color:rgba(236,231,221,0.7)">place on photography without a vault scrim</span></div>
+      </div>
+    </div>
+  </section>
+
+  <div style="max-width:1180px;margin:0 auto;padding:0 clamp(20px,4vw,40px)"><div style="display:flex;align-items:center;gap:18px"><span style="flex:1;height:1px;background:rgba(236,231,221,0.08)"></span><svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9" fill="#8C2F23"/><circle cx="12" cy="12" r="5.5" fill="none" stroke="#0C0F14" stroke-opacity="0.4" stroke-width="1.2"/><circle cx="12" cy="12" r="2" fill="#0C0F14" fill-opacity="0.3"/></svg><span style="flex:1;height:1px;background:rgba(236,231,221,0.08)"></span></div></div>
+
+  <!-- ================= 4 · COLOR ================= -->
+  <section id="color" style="max-width:1180px;margin:0 auto;padding:clamp(60px,9vh,110px) clamp(20px,4vw,40px);scroll-margin-top:70px">
+    <p style="font-family:'Spline Sans Mono',monospace;font-weight:500;font-size:12px;letter-spacing:0.18em;text-transform:uppercase;color:#C2503E;margin:0 0 16px">04 — color</p>
+    <h2 style="font-family:Fraunces,Georgia,serif;font-weight:600;font-size:clamp(28px,4vw,44px);line-height:1.05;letter-spacing:-0.02em;margin:0;color:#ECE7DD">Vault, paper, and one drop of wax.</h2>
+    <p style="font-size:clamp(15px,1.6vw,17px);line-height:1.6;color:rgba(236,231,221,0.66);margin:16px 0 0;max-width:58ch">Click a hex or rgb value to copy it. Every value matches <span style="font-family:'Spline Sans Mono',monospace;font-size:0.92em;color:rgba(236,231,221,0.82)">tokens.json</span> exactly.</p>
+
+    <div style="margin-top:clamp(30px,4.5vh,48px);display:grid;grid-template-columns:repeat(auto-fit,minmax(158px,1fr));gap:14px">
+      <sc-for list="{{ colors }}" as="c" hint-placeholder-count="7">
+        <div style="border:1px solid rgba(236,231,221,0.1);border-radius:8px;overflow:hidden;background:rgba(18,21,27,0.6)">
+          <div style="{{ c.swatchStyle }}"></div>
+          <div style="padding:14px 15px 17px">
+            <button onClick="{{ c.copyHex }}" aria-label="copy hex" style="{{ c.hexStyle }}">{{ c.hexLabel }}</button>
+            <button onClick="{{ c.copyRgb }}" aria-label="copy rgb" style="{{ c.rgbStyle }}">{{ c.rgbLabel }}</button>
+            <div style="font-size:13.5px;font-weight:600;color:rgba(236,231,221,0.9);margin-top:12px">{{ c.key }}</div>
+            <div style="font-size:12px;line-height:1.4;color:rgba(236,231,221,0.5);margin-top:3px">{{ c.use }}</div>
+          </div>
+        </div>
+      </sc-for>
+    </div>
+
+    <div style="margin-top:20px;display:flex;flex-wrap:wrap;align-items:center;gap:16px 22px;background:rgba(12,15,20,0.5);border:1px solid rgba(236,231,221,0.09);border-radius:8px;padding:18px 22px">
+      <div style="display:flex;align-items:center;gap:0"><span style="width:34px;height:22px;border-radius:4px 0 0 4px;background:#8C2F23;display:block"></span><span style="width:34px;height:22px;border-radius:0 4px 4px 0;background:#3FA66A;display:block"></span><span style="position:absolute;margin-left:24px;color:#B23B3B;font-family:'Spline Sans Mono',monospace;font-size:15px">✗</span></div>
+      <p style="margin:0;font-size:14.5px;line-height:1.5;color:rgba(236,231,221,0.78);flex:1;min-width:220px"><strong style="font-weight:600;color:#ECE7DD">Pairing rule.</strong> Seal and disclosed never sit adjacent at equal weight — the accent and the proof-green must not fight.</p>
+    </div>
+  </section>
+
+  <div style="max-width:1180px;margin:0 auto;padding:0 clamp(20px,4vw,40px)"><div style="display:flex;align-items:center;gap:18px"><span style="flex:1;height:1px;background:rgba(236,231,221,0.08)"></span><svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9" fill="#8C2F23"/><circle cx="12" cy="12" r="5.5" fill="none" stroke="#0C0F14" stroke-opacity="0.4" stroke-width="1.2"/><circle cx="12" cy="12" r="2" fill="#0C0F14" fill-opacity="0.3"/></svg><span style="flex:1;height:1px;background:rgba(236,231,221,0.08)"></span></div></div>
+
+  <!-- ================= 5 · TYPOGRAPHY ================= -->
+  <section id="type" style="max-width:1180px;margin:0 auto;padding:clamp(60px,9vh,110px) clamp(20px,4vw,40px);scroll-margin-top:70px">
+    <p style="font-family:'Spline Sans Mono',monospace;font-weight:500;font-size:12px;letter-spacing:0.18em;text-transform:uppercase;color:#C2503E;margin:0 0 16px">05 — typography</p>
+    <h2 style="font-family:Fraunces,Georgia,serif;font-weight:600;font-size:clamp(28px,4vw,44px);line-height:1.05;letter-spacing:-0.02em;margin:0;color:#ECE7DD">Three voices, one rule.</h2>
+    <p style="font-size:clamp(15px,1.6vw,17px);line-height:1.6;color:rgba(236,231,221,0.66);margin:16px 0 0;max-width:56ch">Fraunces for display, Hanken Grotesk for everything you read, Spline Sans Mono for anything countable. <strong style="font-weight:600;color:#ECE7DD">All money is mono.</strong></p>
+
+    <div style="margin-top:clamp(30px,4.5vh,48px);display:grid;gap:16px">
+      <div style="background:rgba(26,30,38,0.4);border:1px solid rgba(236,231,221,0.09);border-radius:8px;padding:clamp(24px,3vw,36px)">
+        <div style="display:flex;flex-wrap:wrap;gap:10px 16px;align-items:baseline;margin-bottom:18px"><span style="font-family:'Spline Sans Mono',monospace;font-size:11px;letter-spacing:0.14em;text-transform:uppercase;color:#C2503E">Fraunces</span><span style="font-family:'Spline Sans Mono',monospace;font-size:11px;color:rgba(236,231,221,0.45)">display · 500 / 600 · opsz 9–144</span></div>
+        <p style="margin:0;font-family:Fraunces,Georgia,serif;font-weight:600;font-size:clamp(32px,5.2vw,58px);line-height:1.02;letter-spacing:-0.022em;color:#ECE7DD">Every amount private.<br>Every total provable.</p>
+      </div>
+      <div style="background:rgba(26,30,38,0.4);border:1px solid rgba(236,231,221,0.09);border-radius:8px;padding:clamp(24px,3vw,36px)">
+        <div style="display:flex;flex-wrap:wrap;gap:10px 16px;align-items:baseline;margin-bottom:18px"><span style="font-family:'Spline Sans Mono',monospace;font-size:11px;letter-spacing:0.14em;text-transform:uppercase;color:#C2503E">Hanken Grotesk</span><span style="font-family:'Spline Sans Mono',monospace;font-size:11px;color:rgba(236,231,221,0.45)">body / UI · 400 / 500 / 600</span></div>
+        <p style="margin:0;font-size:clamp(17px,2vw,22px);line-height:1.55;color:rgba(236,231,221,0.88);max-width:62ch">Teams run payroll, vendor payments, and grants through policy-bounded autonomous agents. Individual amounts stay private; auditors, token holders, and recipients each get exactly the proofs they need.</p>
+      </div>
+      <div style="background:rgba(26,30,38,0.4);border:1px solid rgba(236,231,221,0.09);border-radius:8px;padding:clamp(24px,3vw,36px)">
+        <div style="display:flex;flex-wrap:wrap;gap:10px 16px;align-items:baseline;margin-bottom:18px"><span style="font-family:'Spline Sans Mono',monospace;font-size:11px;letter-spacing:0.14em;text-transform:uppercase;color:#C2503E">Spline Sans Mono</span><span style="font-family:'Spline Sans Mono',monospace;font-size:11px;color:rgba(236,231,221,0.45)">figures · addresses · proofs · 400 / 500</span></div>
+        <p style="margin:0;font-family:'Spline Sans Mono',monospace;font-weight:500;font-size:clamp(19px,2.8vw,30px);line-height:1.3;color:#ECE7DD;word-break:break-word">142,800 USDC&nbsp;&nbsp;·&nbsp;&nbsp;0x04a3…9f2c<br><span style="color:#3FA66A">agg-proof 0x9f3c…verified</span></p>
+      </div>
+    </div>
+
+    <p style="font-family:'Spline Sans Mono',monospace;font-size:11px;letter-spacing:0.14em;text-transform:uppercase;color:rgba(236,231,221,0.5);margin:clamp(26px,3.5vh,40px) 0 14px">fallback stacks — click to copy</p>
+    <div style="display:grid;gap:10px">
+      <sc-for list="{{ stacks }}" as="s" hint-placeholder-count="3">
+        <button onClick="{{ s.onCopy }}" aria-label="copy font stack" style="text-align:left;width:100%;display:flex;flex-wrap:wrap;align-items:center;gap:10px 16px;background:rgba(12,15,20,0.5);border:1px solid rgba(236,231,221,0.09);border-radius:7px;padding:14px 18px;cursor:pointer;transition:border-color .18s" style-hover="border-color:rgba(236,231,221,0.22)">
+          <span style="font-family:'Spline Sans Mono',monospace;font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:#C2503E;flex:none;width:64px">{{ s.label }}</span>
+          <code style="font-family:'Spline Sans Mono',monospace;font-size:13px;color:rgba(236,231,221,0.82);flex:1;min-width:0">{{ s.text }}</code>
+          <span style="{{ s.ctaStyle }}">{{ s.cta }}</span>
+        </button>
+      </sc-for>
+    </div>
+  </section>
+
+  <div style="max-width:1180px;margin:0 auto;padding:0 clamp(20px,4vw,40px)"><div style="display:flex;align-items:center;gap:18px"><span style="flex:1;height:1px;background:rgba(236,231,221,0.08)"></span><svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9" fill="#8C2F23"/><circle cx="12" cy="12" r="5.5" fill="none" stroke="#0C0F14" stroke-opacity="0.4" stroke-width="1.2"/><circle cx="12" cy="12" r="2" fill="#0C0F14" fill-opacity="0.3"/></svg><span style="flex:1;height:1px;background:rgba(236,231,221,0.08)"></span></div></div>
+
+  <!-- ================= 6 · MOTIFS ================= -->
+  <section id="motifs" style="max-width:1180px;margin:0 auto;padding:clamp(60px,9vh,110px) clamp(20px,4vw,40px);scroll-margin-top:70px">
+    <p style="font-family:'Spline Sans Mono',monospace;font-weight:500;font-size:12px;letter-spacing:0.18em;text-transform:uppercase;color:#C2503E;margin:0 0 16px">06 — motifs</p>
+    <h2 style="font-family:Fraunces,Georgia,serif;font-weight:600;font-size:clamp(28px,4vw,44px);line-height:1.05;letter-spacing:-0.02em;margin:0;color:#ECE7DD">Redaction and proof, together.</h2>
+    <p style="font-size:clamp(15px,1.6vw,17px);line-height:1.6;color:rgba(236,231,221,0.66);margin:16px 0 0;max-width:60ch">The brand is the <em style="font-style:italic;font-family:Fraunces,serif;color:#ECE7DD">pair</em> — private and provable — not the secrecy alone. In any product composition, redaction and the proof-tick appear together.</p>
+
+    <div style="margin-top:clamp(30px,4.5vh,48px);display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px">
+      <div style="border:1px solid rgba(236,231,221,0.1);border-radius:8px;overflow:hidden">
+        <div style="background:#0C0F14;height:130px;display:flex;align-items:center;justify-content:center"><span style="width:150px;height:34px;background:#1A1E26;display:block"></span></div>
+        <div style="padding:14px 16px;background:rgba(26,30,38,0.4);border-top:1px solid rgba(236,231,221,0.08)"><div style="font-size:13.5px;font-weight:600;color:rgba(236,231,221,0.9)">redaction bar</div><div style="font-size:12px;color:rgba(236,231,221,0.5);margin-top:2px">graphite · square-cornered · “private”</div></div>
+      </div>
+      <div style="border:1px solid rgba(236,231,221,0.1);border-radius:8px;overflow:hidden">
+        <div style="background:#0C0F14;height:130px;display:flex;align-items:center;justify-content:center"><svg width="46" height="46" viewBox="0 0 24 24" fill="none" stroke="#3FA66A" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg></div>
+        <div style="padding:14px 16px;background:rgba(26,30,38,0.4);border-top:1px solid rgba(236,231,221,0.08)"><div style="font-size:13.5px;font-weight:600;color:rgba(236,231,221,0.9)">proof tick</div><div style="font-size:12px;color:rgba(236,231,221,0.5);margin-top:2px">disclosed · “provable”</div></div>
+      </div>
+      <div style="border:1px solid rgba(236,231,221,0.1);border-radius:8px;overflow:hidden">
+        <div style="background:#0C0F14;height:130px;display:flex;align-items:center;justify-content:center;padding:0 22px"><div style="display:flex;align-items:center;gap:14px;width:100%"><span style="flex:1;height:1px;background:rgba(236,231,221,0.18)"></span><svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9" fill="#8C2F23"/><circle cx="12" cy="12" r="5.5" fill="none" stroke="#0C0F14" stroke-opacity="0.4" stroke-width="1.2"/><circle cx="12" cy="12" r="2" fill="#0C0F14" fill-opacity="0.3"/></svg><span style="flex:1;height:1px;background:rgba(236,231,221,0.18)"></span></div></div>
+        <div style="padding:14px 16px;background:rgba(26,30,38,0.4);border-top:1px solid rgba(236,231,221,0.08)"><div style="font-size:13.5px;font-weight:600;color:rgba(236,231,221,0.9)">seal divider</div><div style="font-size:12px;color:rgba(236,231,221,0.5);margin-top:2px">section break · the stamp</div></div>
+      </div>
+    </div>
+
+    <!-- pair composition -->
+    <div style="margin-top:16px;border:1px solid rgba(236,231,221,0.1);border-radius:8px;overflow:hidden">
+      <div style="background:#0C0F14;padding:clamp(22px,3vw,32px);display:grid;gap:12px;max-width:520px">
+        <div style="display:grid;grid-template-columns:1fr auto;align-items:center;gap:16px"><span style="font-family:'Spline Sans Mono',monospace;font-size:13px;color:rgba(236,231,221,0.75)">alice.stark</span><span style="width:96px;height:18px;background:#1A1E26;display:block"></span></div>
+        <div style="display:grid;grid-template-columns:1fr auto;align-items:center;gap:16px"><span style="font-family:'Spline Sans Mono',monospace;font-size:13px;color:rgba(236,231,221,0.75)">ben.stark</span><span style="width:96px;height:18px;background:#1A1E26;display:block"></span></div>
+        <div style="display:grid;grid-template-columns:1fr auto;align-items:center;gap:16px;padding-top:12px;border-top:1px solid rgba(236,231,221,0.14)"><span style="font-family:'Spline Sans Mono',monospace;font-size:12px;letter-spacing:0.06em;color:rgba(236,231,221,0.6)">cycle total</span><span style="display:inline-flex;align-items:center;gap:8px;font-family:'Spline Sans Mono',monospace;font-size:12.5px;color:#3FA66A"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#3FA66A" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>verified</span></div>
+      </div>
+      <div style="padding:14px 16px;background:rgba(26,30,38,0.4);border-top:1px solid rgba(236,231,221,0.08)"><span style="font-family:'Spline Sans Mono',monospace;font-size:11.5px;color:rgba(236,231,221,0.62)">the pair in use — redaction + proof-tick</span></div>
+    </div>
+  </section>
+
+  <div style="max-width:1180px;margin:0 auto;padding:0 clamp(20px,4vw,40px)"><div style="display:flex;align-items:center;gap:18px"><span style="flex:1;height:1px;background:rgba(236,231,221,0.08)"></span><svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9" fill="#8C2F23"/><circle cx="12" cy="12" r="5.5" fill="none" stroke="#0C0F14" stroke-opacity="0.4" stroke-width="1.2"/><circle cx="12" cy="12" r="2" fill="#0C0F14" fill-opacity="0.3"/></svg><span style="flex:1;height:1px;background:rgba(236,231,221,0.08)"></span></div></div>
+
+  <!-- ================= 7 · PRODUCT SHOTS ================= -->
+  <section id="screens" style="max-width:1180px;margin:0 auto;padding:clamp(60px,9vh,110px) clamp(20px,4vw,40px);scroll-margin-top:70px">
+    <p style="font-family:'Spline Sans Mono',monospace;font-weight:500;font-size:12px;letter-spacing:0.18em;text-transform:uppercase;color:#C2503E;margin:0 0 16px">07 — product shots</p>
+    <h2 style="font-family:Fraunces,Georgia,serif;font-weight:600;font-size:clamp(28px,4vw,44px);line-height:1.05;letter-spacing:-0.02em;margin:0;color:#ECE7DD">The product, on the record.</h2>
+    <p style="font-size:clamp(15px,1.6vw,17px);line-height:1.6;color:rgba(236,231,221,0.66);margin:16px 0 0;max-width:58ch">Real captures from the Chaum console. Present on a vault background with no browser chrome.</p>
+
+    <div style="margin-top:clamp(30px,4.5vh,48px)">
+      <div style="{{ shotFrameStyle }}">
+        <img src="press/assets/screens/screen-prove.png" alt="Chaum console — Prove, auditor view: recipient rows redacted, cycle total resolved with a verified aggregate proof." style="width:100%;height:auto;display:block">
+      </div>
+      <div style="display:flex;flex-wrap:wrap;align-items:baseline;gap:8px 14px;margin-top:12px">
+        <span style="font-size:14.5px;font-weight:600;color:#ECE7DD">Prove — the money shot</span>
+        <span style="font-size:13.5px;color:rgba(236,231,221,0.6)">auditor view · rows redacted, total proven</span>
+      </div>
+      <sc-if value="{{ showSpecs }}" hint-placeholder-val="{{ true }}"><p style="margin:5px 0 0;font-family:'Spline Sans Mono',monospace;font-size:11.5px;color:rgba(236,231,221,0.42)">screen-prove.png · fixtures · 1440×900 · vault bg · no chrome</p></sc-if>
+    </div>
+
+    <div style="margin-top:clamp(20px,3vh,28px);display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:clamp(16px,2.4vw,24px)">
+      <div>
+        <div style="{{ shotFrameStyle }}"><img src="press/assets/screens/screen-account.png" alt="Chaum console — Treasury overview: vault balance, runway coverage, agent armed, next cycle." style="width:100%;height:auto;display:block"></div>
+        <div style="margin-top:12px"><span style="font-size:14.5px;font-weight:600;color:#ECE7DD">Account overview</span><span style="font-size:13.5px;color:rgba(236,231,221,0.6);margin-left:10px">balance · runway</span></div>
+        <sc-if value="{{ showSpecs }}" hint-placeholder-val="{{ true }}"><p style="margin:5px 0 0;font-family:'Spline Sans Mono',monospace;font-size:11.5px;color:rgba(236,231,221,0.42)">screen-account.png · 1440×900</p></sc-if>
+      </div>
+      <div>
+        <div style="{{ shotFrameStyle }}"><img src="press/assets/screens/screen-cycle.png" alt="Chaum console — Cycle: a settled disbursement with recipient commitments and redacted amounts." style="width:100%;height:auto;display:block"></div>
+        <div style="margin-top:12px"><span style="font-size:14.5px;font-weight:600;color:#ECE7DD">Disburse cycle</span><span style="font-size:13.5px;color:rgba(236,231,221,0.6);margin-left:10px">settled · redacted</span></div>
+        <sc-if value="{{ showSpecs }}" hint-placeholder-val="{{ true }}"><p style="margin:5px 0 0;font-family:'Spline Sans Mono',monospace;font-size:11.5px;color:rgba(236,231,221,0.42)">screen-cycle.png · 1440×900</p></sc-if>
+      </div>
+    </div>
+  </section>
+
+  <div style="max-width:1180px;margin:0 auto;padding:0 clamp(20px,4vw,40px)"><div style="display:flex;align-items:center;gap:18px"><span style="flex:1;height:1px;background:rgba(236,231,221,0.08)"></span><svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9" fill="#8C2F23"/><circle cx="12" cy="12" r="5.5" fill="none" stroke="#0C0F14" stroke-opacity="0.4" stroke-width="1.2"/><circle cx="12" cy="12" r="2" fill="#0C0F14" fill-opacity="0.3"/></svg><span style="flex:1;height:1px;background:rgba(236,231,221,0.08)"></span></div></div>
+
+  <!-- ================= 8 · VOICE ================= -->
+  <section id="voice" style="max-width:1180px;margin:0 auto;padding:clamp(60px,9vh,110px) clamp(20px,4vw,40px);scroll-margin-top:70px">
+    <p style="font-family:'Spline Sans Mono',monospace;font-weight:500;font-size:12px;letter-spacing:0.18em;text-transform:uppercase;color:#C2503E;margin:0 0 16px">08 — voice</p>
+    <h2 style="font-family:Fraunces,Georgia,serif;font-weight:600;font-size:clamp(28px,4vw,44px);line-height:1.05;letter-spacing:-0.02em;margin:0;color:#ECE7DD">Precise over promotional.</h2>
+
+    <div style="margin-top:clamp(30px,4.5vh,48px);display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:14px">
+      <sc-for list="{{ voice }}" as="v" hint-placeholder-count="5">
+        <div style="background:rgba(26,30,38,0.4);border:1px solid rgba(236,231,221,0.09);border-radius:8px;padding:20px 22px;display:flex;gap:12px;align-items:flex-start">
+          <span style="flex:none;margin-top:3px;color:#3FA66A"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#3FA66A" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg></span>
+          <div><div style="font-size:15px;font-weight:600;color:#ECE7DD">{{ v.title }}</div><div style="font-size:13.5px;line-height:1.5;color:rgba(236,231,221,0.62);margin-top:3px">{{ v.sub }}</div></div>
+        </div>
+      </sc-for>
+    </div>
+
+    <div style="margin-top:16px;background:rgba(178,59,59,0.06);border:1px solid rgba(178,59,59,0.24);border-radius:8px;padding:clamp(20px,2.6vw,28px)">
+      <p style="font-family:'Spline Sans Mono',monospace;font-size:11px;letter-spacing:0.14em;text-transform:uppercase;color:#B23B3B;margin:0 0 14px">banned words</p>
+      <div style="display:flex;flex-wrap:wrap;gap:10px">
+        <sc-for list="{{ banned }}" as="w" hint-placeholder-count="6">
+          <span style="font-family:'Spline Sans Mono',monospace;font-size:13.5px;color:rgba(236,231,221,0.56);background:rgba(12,15,20,0.5);border:1px solid rgba(178,59,59,0.24);border-radius:5px;padding:7px 12px;text-decoration:line-through;text-decoration-color:rgba(178,59,59,0.8)">{{ w }}</span>
+        </sc-for>
+      </div>
+      <p style="display:inline-flex;align-items:center;gap:9px;margin:18px 0 0;font-family:'Spline Sans Mono',monospace;font-size:12.5px;letter-spacing:0.02em;color:rgba(236,231,221,0.66)"><span style="width:7px;height:7px;border-radius:50%;background:#C9892F;flex:none"></span>please don't imply anonymity — chaum is selective disclosure.</p>
+    </div>
+  </section>
+
+  <div style="max-width:1180px;margin:0 auto;padding:0 clamp(20px,4vw,40px)"><div style="display:flex;align-items:center;gap:18px"><span style="flex:1;height:1px;background:rgba(236,231,221,0.08)"></span><svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9" fill="#8C2F23"/><circle cx="12" cy="12" r="5.5" fill="none" stroke="#0C0F14" stroke-opacity="0.4" stroke-width="1.2"/><circle cx="12" cy="12" r="2" fill="#0C0F14" fill-opacity="0.3"/></svg><span style="flex:1;height:1px;background:rgba(236,231,221,0.08)"></span></div></div>
+
+  <!-- ================= 9 · FACTS & CONTACT ================= -->
+  <section id="facts" style="max-width:1180px;margin:0 auto;padding:clamp(60px,9vh,110px) clamp(20px,4vw,40px) clamp(40px,6vh,64px);scroll-margin-top:70px">
+    <p style="font-family:'Spline Sans Mono',monospace;font-weight:500;font-size:12px;letter-spacing:0.18em;text-transform:uppercase;color:#C2503E;margin:0 0 16px">09 — facts &amp; contact</p>
+    <h2 style="font-family:Fraunces,Georgia,serif;font-weight:600;font-size:clamp(28px,4vw,44px);line-height:1.05;letter-spacing:-0.02em;margin:0;color:#ECE7DD">On the record.</h2>
+
+    <div style="margin-top:clamp(30px,4.5vh,48px);display:grid;grid-template-columns:1.3fr 1fr;gap:clamp(20px,3vw,40px)">
+      <div style="border:1px solid rgba(236,231,221,0.1);border-radius:8px;overflow:hidden">
+        <sc-for list="{{ facts }}" as="f" hint-placeholder-count="4">
+          <div style="display:grid;grid-template-columns:120px 1fr;gap:16px;padding:15px clamp(18px,2.4vw,24px);border-bottom:1px solid rgba(236,231,221,0.07)">
+            <span style="font-family:'Spline Sans Mono',monospace;font-size:12px;letter-spacing:0.08em;text-transform:uppercase;color:rgba(236,231,221,0.46)">{{ f.k }}</span>
+            <span style="font-family:'Spline Sans Mono',monospace;font-size:13.5px;color:#ECE7DD">{{ f.v }}</span>
+          </div>
+        </sc-for>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:16px">
+        <div style="background:rgba(26,30,38,0.5);border:1px solid rgba(236,231,221,0.09);border-radius:8px;padding:clamp(22px,2.8vw,28px)">
+          <p style="font-family:'Spline Sans Mono',monospace;font-size:11px;letter-spacing:0.14em;text-transform:uppercase;color:rgba(236,231,221,0.5);margin:0 0 10px">press contact</p>
+          <a href="{{ pressMailto }}" style="font-family:'Spline Sans Mono',monospace;font-size:15px;color:#ECE7DD;border-bottom:1px solid rgba(236,231,221,0.24)" style-hover="color:#C2503E">{{ pressEmail }}</a>
+          <div style="margin-top:18px"><a href="{{ callUrl }}" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;gap:8px;background:#8C2F23;color:#ECE7DD;padding:11px 18px;border-radius:5px;font-size:14.5px;font-weight:500;transition:background .2s" style-hover="background:#A4392B;color:#ECE7DD">book a call <span aria-hidden="true">→</span></a></div>
+        </div>
+        <a href="{{ downloadHref }}" download="chaum-media-kit.zip" style="background:rgba(12,15,20,0.5);border:1px solid rgba(236,231,221,0.12);border-radius:8px;padding:clamp(22px,2.8vw,28px);display:flex;align-items:center;justify-content:space-between;gap:14px;transition:border-color .2s" style-hover="border-color:rgba(236,231,221,0.3);color:#ECE7DD">
+          <span><span style="display:block;font-size:15px;font-weight:600;color:#ECE7DD">the full kit</span><span style="display:block;font-family:'Spline Sans Mono',monospace;font-size:11.5px;color:rgba(236,231,221,0.5);margin-top:3px">logos · color · type · motifs · socials</span></span>
+          <span style="flex:none;width:38px;height:38px;border-radius:50%;border:1px solid rgba(236,231,221,0.2);display:flex;align-items:center;justify-content:center;font-size:16px">↓</span>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= FOOTER ================= -->
+  <footer style="border-top:1px solid rgba(236,231,221,0.08);padding:clamp(36px,5vh,56px) 0">
+    <div style="max-width:1180px;margin:0 auto;padding:0 clamp(20px,4vw,40px);display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:20px">
+      <span style="display:inline-flex;align-items:baseline;gap:6px;font-family:Fraunces,Georgia,serif;font-weight:600;font-size:21px;letter-spacing:-0.03em;color:#ECE7DD">chaum<span style="width:6px;height:6px;border-radius:50%;background:#8C2F23;display:inline-block"></span></span>
+      <div style="display:flex;gap:22px;font-family:'Spline Sans Mono',monospace;font-size:13px">
+        <a href="{{ siteUrl }}" target="_blank" rel="noopener" style="color:rgba(236,231,221,0.6)" style-hover="color:#ECE7DD">chaum.fun</a>
+        <a href="{{ githubUrl }}" target="_blank" rel="noopener" style="color:rgba(236,231,221,0.6)" style-hover="color:#ECE7DD">github</a>
+        <a href="{{ xUrl }}" target="_blank" rel="noopener" style="color:rgba(236,231,221,0.6)" style-hover="color:#ECE7DD">x</a>
+        <a href="{{ docsUrl }}" target="_blank" rel="noopener" style="color:rgba(236,231,221,0.6)" style-hover="color:#ECE7DD">docs</a>
+      </div>
+    </div>
+    <div style="max-width:1180px;margin:16px auto 0;padding:0 clamp(20px,4vw,40px)">
+      <p style="margin:0;font-family:'Spline Sans Mono',monospace;font-size:12px;letter-spacing:0.04em;color:rgba(236,231,221,0.4)">a XXIX Labs project · built on starknet · chaum is selective disclosure, not anonymity</p>
+    </div>
+  </footer>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{
+  &quot;$preview&quot;: { &quot;width&quot;: 1180, &quot;height&quot;: 900 },
+  &quot;showConstructionGuides&quot;: { &quot;editor&quot;: &quot;boolean&quot;, &quot;default&quot;: true, &quot;tsType&quot;: &quot;boolean&quot;, &quot;section&quot;: &quot;Media kit&quot; },
+  &quot;productShots&quot;: { &quot;editor&quot;: &quot;enum&quot;, &quot;options&quot;: [&quot;framed&quot;, &quot;bare&quot;], &quot;default&quot;: &quot;framed&quot;, &quot;tsType&quot;: &quot;string&quot;, &quot;section&quot;: &quot;Media kit&quot; },
+  &quot;showCaptureSpecs&quot;: { &quot;editor&quot;: &quot;boolean&quot;, &quot;default&quot;: true, &quot;tsType&quot;: &quot;boolean&quot;, &quot;section&quot;: &quot;Media kit&quot; }
+}">
+class Component extends DCLogic {
+  CALL_URL = "https://cal.com/chaum/intro";
+  SITE_URL = "https://chaum.fun/";
+  GITHUB_URL = "https://github.com/kunaldrall29/Chaum";
+  X_URL = "https://x.com";
+  DOCS_URL = "https://github.com/kunaldrall29/Chaum";
+  PRESS_EMAIL = "press@chaum.xyz";
+  ZIP_HREF = "press/chaum-media-kit.zip";
+
+  COLORS = [
+    { key: "vault", hex: "#0C0F14", rgb: "12, 15, 20", use: "ground", border: true },
+    { key: "paper", hex: "#ECE7DD", rgb: "236, 231, 221", use: "voice" },
+    { key: "seal", hex: "#8C2F23", rgb: "140, 47, 35", use: "the accent — wax on a document, \u22645 uses per view" },
+    { key: "disclosed", hex: "#3FA66A", rgb: "63, 166, 106", use: "only revealed / proven states" },
+    { key: "warning", hex: "#C9892F", rgb: "201, 137, 47", use: "caution states" },
+    { key: "danger", hex: "#B23B3B", rgb: "178, 59, 59", use: "failures only" },
+    { key: "graphite", hex: "#1A1E26", rgb: "26, 30, 38", use: "redactions / panels" },
+  ];
+
+  BOILERS = [
+    { id: "one", label: "one-liner", meta: "1 sentence",
+      text: "Chaum is the confidential operating account for onchain organizations — every amount private, every total provable." },
+    { id: "fifty", label: "50 words", meta: "standard",
+      text: "Chaum is the confidential operating account for onchain organizations, built on Starknet's STRK20 privacy standard. Teams run payroll, vendor payments, and grants through policy-bounded autonomous agents; individual amounts stay private while auditors, token holders, and recipients each get exactly the proofs they need. Private by default, provable on demand." },
+    { id: "hundred", label: "100 words", meta: "full",
+      text: "Chaum is the confidential operating account for onchain organizations, built on Starknet's STRK20 privacy standard. Teams run payroll, vendor payments, and grants through policy-bounded autonomous agents; individual amounts stay private while auditors, token holders, and recipients each get exactly the proofs they need. Three modules cover the treasury: Disburse pays approved payees, Prove issues selective-disclosure proofs, and Grow extends runway. The agent proposes; the contract disposes — a scoped session key can only pay pre-approved payees within caps, and can never withdraw. Screening happens before funds enter the pool, and audit packets export on demand. Chaum is built by XXIX Labs on Starknet." },
+  ];
+
+  STACKS = [
+    { id: "st-display", label: "display", text: '"Fraunces", Georgia, "Times New Roman", serif' },
+    { id: "st-body", label: "body", text: '"Hanken Grotesk", system-ui, -apple-system, "Segoe UI", sans-serif' },
+    { id: "st-mono", label: "mono", text: '"Spline Sans Mono", ui-monospace, "SF Mono", Menlo, Consolas, monospace' },
+  ];
+
+  VOICE = [
+    { title: "Precise over promotional", sub: "State what it does, not how it feels." },
+    { title: "Boundaries next to claims", sub: "Every capability names its limit in the same breath." },
+    { title: "Money is mono", sub: "Amounts, addresses, and proofs are always Spline Sans Mono." },
+    { title: "Calm verbs", sub: "It runs, proves, pays, halts. It doesn't disrupt." },
+    { title: "Never overclaim privacy", sub: "Selective disclosure, not anonymity. Say so." },
+  ];
+
+  BANNED = ["revolutionary", "seamless", "next-gen", "unlock (as verb)", "untraceable", "anonymous"];
+
+  FACTS = [
+    { k: "founded", v: "2026" },
+    { k: "team", v: "XXIX Labs · New Delhi" },
+    { k: "network", v: "Starknet · STRK20" },
+    { k: "status", v: "design partners / testnet" },
+    { k: "site", v: "chaum.fun" },
+  ];
+
+  state = { copied: null };
+  rootRef = React.createRef();
+
+  componentWillUnmount() { clearTimeout(this._t); }
+
+  copy(key, text) {
+    const done = () => {
+      this.setState({ copied: key });
+      clearTimeout(this._t);
+      this._t = setTimeout(() => this.setState((s) => (s.copied === key ? { copied: null } : null)), 1500);
+    };
+    try {
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(text).then(done, () => { this._fallback(text); done(); });
+        return;
+      }
+    } catch (e) {}
+    this._fallback(text); done();
+  }
+  _fallback(text) {
+    try {
+      const ta = document.createElement("textarea");
+      ta.value = text; ta.style.position = "fixed"; ta.style.opacity = "0";
+      document.body.appendChild(ta); ta.select();
+      document.execCommand("copy"); document.body.removeChild(ta);
+    } catch (e) {}
+  }
+
+  ctaStyle(active, kind) {
+    const base = { marginLeft: "auto", fontFamily: "'Spline Sans Mono',monospace", fontSize: "11px", letterSpacing: "0.08em", transition: "color .18s" };
+    return active
+      ? { ...base, color: "#3FA66A" }
+      : { ...base, color: "rgba(236,231,221,0.4)" };
+  }
+  copyBtnStyle(active, mainColor) {
+    return {
+      display: "block", background: "none", border: "none", padding: "2px 0", cursor: "pointer", textAlign: "left",
+      fontFamily: "'Spline Sans Mono',monospace",
+      color: active ? "#3FA66A" : mainColor,
+      transition: "color .18s",
+    };
+  }
+
+  renderVals() {
+    const p = this.props || {};
+    const guides = p.showConstructionGuides !== false;
+    const framed = (p.productShots || "framed") !== "bare";
+    const showSpecs = p.showCaptureSpecs !== false;
+
+    const boilers = this.BOILERS.map((b) => {
+      const active = this.state.copied === b.id;
+      return { ...b, onCopy: () => this.copy(b.id, b.text), cta: active ? "copied \u2713" : "click to copy", ctaStyle: this.ctaStyle(active) };
+    });
+
+    const stacks = this.STACKS.map((s) => {
+      const active = this.state.copied === s.id;
+      return { ...s, onCopy: () => this.copy(s.id, s.text), cta: active ? "copied \u2713" : "copy", ctaStyle: this.ctaStyle(active) };
+    });
+
+    const colors = this.COLORS.map((c) => {
+      const hexKey = "hex-" + c.key, rgbKey = "rgb-" + c.key;
+      const hexActive = this.state.copied === hexKey, rgbActive = this.state.copied === rgbKey;
+      const swatchStyle = {
+        height: "104px", background: c.hex,
+        boxShadow: c.border ? "inset 0 0 0 1px rgba(236,231,221,0.14)" : "none",
+      };
+      return {
+        ...c, swatchStyle,
+        copyHex: () => this.copy(hexKey, c.hex),
+        copyRgb: () => this.copy(rgbKey, "rgb(" + c.rgb + ")"),
+        hexLabel: hexActive ? "copied \u2713" : c.hex,
+        rgbLabel: rgbActive ? "copied \u2713" : "rgb(" + c.rgb + ")",
+        hexStyle: { ...this.copyBtnStyle(hexActive, "#ECE7DD"), fontSize: "14.5px", fontWeight: 500 },
+        rgbStyle: { ...this.copyBtnStyle(rgbActive, "rgba(236,231,221,0.5)"), fontSize: "12px", marginTop: "4px" },
+      };
+    });
+
+    const shotFrameStyle = framed
+      ? { border: "1px solid rgba(236,231,221,0.12)", borderRadius: "10px", overflow: "hidden", background: "#0C0F14", boxShadow: "0 24px 60px -30px rgba(0,0,0,0.8)" }
+      : { borderRadius: "4px", overflow: "hidden", background: "#0C0F14" };
+
+    return {
+      rootRef: this.rootRef,
+      downloadHref: this.ZIP_HREF,
+      callUrl: this.CALL_URL,
+      siteUrl: this.SITE_URL,
+      githubUrl: this.GITHUB_URL,
+      xUrl: this.X_URL,
+      docsUrl: this.DOCS_URL,
+      pressEmail: this.PRESS_EMAIL,
+      pressMailto: "mailto:" + this.PRESS_EMAIL,
+      guides, showSpecs, shotFrameStyle,
+      boilers, stacks, colors,
+      voice: this.VOICE,
+      banned: this.BANNED,
+      facts: this.FACTS,
+    };
+  }
+}
+</script>
+</body>
+</html>

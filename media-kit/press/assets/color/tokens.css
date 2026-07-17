@@ -1,0 +1,17 @@
+/* Chaum brand tokens — v1.0.0
+   Every hex here is authoritative. Copy, don't eyeball. */
+:root {
+  /* color */
+  --chaum-vault:      #0C0F14; /* ground */
+  --chaum-paper:      #ECE7DD; /* voice */
+  --chaum-seal:       #8C2F23; /* accent — wax on a document, <=5 uses/view, never an error color */
+  --chaum-disclosed:  #3FA66A; /* only revealed / proven states */
+  --chaum-warning:    #C9892F; /* caution states */
+  --chaum-danger:     #B23B3B; /* failures only */
+  --chaum-graphite:   #1A1E26; /* redactions / panels */
+
+  /* type */
+  --chaum-font-display: "Fraunces", Georgia, "Times New Roman", serif;
+  --chaum-font-body:    "Hanken Grotesk", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --chaum-font-mono:    "Spline Sans Mono", ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+}

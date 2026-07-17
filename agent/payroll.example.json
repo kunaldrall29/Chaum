@@ -1,0 +1,10 @@
+{
+  "asset": "mUSD (demo)",
+  "payees": [
+    { "address": "0x111", "amount": "100", "label": "Alice" },
+    { "address": "0x222", "amount": "200", "label": "Bob" },
+    { "address": "0x333", "amount": "150", "label": "Carol" },
+    { "address": "0x444", "amount": "300", "label": "Dave" },
+    { "address": "0x555", "amount": "250", "label": "Erin" }
+  ]
+}

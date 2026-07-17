@@ -1,0 +1,23 @@
+{
+  "name": "chaum",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Chaum — private payroll & treasury disbursement on Starknet. Individual amounts private; aggregate provable.",
+  "license": "MIT",
+  "packageManager": "pnpm@10.32.1",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "build:contracts": "cd contracts && scarb build",
+    "test:contracts": "cd contracts && snforge test",
+    "demo": "pnpm --filter @chaum/scripts demo",
+    "agent": "pnpm --filter @chaum/agent start",
+    "dashboard": "python3 -m http.server 8001 --directory dashboard",
+    "landing": "python3 -m http.server 8000 --directory landing"
+  },
+  "devDependencies": {
+    "tsx": "^4.19.2",
+    "typescript": "^5.7.2"
+  }
+}

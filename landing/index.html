@@ -1,0 +1,681 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%230C0F14'/%3E%3Ccircle cx='16' cy='16' r='9' fill='%238C2F23'/%3E%3Ccircle cx='16' cy='16' r='5.5' fill='none' stroke='%23000' stroke-opacity='0.32' stroke-width='1.2'/%3E%3Ccircle cx='16' cy='16' r='2' fill='%23000' fill-opacity='0.22'/%3E%3C/svg%3E">
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Hanken+Grotesk:wght@400;500&family=Spline+Sans+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <title>chaum — the confidential operating account for onchain organizations</title>
+  <meta name="description" content="The confidential operating account for onchain organizations on Starknet. Pay payroll, vendors, and grants with per-recipient amounts private and each total provable — an autonomous agent runs every cycle under hard on-chain limits and never holds your funds.">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="chaum — the confidential operating account for onchain organizations">
+  <meta property="og:description" content="Every amount private. Every total provable. The confidential operating account for onchain organizations — Disburse, Prove, Grow on Starknet.">
+  <meta property="og:image" content="/og.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="chaum — the confidential operating account for onchain organizations">
+  <meta name="twitter:description" content="Every amount private. Every total provable. The confidential operating account for onchain organizations on Starknet.">
+  <meta name="twitter:image" content="/og.png">
+  <style>
+    *{box-sizing:border-box}
+    html,body{margin:0;padding:0}
+    body{background:#0C0F14;color:#ECE7DD;font-family:"Hanken Grotesk",system-ui,sans-serif;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+    :focus-visible{outline:2px solid #8C2F23;outline-offset:3px;border-radius:2px}
+    ::selection{background:rgba(140,47,35,0.92);color:#ECE7DD}
+    canvas,svg,img{display:block}
+    button{font:inherit;color:inherit}
+    a{color:inherit}
+    input{font:inherit}
+    @keyframes chaumUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+    @keyframes chaumCaret{0%,100%{opacity:1}50%{opacity:0}}
+  </style>
+</helmet>
+
+<div ref="{{ rootRef }}" data-screen-label="Chaum landing" style="background:#0C0F14;color:#ECE7DD;overflow-x:hidden">
+
+  <a href="#disclosure" onClick="{{ goDisclosure }}" style="position:absolute;left:-9999px;top:0;z-index:100;background:#8C2F23;color:#ECE7DD;padding:10px 16px;border-radius:0 0 5px 0;font-family:'Spline Sans Mono',monospace;font-size:13px;text-decoration:none" style-focus="left:0">skip to disclosure demo</a>
+
+  <header style="position:sticky;top:0;z-index:50">
+    <div style="{{ navScrimStyle }}"></div>
+    <div style="position:relative;max-width:1100px;margin:0 auto;padding:13px clamp(20px,5vw,40px);display:flex;align-items:center;justify-content:space-between;gap:24px">
+      <a href="#top" onClick="{{ goTop }}" aria-label="chaum home" style="display:inline-flex;align-items:baseline;gap:6px;text-decoration:none;font-family:Fraunces,Georgia,serif;font-variation-settings:'opsz' 40;font-weight:600;font-size:23px;letter-spacing:-0.02em;color:#ECE7DD">chaum<span style="width:7px;height:7px;border-radius:50%;background:#8C2F23;display:inline-block"></span></a>
+
+      <div style="display:flex;align-items:center;gap:clamp(16px,2.4vw,30px)">
+        <sc-if value="{{ showNavLinks }}" hint-placeholder-val="{{ true }}">
+          <nav aria-label="Primary" style="display:flex;align-items:center;gap:clamp(16px,2.2vw,28px)">
+            <button onClick="{{ goHow }}" style="background:none;border:none;cursor:pointer;font-family:'Hanken Grotesk',sans-serif;font-size:14.5px;color:rgba(236,231,221,0.6);padding:6px 0;letter-spacing:0.01em;transition:color .2s ease" style-hover="color:#ECE7DD">how it works</button>
+            <button onClick="{{ goDisclosure }}" style="background:none;border:none;cursor:pointer;font-family:'Hanken Grotesk',sans-serif;font-size:14.5px;color:rgba(236,231,221,0.6);padding:6px 0;letter-spacing:0.01em;transition:color .2s ease" style-hover="color:#ECE7DD">disclosure</button>
+            <button onClick="{{ goCompliance }}" style="background:none;border:none;cursor:pointer;font-family:'Hanken Grotesk',sans-serif;font-size:14.5px;color:rgba(236,231,221,0.6);padding:6px 0;letter-spacing:0.01em;transition:color .2s ease" style-hover="color:#ECE7DD">compliance</button>
+            <a href="{{ githubUrl }}" target="_blank" rel="noopener" style="font-family:'Hanken Grotesk',sans-serif;font-size:14.5px;color:rgba(236,231,221,0.6);text-decoration:none;padding:6px 0;letter-spacing:0.01em;transition:color .2s ease" style-hover="color:#ECE7DD">github</a>
+          </nav>
+        </sc-if>
+        <a href="{{ callUrl }}" target="_blank" rel="noopener" style="font-family:'Hanken Grotesk',sans-serif;font-size:14px;font-weight:500;color:#ECE7DD;text-decoration:none;border:1px solid #8C2F23;padding:9px 16px;border-radius:5px;transition:background .2s ease;white-space:nowrap" style-hover="background:#8C2F23">book a call</a>
+      </div>
+    </div>
+  </header>
+
+  <main>
+
+    <section id="top" style="padding:clamp(92px,15vh,168px) 0 clamp(56px,9vh,104px);scroll-margin-top:70px">
+      <div style="max-width:1100px;margin:0 auto;padding:0 clamp(20px,5vw,40px)">
+        <div data-reveal style="max-width:760px">
+          <p style="font-family:'Spline Sans Mono',monospace;font-weight:500;font-size:12px;letter-spacing:0.18em;text-transform:uppercase;color:#D6543E;margin:0 0 22px">confidential operating account · starknet · strk20</p>
+          <h1 style="font-family:Fraunces,Georgia,serif;font-variation-settings:'opsz' 144;font-weight:600;font-size:clamp(40px,6.4vw,72px);line-height:1.0;letter-spacing:-0.022em;color:#ECE7DD;margin:0;max-width:18ch">Every amount private.<br>Every total provable.</h1>
+          <p style="margin:26px 0 0;max-width:54ch;font-size:clamp(16px,1.7vw,18.5px);line-height:1.62;color:rgba(236,231,221,0.72)">Chaum is the confidential operating account for onchain organizations. Pay payroll, vendors, and grants on Starknet with per-recipient amounts hidden from each other and the public — while an auditor proves aggregate spend, a stakeholder proves any one category, and each recipient proves only their own income. An autonomous agent runs every cycle under hard on-chain limits. It never holds your funds, and it can only pay the people you approved.</p>
+          <div style="display:flex;flex-wrap:wrap;gap:14px;margin-top:34px">
+            <button onClick="{{ goDisclosure }}" style="display:inline-flex;align-items:center;gap:9px;background:#8C2F23;color:#ECE7DD;border:1px solid #8C2F23;padding:13px 22px;border-radius:5px;font-family:'Hanken Grotesk',sans-serif;font-size:15px;font-weight:500;cursor:pointer;transition:background .2s ease,border-color .2s ease" style-hover="background:#A1382B;border-color:#A1382B">See selective disclosure <span aria-hidden="true">↓</span></button>
+            <a href="{{ githubUrl }}" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;background:transparent;color:#ECE7DD;border:1px solid rgba(236,231,221,0.18);padding:13px 22px;border-radius:5px;font-family:'Hanken Grotesk',sans-serif;font-size:15px;font-weight:500;text-decoration:none;transition:border-color .2s ease" style-hover="border-color:rgba(236,231,221,0.42)">Read the architecture</a>
+          </div>
+          <p style="margin:28px 0 0;font-family:'Spline Sans Mono',monospace;font-size:12.5px;letter-spacing:0.04em;color:rgba(236,231,221,0.4)">built on starknet · STRK20 · native account abstraction · erc-8004</p>
+        </div>
+
+        <div data-reveal style="margin-top:clamp(44px,7vh,80px)">
+          <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:13px">
+            <span style="font-family:'Spline Sans Mono',monospace;font-size:11px;letter-spacing:0.13em;text-transform:uppercase;color:rgba(236,231,221,0.42)">fig. 01 — disbursement</span>
+            <span style="font-family:'Spline Sans Mono',monospace;font-size:11px;letter-spacing:0.06em;color:rgba(236,231,221,0.36)">treasury → six recipients</span>
+          </div>
+          <div style="position:relative;height:clamp(296px,40vh,408px);border:1px solid rgba(236,231,221,0.08);border-radius:4px;background:linear-gradient(180deg,rgba(26,30,38,0.28),rgba(12,15,20,0));overflow:hidden">
+            <svg ref="{{ svgRef }}" viewBox="0 0 1000 360" preserveAspectRatio="xMidYMid meet" style="display:block;width:100%;height:100%" aria-label="A treasury node at top distributing redacted payment notes to six recipients along the bottom.">
+              <path d="M500,66 Q290,205 80,291" fill="none" stroke="rgba(236,231,221,0.08)" stroke-width="1"/>
+              <path d="M500,66 Q374,205 248,291" fill="none" stroke="rgba(236,231,221,0.08)" stroke-width="1"/>
+              <path d="M500,66 Q458,205 416,291" fill="none" stroke="rgba(236,231,221,0.08)" stroke-width="1"/>
+              <path d="M500,66 Q542,205 584,291" fill="none" stroke="rgba(236,231,221,0.08)" stroke-width="1"/>
+              <path d="M500,66 Q626,205 752,291" fill="none" stroke="rgba(236,231,221,0.08)" stroke-width="1"/>
+              <path d="M500,66 Q710,205 920,291" fill="none" stroke="rgba(236,231,221,0.08)" stroke-width="1"/>
+              <text x="500" y="15" text-anchor="middle" fill="rgba(236,231,221,0.5)" font-family="'Spline Sans Mono',monospace" font-size="10" letter-spacing="1">TREASURY</text>
+              <rect x="455" y="24" width="90" height="42" rx="5" fill="#1A1E26" stroke="rgba(236,231,221,0.18)"/>
+              <circle cx="500" cy="45" r="4" fill="#8C2F23"/>
+              <g>
+                <circle cx="80" cy="300" r="9" fill="#1A1E26" stroke="rgba(236,231,221,0.16)"/><rect x="68" y="314" width="24" height="4" rx="1" fill="rgba(236,231,221,0.16)"/>
+                <circle cx="248" cy="300" r="9" fill="#1A1E26" stroke="rgba(236,231,221,0.16)"/><rect x="236" y="314" width="24" height="4" rx="1" fill="rgba(236,231,221,0.16)"/>
+                <circle cx="416" cy="300" r="9" fill="#1A1E26" stroke="rgba(236,231,221,0.16)"/><rect x="404" y="314" width="24" height="4" rx="1" fill="rgba(236,231,221,0.16)"/>
+                <circle cx="584" cy="300" r="9" fill="#1A1E26" stroke="rgba(236,231,221,0.16)"/><rect x="572" y="314" width="24" height="4" rx="1" fill="rgba(236,231,221,0.16)"/>
+                <circle cx="752" cy="300" r="9" fill="#1A1E26" stroke="rgba(236,231,221,0.16)"/><rect x="740" y="314" width="24" height="4" rx="1" fill="rgba(236,231,221,0.16)"/>
+                <circle cx="920" cy="300" r="9" fill="#1A1E26" stroke="rgba(236,231,221,0.16)"/><rect x="908" y="314" width="24" height="4" rx="1" fill="rgba(236,231,221,0.16)"/>
+              </g>
+              <g>
+                <rect x="348" y="178" width="52" height="28" rx="3" fill="#20252F" stroke="rgba(236,231,221,0.14)"/><rect x="355" y="188" width="26" height="8" rx="1" fill="#0E1218"/><circle cx="359" cy="185" r="2.2" fill="rgba(236,231,221,0.42)"/><circle cx="389" cy="185" r="3" fill="#8C2F23"/>
+                <rect x="516" y="178" width="52" height="28" rx="3" fill="#20252F" stroke="rgba(236,231,221,0.14)"/><rect x="523" y="188" width="26" height="8" rx="1" fill="#0E1218"/><circle cx="527" cy="185" r="2.2" fill="rgba(236,231,221,0.42)"/><circle cx="557" cy="185" r="3" fill="#8C2F23"/>
+                <rect x="684" y="178" width="52" height="28" rx="3" fill="#20252F" stroke="rgba(236,231,221,0.14)"/><rect x="691" y="188" width="26" height="8" rx="1" fill="#0E1218"/><circle cx="695" cy="185" r="2.2" fill="rgba(236,231,221,0.42)"/><circle cx="725" cy="185" r="3" fill="#8C2F23"/>
+              </g>
+            </svg>
+            <canvas ref="{{ canvasRef }}" style="display:none;width:100%;height:100%"></canvas>
+          </div>
+          <div style="margin-top:14px;font-family:'Spline Sans Mono',monospace;font-size:clamp(12px,1.4vw,14px);letter-spacing:0.04em">
+            <span style="color:rgba(236,231,221,0.56)">DISBURSED THIS CYCLE: </span><span ref="{{ counterRef }}" style="color:#ECE7DD">142,800</span><span style="color:rgba(236,231,221,0.56)"> USDC</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div style="max-width:1100px;margin:0 auto;padding:0 clamp(20px,5vw,40px)"><div style="display:flex;align-items:center;gap:18px"><span style="flex:1;height:1px;background:rgba(236,231,221,0.08)"></span><svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9" fill="#8C2F23"/><circle cx="12" cy="12" r="5.5" fill="none" stroke="#0C0F14" stroke-opacity="0.4" stroke-width="1.2"/><circle cx="12" cy="12" r="2" fill="#0C0F14" fill-opacity="0.3"/></svg><span style="flex:1;height:1px;background:rgba(236,231,221,0.08)"></span></div></div>
+
+    <section id="modules" style="padding:clamp(56px,9vh,104px) 0 clamp(8px,2vh,24px);scroll-margin-top:70px">
+      <div style="max-width:1100px;margin:0 auto;padding:0 clamp(20px,5vw,40px)">
+        <div data-reveal style="max-width:680px">
+          <p style="font-family:'Spline Sans Mono',monospace;font-weight:500;font-size:12px;letter-spacing:0.18em;text-transform:uppercase;color:#D6543E;margin:0">the operating account</p>
+          <h2 style="font-family:Fraunces,Georgia,serif;font-variation-settings:'opsz' 110;font-weight:600;font-size:clamp(30px,4.4vw,46px);line-height:1.05;letter-spacing:-0.015em;color:#ECE7DD;margin:14px 0 0">Disburse. Prove. Grow.</h2>
+          <p style="margin:16px 0 0;max-width:60ch;font-size:clamp(15px,1.5vw,17px);line-height:1.6;color:rgba(236,231,221,0.66)">Payroll is the wedge, not the product. The product is the surface an onchain org returns to every week — pay, prove, and put idle treasury to work, each amount private and each total provable to exactly the party who needs it.</p>
+        </div>
+        <div data-reveal style="display:grid;grid-template-columns:repeat(auto-fit,minmax(248px,1fr));gap:16px;margin-top:clamp(32px,5vh,52px)">
+          <div style="border:1px solid rgba(236,231,221,0.1);border-radius:7px;padding:22px;background:rgba(26,30,38,0.28)">
+            <div style="display:flex;align-items:center;justify-content:space-between;gap:10px"><span style="font-family:Fraunces,Georgia,serif;font-weight:600;font-size:21px;letter-spacing:-0.01em;color:#ECE7DD">Disburse</span><span style="font-family:'Spline Sans Mono',monospace;font-size:10.5px;letter-spacing:0.06em;text-transform:uppercase;color:#3FA66A;border:1px solid rgba(63,166,106,0.35);border-radius:20px;padding:3px 9px">live · sepolia</span></div>
+            <p style="margin:12px 0 0;font-family:'Spline Sans Mono',monospace;font-size:11px;letter-spacing:0.06em;text-transform:uppercase;color:rgba(236,231,221,0.4)">the wedge</p>
+            <p style="margin:9px 0 0;font-size:14.5px;line-height:1.56;color:rgba(236,231,221,0.72)">Agentic payroll, vendor, and grant cycles under hard on-chain policy — per-payee and per-cycle caps, cadence, a jittered execution window, and a pre-pay KYT screen. The agent proposes; the contract disposes.</p>
+          </div>
+          <div style="border:1px solid rgba(140,47,35,0.3);border-radius:7px;padding:22px;background:rgba(140,47,35,0.06)">
+            <div style="display:flex;align-items:center;justify-content:space-between;gap:10px"><span style="font-family:Fraunces,Georgia,serif;font-weight:600;font-size:21px;letter-spacing:-0.01em;color:#ECE7DD">Prove</span><span style="font-family:'Spline Sans Mono',monospace;font-size:10.5px;letter-spacing:0.06em;text-transform:uppercase;color:#3FA66A;border:1px solid rgba(63,166,106,0.35);border-radius:20px;padding:3px 9px">live · sepolia</span></div>
+            <p style="margin:12px 0 0;font-family:'Spline Sans Mono',monospace;font-size:11px;letter-spacing:0.06em;text-transform:uppercase;color:rgba(236,231,221,0.4)">the moat</p>
+            <p style="margin:9px 0 0;font-size:14.5px;line-height:1.56;color:rgba(236,231,221,0.72)">Role-scoped selective disclosure. An auditor proves the aggregate, a stakeholder proves one category, a payee opens only their own line — enforced on-chain by the role registry, exportable as an audit packet an accountant can file.</p>
+          </div>
+          <div style="border:1px solid rgba(236,231,221,0.1);border-radius:7px;padding:22px;background:rgba(26,30,38,0.28)">
+            <div style="display:flex;align-items:center;justify-content:space-between;gap:10px"><span style="font-family:Fraunces,Georgia,serif;font-weight:600;font-size:21px;letter-spacing:-0.01em;color:#ECE7DD">Grow</span><span style="font-family:'Spline Sans Mono',monospace;font-size:10.5px;letter-spacing:0.06em;text-transform:uppercase;color:rgba(236,231,221,0.5);border:1px solid rgba(236,231,221,0.2);border-radius:20px;padding:3px 9px">T3 · seam</span></div>
+            <p style="margin:12px 0 0;font-family:'Spline Sans Mono',monospace;font-size:11px;letter-spacing:0.06em;text-transform:uppercase;color:rgba(236,231,221,0.4)">the engine</p>
+            <p style="margin:9px 0 0;font-size:14.5px;line-height:1.56;color:rgba(236,231,221,0.72)">Idle treasury deployed into private yield, positions shielded and solvency provable via viewing roles. Ships today as an interface seam with stub adapters; live Vesu / Endur legs at T3.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="disclosure" style="padding:clamp(72px,12vh,140px) 0;scroll-margin-top:70px">
+      <div style="max-width:1100px;margin:0 auto;padding:0 clamp(20px,5vw,40px)">
+        <div data-reveal style="max-width:680px">
+          <p style="font-family:'Spline Sans Mono',monospace;font-weight:500;font-size:12px;letter-spacing:0.18em;text-transform:uppercase;color:#D6543E;margin:0">selective disclosure</p>
+          <h2 style="font-family:Fraunces,Georgia,serif;font-variation-settings:'opsz' 110;font-weight:600;font-size:clamp(30px,4.4vw,46px);line-height:1.05;letter-spacing:-0.015em;color:#ECE7DD;margin:14px 0 0">Same data. Three viewers.</h2>
+          <p style="margin:18px 0 0;font-size:clamp(16px,1.6vw,18px);line-height:1.6;color:rgba(236,231,221,0.72)">The public sees only the total. The auditor proves the total without the split. Alice proves her pay and nothing else. One ledger, cryptographically different views.</p>
+        </div>
+
+        <div data-reveal style="margin-top:clamp(32px,5vh,52px);background:rgba(26,30,38,0.5);border:1px solid rgba(236,231,221,0.08);border-radius:6px;padding:clamp(20px,3vw,34px)">
+          <div role="tablist" aria-label="Disclosure viewer" style="display:flex;gap:4px;padding:4px;border:1px solid rgba(236,231,221,0.1);border-radius:6px;background:rgba(12,15,20,0.5);flex-wrap:wrap;max-width:100%">
+            <button data-tab="public" role="tab" aria-selected="true" onClick="{{ selPublic }}" style="font-family:'Hanken Grotesk',system-ui,sans-serif;font-size:14px;font-weight:500;padding:9px 15px;border-radius:4px;border:1px solid rgba(236,231,221,0.12);cursor:pointer;background:#0C0F14;color:#ECE7DD;box-shadow:inset 0 -2px 0 #8C2F23;white-space:nowrap;transition:color .2s ease,background .2s ease">Public</button>
+            <button data-tab="auditor" role="tab" aria-selected="false" onClick="{{ selAuditor }}" style="font-family:'Hanken Grotesk',system-ui,sans-serif;font-size:14px;font-weight:500;padding:9px 15px;border-radius:4px;border:1px solid transparent;cursor:pointer;background:transparent;color:rgba(236,231,221,0.55);white-space:nowrap;transition:color .2s ease,background .2s ease">Auditor</button>
+            <button data-tab="payee" role="tab" aria-selected="false" onClick="{{ selPayee }}" style="font-family:'Hanken Grotesk',system-ui,sans-serif;font-size:14px;font-weight:500;padding:9px 15px;border-radius:4px;border:1px solid transparent;cursor:pointer;background:transparent;color:rgba(236,231,221,0.55);white-space:nowrap;transition:color .2s ease,background .2s ease">Payee · alice.stark</button>
+          </div>
+
+          <p data-caption style="margin:18px 0 0;font-size:15px;line-height:1.5;color:rgba(236,231,221,0.72);max-width:60ch">What anyone watching the chain sees.</p>
+          <p data-keyline style="margin:8px 0 0;font-family:'Spline Sans Mono',monospace;font-size:12px;letter-spacing:0.04em;color:rgba(236,231,221,0.55);display:none;align-items:center;gap:7px"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#3FA66A" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>viewing key accepted</p>
+
+          <div role="table" aria-label="Disbursement cycle" style="margin-top:24px">
+            <div role="row" style="display:grid;grid-template-columns:clamp(22px,6vw,32px) 1fr auto;gap:clamp(10px,2vw,16px);padding-bottom:12px">
+              <span></span>
+              <span style="font-family:'Spline Sans Mono',monospace;font-size:11px;letter-spacing:0.12em;text-transform:uppercase;color:rgba(236,231,221,0.42)">recipient</span>
+              <span style="font-family:'Spline Sans Mono',monospace;font-size:11px;letter-spacing:0.12em;text-transform:uppercase;color:rgba(236,231,221,0.42);text-align:right">amount</span>
+            </div>
+            <sc-for list="{{ rows }}" as="row" hint-placeholder-count="6">
+              <div role="row" data-payrow="{{ row.idx }}" data-alice="{{ row.isAlice }}" style="display:grid;grid-template-columns:clamp(22px,6vw,32px) 1fr auto;align-items:start;gap:clamp(10px,2vw,16px);padding:14px 0;border-top:1px solid rgba(236,231,221,0.08)">
+                <span style="font-family:'Spline Sans Mono',monospace;font-size:12px;color:rgba(236,231,221,0.42);padding-top:2px">{{ row.idx }}</span>
+                <div style="min-width:0">
+                  <div style="font-family:'Spline Sans Mono',monospace;font-size:clamp(13px,3.4vw,15px);color:#ECE7DD;word-break:break-word">{{ row.handle }}</div>
+                  <div data-income style="margin-top:6px;font-family:'Spline Sans Mono',monospace;font-size:11.5px;letter-spacing:0.02em;color:#3FA66A;display:none;align-items:center;flex-wrap:wrap;gap:6px"><span>income-proof: <span data-incomeval></span><span data-incomecaret style="display:none">▍</span></span><span style="color:rgba(236,231,221,0.4)">·</span><span style="color:rgba(236,231,221,0.6);border-bottom:1px solid rgba(236,231,221,0.25);cursor:default">export</span></div>
+                </div>
+                <div style="position:relative;height:25px;min-width:clamp(76px,24vw,150px);display:flex;align-items:center;justify-content:flex-end">
+                  <span style="display:inline-flex;align-items:center;gap:8px">
+                    <span data-tick style="display:inline-flex;opacity:0;transition:opacity .26s ease .14s;color:#3FA66A"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#3FA66A" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg></span>
+                    <span data-amt style="opacity:0;transition:opacity .2s ease;font-family:'Spline Sans Mono',monospace;font-size:clamp(13px,3.4vw,15px);color:#ECE7DD">{{ row.amountText }}</span>
+                  </span>
+                  <span data-bar aria-hidden="true" style="position:absolute;right:0;top:4px;width:clamp(58px,20vw,108px);height:17px;background:#262B36;border-radius:1px;box-shadow:inset 0 1px 0 rgba(236,231,221,0.05);transform:scaleX(1);transform-origin:right;transition:transform .2s cubic-bezier(.4,0,.2,1)"></span>
+                </div>
+              </div>
+            </sc-for>
+
+            <div role="row" style="display:flex;flex-wrap:wrap;align-items:center;gap:12px;margin-top:6px;padding-top:18px;border-top:1px solid rgba(236,231,221,0.16)">
+              <span style="font-family:'Spline Sans Mono',monospace;font-size:11px;letter-spacing:0.14em;text-transform:uppercase;color:rgba(236,231,221,0.55)">cycle total</span>
+              <span style="font-family:'Spline Sans Mono',monospace;font-size:clamp(18px,2.4vw,22px);font-weight:500;color:#ECE7DD">142,800 USDC</span>
+              <span data-totalproof style="display:none;align-items:center;gap:8px;margin-left:auto;color:#3FA66A;font-family:'Spline Sans Mono',monospace;font-size:12.5px"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#3FA66A" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>agg-proof: <span data-aggval></span><span data-aggcaret style="display:none">▍</span></span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div style="max-width:1100px;margin:0 auto;padding:0 clamp(20px,5vw,40px)"><div style="display:flex;align-items:center;gap:18px"><span style="flex:1;height:1px;background:rgba(236,231,221,0.08)"></span><svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9" fill="#8C2F23"/><circle cx="12" cy="12" r="5.5" fill="none" stroke="#0C0F14" stroke-opacity="0.4" stroke-width="1.2"/><circle cx="12" cy="12" r="2" fill="#0C0F14" fill-opacity="0.3"/></svg><span style="flex:1;height:1px;background:rgba(236,231,221,0.08)"></span></div></div>
+
+    <section id="how" style="padding:clamp(72px,12vh,140px) 0;scroll-margin-top:70px">
+      <div style="max-width:1100px;margin:0 auto;padding:0 clamp(20px,5vw,40px)">
+        <div data-reveal style="max-width:680px">
+          <p style="font-family:'Spline Sans Mono',monospace;font-weight:500;font-size:12px;letter-spacing:0.18em;text-transform:uppercase;color:#D6543E;margin:0">mechanism</p>
+          <h2 style="font-family:Fraunces,Georgia,serif;font-variation-settings:'opsz' 110;font-weight:600;font-size:clamp(30px,4.4vw,46px);line-height:1.05;letter-spacing:-0.015em;color:#ECE7DD;margin:14px 0 0">The agent proposes. The contract disposes.</h2>
+        </div>
+        <div data-reveal style="margin-top:clamp(36px,6vh,60px);display:grid;grid-template-columns:repeat(auto-fit,minmax(258px,1fr));gap:clamp(24px,3vw,44px)">
+          <div style="padding-top:22px;border-top:1px solid rgba(236,231,221,0.14)">
+            <div style="font-family:Fraunces,Georgia,serif;font-variation-settings:'opsz' 80;font-weight:600;font-size:clamp(30px,4vw,40px);color:rgba(236,231,221,0.22);line-height:1">01</div>
+            <h3 style="margin:14px 0 0;font-family:'Hanken Grotesk',sans-serif;font-weight:500;font-size:19px;color:#ECE7DD">Fund and set policy.</h3>
+            <p style="margin:10px 0 0;font-size:15.5px;line-height:1.62;color:rgba(236,231,221,0.72)">Deposit a cycle's funds and define the rules: your approved payee set, a cap per recipient, a cap per cycle, and how often cycles may run. The policy lives on-chain.</p>
+          </div>
+          <div style="padding-top:22px;border-top:1px solid rgba(236,231,221,0.14)">
+            <div style="font-family:Fraunces,Georgia,serif;font-variation-settings:'opsz' 80;font-weight:600;font-size:clamp(30px,4vw,40px);color:rgba(236,231,221,0.22);line-height:1">02</div>
+            <h3 style="margin:14px 0 0;font-family:'Hanken Grotesk',sans-serif;font-weight:500;font-size:19px;color:#ECE7DD">Delegate one key.</h3>
+            <p style="margin:10px 0 0;font-size:15.5px;line-height:1.62;color:rgba(236,231,221,0.72)">Grant the agent a session key scoped to a single function: run a disbursement. It cannot withdraw, cannot pay anyone outside your list, and cannot exceed your caps — the contract rejects everything else.</p>
+          </div>
+          <div style="padding-top:22px;border-top:1px solid rgba(236,231,221,0.14)">
+            <div style="font-family:Fraunces,Georgia,serif;font-variation-settings:'opsz' 80;font-weight:600;font-size:clamp(30px,4vw,40px);color:rgba(236,231,221,0.22);line-height:1">03</div>
+            <h3 style="margin:14px 0 0;font-family:'Hanken Grotesk',sans-serif;font-weight:500;font-size:19px;color:#ECE7DD">It pays, privately.</h3>
+            <p style="margin:10px 0 0;font-size:15.5px;line-height:1.62;color:rgba(236,231,221,0.72)">Each cycle, the agent commits to every amount, the contract verifies the amounts sum to the cycle total, and recipients are paid. Individual figures are hidden; the total is provable to anyone you authorize.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="boundary" style="padding:clamp(64px,10vh,120px) 0;scroll-margin-top:70px">
+      <div style="max-width:1100px;margin:0 auto;padding:0 clamp(20px,5vw,40px)">
+        <div data-reveal style="max-width:760px">
+          <p style="font-family:'Spline Sans Mono',monospace;font-weight:500;font-size:12px;letter-spacing:0.18em;text-transform:uppercase;color:#D6543E;margin:0">the boundary</p>
+          <h2 style="font-family:Fraunces,Georgia,serif;font-variation-settings:'opsz' 110;font-weight:600;font-size:clamp(30px,4.4vw,46px);line-height:1.05;letter-spacing:-0.015em;color:#ECE7DD;margin:14px 0 0;max-width:24ch">Designed around its own compromise.</h2>
+          <p style="margin:22px 0 0;font-size:clamp(17px,1.9vw,20px);line-height:1.6;color:rgba(236,231,221,0.78);max-width:68ch">Assume the agent's key is stolen. The thief can do <em style="font-style:italic;font-family:Fraunces,Georgia,serif;font-variation-settings:'opsz' 40;color:#ECE7DD">exactly one thing</em>: pay the people you already approved, from the funds you already deposited, within the caps you already set, no more often than your cadence allows — every condition re-checked on-chain before a token moves. There is no code path that sends funds to anyone else, or back to anywhere but your own wallet. Pause or revoke the key in one transaction. Every cycle is recorded on-chain under an ERC-8004 agent identity.</p>
+        </div>
+      </div>
+    </section>
+
+    <div style="max-width:1100px;margin:0 auto;padding:0 clamp(20px,5vw,40px)"><div style="display:flex;align-items:center;gap:18px"><span style="flex:1;height:1px;background:rgba(236,231,221,0.08)"></span><svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9" fill="#8C2F23"/><circle cx="12" cy="12" r="5.5" fill="none" stroke="#0C0F14" stroke-opacity="0.4" stroke-width="1.2"/><circle cx="12" cy="12" r="2" fill="#0C0F14" fill-opacity="0.3"/></svg><span style="flex:1;height:1px;background:rgba(236,231,221,0.08)"></span></div></div>
+
+    <section id="compliance" style="padding:clamp(72px,12vh,140px) 0;scroll-margin-top:70px">
+      <div style="max-width:1100px;margin:0 auto;padding:0 clamp(20px,5vw,40px)">
+        <div data-reveal style="max-width:720px">
+          <p style="font-family:'Spline Sans Mono',monospace;font-weight:500;font-size:12px;letter-spacing:0.18em;text-transform:uppercase;color:#D6543E;margin:0">compliance</p>
+          <h2 style="font-family:Fraunces,Georgia,serif;font-variation-settings:'opsz' 110;font-weight:600;font-size:clamp(30px,4.4vw,46px);line-height:1.05;letter-spacing:-0.015em;color:#ECE7DD;margin:14px 0 0;max-width:26ch">Private to the public. Provable to the people who need it.</h2>
+        </div>
+        <div data-reveal style="margin-top:clamp(36px,6vh,56px);display:grid;grid-template-columns:repeat(auto-fit,minmax(290px,1fr));gap:clamp(20px,2.6vw,32px);align-items:stretch">
+          <div style="background:#1A1E26;border:1px solid rgba(236,231,221,0.08);border-radius:6px;padding:clamp(24px,3vw,36px)">
+            <div style="display:flex;gap:5px;margin-bottom:20px"><span style="width:42px;height:11px;background:#0E1218;border-radius:1px"></span><span style="width:26px;height:11px;background:#0E1218;border-radius:1px"></span><span style="width:34px;height:11px;background:#0E1218;border-radius:1px"></span></div>
+            <p style="font-family:'Spline Sans Mono',monospace;font-size:12px;letter-spacing:0.14em;text-transform:uppercase;color:rgba(236,231,221,0.55);margin:0 0 18px">private</p>
+            <div style="display:flex;align-items:flex-start;gap:12px;margin-bottom:14px"><span style="width:28px;height:10px;background:#0E1218;border-radius:1px;flex:none;margin-top:7px"></span><p style="margin:0;font-size:15.5px;line-height:1.58;color:rgba(236,231,221,0.78)">Per-recipient amounts — hidden from other recipients and from anyone watching the chain.</p></div>
+            <div style="display:flex;align-items:flex-start;gap:12px"><span style="width:28px;height:10px;background:#0E1218;border-radius:1px;flex:none;margin-top:7px"></span><p style="margin:0;font-size:15.5px;line-height:1.58;color:rgba(236,231,221,0.78)">No salaries leaked, no comp benchmarking off your treasury, no copy-paying.</p></div>
+          </div>
+          <div style="border:1px solid rgba(236,231,221,0.08);border-radius:6px;padding:clamp(24px,3vw,36px)">
+            <div style="display:flex;align-items:center;gap:8px;margin-bottom:20px;color:#3FA66A"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#3FA66A" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg></div>
+            <p style="font-family:'Spline Sans Mono',monospace;font-size:12px;letter-spacing:0.14em;text-transform:uppercase;color:rgba(236,231,221,0.55);margin:0 0 18px">provable</p>
+            <div style="display:flex;align-items:flex-start;gap:12px;margin-bottom:14px"><span style="flex:none;margin-top:3px;color:#3FA66A"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#3FA66A" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg></span><p style="margin:0;font-size:15.5px;line-height:1.58;color:rgba(236,231,221,0.82)">Aggregate spend — provable to auditors without the split.</p></div>
+            <div style="display:flex;align-items:flex-start;gap:12px;margin-bottom:14px"><span style="flex:none;margin-top:3px;color:#3FA66A"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#3FA66A" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg></span><p style="margin:0;font-size:15.5px;line-height:1.58;color:rgba(236,231,221,0.82)">Each recipient's own income — provable for tax filing.</p></div>
+            <div style="display:flex;align-items:flex-start;gap:12px"><span style="flex:none;margin-top:3px;color:#3FA66A"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#3FA66A" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg></span><p style="margin:0;font-size:15.5px;line-height:1.58;color:rgba(236,231,221,0.82)">The compliance model traditional finance already uses, on-chain, with no intermediary holding the money.</p></div>
+          </div>
+        </div>
+        <p style="margin:24px 0 0;font-family:'Spline Sans Mono',monospace;font-size:13px;letter-spacing:0.04em;color:rgba(236,231,221,0.5)">selective disclosure is math, not policy.</p>
+      </div>
+    </section>
+
+    <section id="roadmap" style="padding:clamp(64px,10vh,120px) 0;scroll-margin-top:70px">
+      <div style="max-width:1100px;margin:0 auto;padding:0 clamp(20px,5vw,40px)">
+        <div data-reveal style="max-width:680px">
+          <p style="font-family:'Spline Sans Mono',monospace;font-weight:500;font-size:12px;letter-spacing:0.18em;text-transform:uppercase;color:#D6543E;margin:0">trajectory</p>
+          <h2 style="font-family:Fraunces,Georgia,serif;font-variation-settings:'opsz' 110;font-weight:600;font-size:clamp(30px,4.4vw,46px);line-height:1.05;letter-spacing:-0.015em;color:#ECE7DD;margin:14px 0 0">Provable now. Fully shielded next.</h2>
+        </div>
+        <div data-reveal style="margin-top:clamp(36px,6vh,56px);display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:clamp(24px,3vw,40px)">
+          <div style="position:relative;padding-top:26px;border-top:1px solid rgba(236,231,221,0.14)">
+            <span style="position:absolute;top:-6px;left:0;width:11px;height:11px;border-radius:50%;background:#8C2F23"></span>
+            <div style="font-family:'Spline Sans Mono',monospace;font-size:12.5px;letter-spacing:0.1em;color:#ECE7DD">V1 · NOW</div>
+            <p style="margin:12px 0 0;font-size:15.5px;line-height:1.6;color:rgba(236,231,221,0.72)">Testnet. Private amounts via on-chain commitments, autonomous cycles under policy, the disclosure proofs above — live on Sepolia.</p>
+          </div>
+          <div style="position:relative;padding-top:26px;border-top:1px solid rgba(236,231,221,0.14)">
+            <span style="position:absolute;top:-6px;left:0;width:11px;height:11px;border-radius:50%;background:#0C0F14;border:1px solid rgba(236,231,221,0.28)"></span>
+            <div style="font-family:'Spline Sans Mono',monospace;font-size:12.5px;letter-spacing:0.1em;color:rgba(236,231,221,0.55)">V2</div>
+            <p style="margin:12px 0 0;font-size:15.5px;line-height:1.6;color:rgba(236,231,221,0.72)">STRK20 shielded transfers end-to-end, so the payments themselves are private on-chain, not only the amounts. Recurring schedules and alerting.</p>
+          </div>
+          <div style="position:relative;padding-top:26px;border-top:1px solid rgba(236,231,221,0.14)">
+            <span style="position:absolute;top:-6px;left:0;width:11px;height:11px;border-radius:50%;background:#0C0F14;border:1px solid rgba(236,231,221,0.28)"></span>
+            <div style="font-family:'Spline Sans Mono',monospace;font-size:12.5px;letter-spacing:0.1em;color:rgba(236,231,221,0.55)">V3</div>
+            <p style="margin:12px 0 0;font-size:15.5px;line-height:1.6;color:rgba(236,231,221,0.72)">Multi-asset treasuries, external review, and scale.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div style="max-width:1100px;margin:0 auto;padding:0 clamp(20px,5vw,40px)"><div style="display:flex;align-items:center;gap:18px"><span style="flex:1;height:1px;background:rgba(236,231,221,0.08)"></span><svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9" fill="#8C2F23"/><circle cx="12" cy="12" r="5.5" fill="none" stroke="#0C0F14" stroke-opacity="0.4" stroke-width="1.2"/><circle cx="12" cy="12" r="2" fill="#0C0F14" fill-opacity="0.3"/></svg><span style="flex:1;height:1px;background:rgba(236,231,221,0.08)"></span></div></div>
+
+    <section id="contact" style="padding:clamp(72px,12vh,140px) 0;scroll-margin-top:70px">
+      <div data-reveal style="max-width:720px;margin:0 auto;padding:0 clamp(20px,5vw,40px)">
+        <h2 style="font-family:Fraunces,Georgia,serif;font-variation-settings:'opsz' 120;font-weight:600;font-size:clamp(30px,4.6vw,48px);line-height:1.04;letter-spacing:-0.018em;color:#ECE7DD;margin:0;max-width:20ch">Put your operating account on autopilot.</h2>
+        <p style="margin:18px 0 0;font-size:clamp(16px,1.7vw,18px);line-height:1.6;color:rgba(236,231,221,0.72);max-width:54ch">Building on STRK20 and paying contributors who'd rather their comp stayed private? Book a call, or leave an address for testnet access.</p>
+        <div style="margin-top:30px">
+          <a href="{{ callUrl }}" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;background:#8C2F23;color:#ECE7DD;border:1px solid #8C2F23;padding:13px 24px;border-radius:5px;font-family:'Hanken Grotesk',sans-serif;font-size:15px;font-weight:500;text-decoration:none;transition:background .2s ease,border-color .2s ease" style-hover="background:#A1382B;border-color:#A1382B">book a call</a>
+        </div>
+        <div style="margin-top:34px;padding-top:30px;border-top:1px solid rgba(236,231,221,0.1)">
+          <sc-if value="{{ formOpen }}" hint-placeholder-val="{{ true }}">
+            <form onSubmit="{{ onSubmit }}" novalidate="true">
+              <div style="display:flex;flex-wrap:wrap;gap:10px;align-items:stretch">
+                <label for="chaum-email" style="position:absolute;left:-9999px">Email address</label>
+                <input id="chaum-email" type="email" inputmode="email" placeholder="you@treasury.eth" value="{{ email }}" onInput="{{ onEmail }}" style="{{ inputStyle }}">
+                <button type="submit" style="background:transparent;color:#ECE7DD;border:1px solid #8C2F23;padding:13px 22px;border-radius:5px;font-family:'Hanken Grotesk',sans-serif;font-size:15px;font-weight:500;cursor:pointer;transition:background .2s ease;white-space:nowrap" style-hover="background:#8C2F23">request access</button>
+              </div>
+              <p aria-live="polite" style="margin:10px 0 0;min-height:18px;font-family:'Spline Sans Mono',monospace;font-size:12.5px;letter-spacing:0.02em;color:#cf8a80">{{ formError }}</p>
+            </form>
+          </sc-if>
+          <sc-if value="{{ formDone }}" hint-placeholder-val="{{ false }}">
+            <p style="margin:0;display:flex;align-items:center;gap:9px;font-family:'Spline Sans Mono',monospace;font-size:14px;letter-spacing:0.03em;color:#3FA66A"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#3FA66A" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>on the list · watch the repo</p>
+          </sc-if>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <footer style="border-top:1px solid rgba(236,231,221,0.08);padding:clamp(40px,6vh,72px) 0">
+    <div style="max-width:1100px;margin:0 auto;padding:0 clamp(20px,5vw,40px);display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:20px">
+      <span style="display:inline-flex;align-items:baseline;gap:6px;font-family:Fraunces,Georgia,serif;font-variation-settings:'opsz' 40;font-weight:600;font-size:22px;letter-spacing:-0.02em;color:#ECE7DD">chaum<span style="width:7px;height:7px;border-radius:50%;background:#8C2F23;display:inline-block"></span></span>
+      <div style="display:flex;align-items:center;gap:22px;font-family:'Spline Sans Mono',monospace;font-size:13px">
+        <a href="/media-kit/" style="display:inline-flex;align-items:center;gap:6px;padding:7px 14px;border:1px solid rgba(236,231,221,0.22);border-radius:6px;color:rgba(236,231,221,0.85);text-decoration:none;transition:border-color .2s ease,color .2s ease" style-hover="border-color:#8C2F23;color:#ECE7DD">media kit ↗</a>
+        <a href="{{ githubUrl }}" target="_blank" rel="noopener" style="color:rgba(236,231,221,0.6);text-decoration:none;transition:color .2s ease" style-hover="color:#ECE7DD">github</a>
+        <a href="https://x.com" target="_blank" rel="noopener" style="color:rgba(236,231,221,0.6);text-decoration:none;transition:color .2s ease" style-hover="color:#ECE7DD">x</a>
+        <a href="{{ githubUrl }}" target="_blank" rel="noopener" style="color:rgba(236,231,221,0.6);text-decoration:none;transition:color .2s ease" style-hover="color:#ECE7DD">docs</a>
+      </div>
+    </div>
+    <div style="max-width:1100px;margin:18px auto 0;padding:0 clamp(20px,5vw,40px)">
+      <p style="margin:0;font-family:'Spline Sans Mono',monospace;font-size:12px;letter-spacing:0.04em;color:rgba(236,231,221,0.4)">a XXIX Labs project · built on starknet</p>
+    </div>
+  </footer>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{
+  &quot;defaultViewer&quot;: {&quot;editor&quot;: &quot;enum&quot;, &quot;options&quot;: [&quot;public&quot;, &quot;auditor&quot;, &quot;payee&quot;], &quot;default&quot;: &quot;public&quot;, &quot;tsType&quot;: &quot;string&quot;},
+  &quot;heroMotion&quot;: {&quot;editor&quot;: &quot;boolean&quot;, &quot;default&quot;: true, &quot;tsType&quot;: &quot;boolean&quot;}
+}">
+class Component extends DCLogic {
+  CALL_URL = "https://cal.com/chaum/intro";
+  GITHUB_URL = "https://github.com/kunaldrall29/Chaum";
+  FORM_ENDPOINT = "https://formspree.io/f/your-id";
+  AGG_PROOF = "0x9f3c…verified";
+  INCOME_PROOF = "0x4a1e…7d2b";
+
+  payees = [
+    { handle: "alice.stark", amount: 31200, isAlice: true },
+    { handle: "ben.stark", amount: 18400 },
+    { handle: "cyo.stark", amount: 24600 },
+    { handle: "dao-ops.stark", amount: 42000 },
+    { handle: "eli.stark", amount: 14800 },
+    { handle: "fern.stark", amount: 11800 },
+  ];
+  total = 142800;
+
+  state = {
+    scrolled: false,
+    email: "",
+    formStatus: "idle",
+    formError: "",
+    mobile: false,
+  };
+
+  rootRef = React.createRef();
+  canvasRef = React.createRef();
+  svgRef = React.createRef();
+  counterRef = React.createRef();
+
+  componentDidMount() {
+    this._rm = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    this._mq = window.matchMedia("(max-width: 760px)");
+    this.setState({ mobile: this._mq.matches });
+    this._onMq = (e) => this.setState({ mobile: e.matches });
+    this._mq.addEventListener("change", this._onMq);
+
+    this._onScroll = () => {
+      const s = window.scrollY > 8;
+      if (s !== this.state.scrolled) this.setState({ scrolled: s });
+    };
+    window.addEventListener("scroll", this._onScroll, { passive: true });
+
+    const motion = !this._rm && (this.props ? this.props.heroMotion !== false : true);
+    if (!this._rm) this.setupReveals();
+    if (motion) this.startCanvas();
+    else this.showStatic();
+
+    this._viewer = (this.props && this.props.defaultViewer) || "public";
+    this.applyDisclosure();
+    if (this._viewer === "auditor") this.typeProof("agg");
+    else if (this._viewer === "payee") this.typeProof("income");
+  }
+
+  componentWillUnmount() {
+    clearInterval(this._raf);
+    window.removeEventListener("scroll", this._onScroll);
+    if (this._mq && this._onMq) this._mq.removeEventListener("change", this._onMq);
+    if (this._revIo) this._revIo.disconnect();
+    clearInterval(this._typeTimer);
+  }
+
+  setupReveals() {
+    const root = this.rootRef.current;
+    if (!root) return;
+    this._revIo = new IntersectionObserver((ents) => {
+      ents.forEach((en) => {
+        if (en.isIntersecting) {
+          en.target.style.animation = "chaumUp .34s cubic-bezier(.2,.7,.2,1) both";
+          this._revIo.unobserve(en.target);
+        }
+      });
+    }, { threshold: 0.12, rootMargin: "0px 0px -5% 0px" });
+    const vh = window.innerHeight || 800;
+    root.querySelectorAll("[data-reveal]").forEach((el) => {
+      if (el.getBoundingClientRect().top > vh * 0.9) {
+        el.style.opacity = "0";
+        this._revIo.observe(el);
+      }
+    });
+  }
+
+  setViewer(key) {
+    this._viewer = key;
+    clearInterval(this._typeTimer);
+    this.applyDisclosure();
+    if (key === "auditor") this.typeProof("agg");
+    else if (key === "payee") this.typeProof("income");
+  }
+
+  applyDisclosure() {
+    const root = this.rootRef.current;
+    if (!root) return;
+    const v = this._viewer || "public";
+    const captions = {
+      public: "What anyone watching the chain sees.",
+      auditor: "Proves the total is correct \u2014 without revealing the split.",
+      payee: "Each recipient proves their own pay, and no one else's.",
+    };
+    root.querySelectorAll("[data-tab]").forEach((btn) => {
+      const active = btn.getAttribute("data-tab") === v;
+      btn.setAttribute("aria-selected", active ? "true" : "false");
+      btn.style.background = active ? "#0C0F14" : "transparent";
+      btn.style.color = active ? "#ECE7DD" : "rgba(236,231,221,0.55)";
+      btn.style.borderColor = active ? "rgba(236,231,221,0.12)" : "transparent";
+      btn.style.boxShadow = active ? "inset 0 -2px 0 #8C2F23" : "none";
+    });
+    const cap = root.querySelector("[data-caption]");
+    if (cap) cap.textContent = captions[v];
+    const key = root.querySelector("[data-keyline]");
+    if (key) key.style.display = v === "public" ? "none" : "flex";
+    root.querySelectorAll("[data-payrow]").forEach((rowEl) => {
+      const isAlice = rowEl.getAttribute("data-alice") === "true";
+      const revealed = v === "payee" && isAlice;
+      const bar = rowEl.querySelector("[data-bar]");
+      const amt = rowEl.querySelector("[data-amt]");
+      const tick = rowEl.querySelector("[data-tick]");
+      const inc = rowEl.querySelector("[data-income]");
+      if (bar) bar.style.transform = revealed ? "scaleX(0)" : "scaleX(1)";
+      if (amt) amt.style.opacity = revealed ? "1" : "0";
+      if (tick) tick.style.opacity = revealed ? "1" : "0";
+      if (inc) inc.style.display = revealed ? "flex" : "none";
+    });
+    const tp = root.querySelector("[data-totalproof]");
+    if (tp) tp.style.display = v === "auditor" ? "inline-flex" : "none";
+  }
+
+  typeProof(kind) {
+    const root = this.rootRef.current;
+    if (!root) return;
+    clearInterval(this._typeTimer);
+    let valEl, caretEl;
+    const full = kind === "agg" ? this.AGG_PROOF : this.INCOME_PROOF;
+    if (kind === "agg") {
+      valEl = root.querySelector("[data-aggval]");
+      caretEl = root.querySelector("[data-aggcaret]");
+    } else {
+      const aliceRow = root.querySelector('[data-payrow][data-alice="true"]');
+      valEl = aliceRow && aliceRow.querySelector("[data-incomeval]");
+      caretEl = aliceRow && aliceRow.querySelector("[data-incomecaret]");
+    }
+    if (!valEl) return;
+    valEl.textContent = "";
+    if (caretEl) { caretEl.style.display = "inline"; caretEl.style.animation = "chaumCaret 1s steps(1) infinite"; }
+    let i = 0;
+    this._typeTimer = setInterval(() => {
+      i++;
+      valEl.textContent = full.slice(0, i);
+      if (i >= full.length) { clearInterval(this._typeTimer); if (caretEl) caretEl.style.display = "none"; }
+    }, 34);
+  }
+
+  onSubmit = (e) => {
+    e.preventDefault();
+    const email = (this.state.email || "").trim();
+    const ok = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+    if (!ok) {
+      this.setState({ formStatus: "error", formError: "enter a valid email" });
+      return;
+    }
+    this.setState({ formStatus: "success", formError: "" });
+    try {
+      fetch(this.FORM_ENDPOINT, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ email }) }).catch(() => {});
+    } catch (_) {}
+  };
+
+  scrollTo(id) {
+    const el = document.getElementById(id);
+    if (!el) return;
+    const y = el.getBoundingClientRect().top + window.scrollY - 70;
+    window.scrollTo({ top: y, behavior: this._rm ? "auto" : "smooth" });
+  }
+
+  startCanvas() {
+    const canvas = this.canvasRef.current, svg = this.svgRef.current;
+    if (!canvas) { this.showStatic(); return; }
+    if (svg) svg.style.display = "none";
+    canvas.style.display = "block";
+
+    this._notes = [];
+    this._recipPulse = [0, 0, 0, 0, 0, 0];
+    this._landed = 0;
+    this._displayed = 0;
+    this._spawnIdx = 0;
+    this._phase = "running";
+    this._lastSpawn = 0;
+    this._holdStart = 0;
+    this._lastTs = performance.now();
+    if (this.counterRef.current) this.counterRef.current.textContent = "0";
+
+    const tick = () => {
+      const t = performance.now();
+      const cel = this.canvasRef.current;
+      let vis = true;
+      if (cel) { const cr = cel.getBoundingClientRect(); vis = cr.bottom > -40 && cr.top < (window.innerHeight || 800) + 40; }
+      if (!vis) { this._lastTs = t; return; }
+      const dt = Math.min(80, t - this._lastTs);
+      this._lastTs = t;
+      this.step(t, dt);
+      this.draw();
+    };
+    this.draw();
+    setTimeout(() => this.draw(), 80);
+    this._raf = setInterval(tick, 33);
+  }
+
+  showStatic() {
+    if (this.counterRef.current) this.counterRef.current.textContent = "142,800";
+  }
+
+  step(t, dt) {
+    const amounts = this.payees.map((p) => p.amount);
+    if (this._phase === "running") {
+      if (this._spawnIdx < 6 && t - this._lastSpawn > 1350) {
+        this._notes.push({ i: this._spawnIdx, amount: amounts[this._spawnIdx], p: 0, counted: false });
+        this._lastSpawn = t; this._spawnIdx++;
+      }
+      this._notes.forEach((n) => {
+        if (n.p < 1) {
+          n.p = Math.min(1, n.p + dt / 3200);
+          if (n.p >= 1 && !n.counted) { n.counted = true; this._landed += n.amount; this._recipPulse[n.i] = t; }
+        }
+      });
+      if (this._spawnIdx >= 6 && this._notes.every((n) => n.p >= 1)) { this._phase = "hold"; this._holdStart = t; }
+    } else if (this._phase === "hold") {
+      if (t - this._holdStart > 2600) {
+        this._phase = "running"; this._notes = []; this._spawnIdx = 0; this._landed = 0; this._displayed = 0; this._lastSpawn = t;
+      }
+    }
+    this._displayed += (this._landed - this._displayed) * Math.min(1, dt / 180);
+    if (this.counterRef.current) this.counterRef.current.textContent = Math.round(this._displayed).toLocaleString("en-US");
+  }
+
+  _rr(ctx, x, y, w, h, r) {
+    ctx.beginPath();
+    ctx.moveTo(x + r, y);
+    ctx.arcTo(x + w, y, x + w, y + h, r);
+    ctx.arcTo(x + w, y + h, x, y + h, r);
+    ctx.arcTo(x, y + h, x, y, r);
+    ctx.arcTo(x, y, x + w, y, r);
+    ctx.closePath();
+  }
+
+  _bez(p0, c, p1, t) {
+    const u = 1 - t;
+    return { x: u * u * p0.x + 2 * u * t * c.x + t * t * p1.x, y: u * u * p0.y + 2 * u * t * c.y + t * t * p1.y };
+  }
+
+  draw() {
+    const canvas = this.canvasRef.current;
+    if (!canvas) return;
+    const r = canvas.getBoundingClientRect();
+    const W = r.width, H = r.height;
+    if (!W || !H) return;
+    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+    if (canvas.width !== Math.round(W * dpr)) { canvas.width = Math.round(W * dpr); canvas.height = Math.round(H * dpr); }
+    const ctx = canvas.getContext("2d");
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    ctx.clearRect(0, 0, W, H);
+    const tre = { x: W / 2, y: 42 };
+    const m = Math.max(38, W * 0.07);
+    const recips = [];
+    for (let i = 0; i < 6; i++) recips.push({ x: m + (W - 2 * m) * (i / 5), y: H - 50 });
+    const ctrl = (rr) => ({ x: (tre.x + rr.x) / 2, y: tre.y + (H - tre.y) * 0.52 });
+    const top = { x: tre.x, y: tre.y + 14 };
+
+    ctx.lineWidth = 1;
+    recips.forEach((rr) => {
+      const c = ctrl(rr);
+      ctx.strokeStyle = "rgba(236,231,221,0.07)";
+      ctx.beginPath(); ctx.moveTo(top.x, top.y); ctx.quadraticCurveTo(c.x, c.y, rr.x, rr.y - 9); ctx.stroke();
+    });
+
+    const now = performance.now();
+    recips.forEach((rr, i) => {
+      const pulse = this._recipPulse[i] ? Math.max(0, 1 - (now - this._recipPulse[i]) / 900) : 0;
+      if (pulse > 0) { ctx.beginPath(); ctx.arc(rr.x, rr.y, 9 + 9 * pulse, 0, Math.PI * 2); ctx.strokeStyle = "rgba(140,47,35," + (0.5 * pulse) + ")"; ctx.lineWidth = 1.3; ctx.stroke(); }
+      ctx.beginPath(); ctx.arc(rr.x, rr.y, 8, 0, Math.PI * 2);
+      ctx.fillStyle = "#1A1E26"; ctx.fill();
+      ctx.strokeStyle = "rgba(236,231,221,0.16)"; ctx.lineWidth = 1; ctx.stroke();
+      ctx.fillStyle = "rgba(236,231,221,0.16)"; this._rr(ctx, rr.x - 11, rr.y + 14, 22, 4, 1); ctx.fill();
+    });
+
+    ctx.fillStyle = "#1A1E26"; this._rr(ctx, tre.x - 30, tre.y - 15, 60, 30, 5); ctx.fill();
+    ctx.strokeStyle = "rgba(236,231,221,0.18)"; ctx.lineWidth = 1; this._rr(ctx, tre.x - 30, tre.y - 15, 60, 30, 5); ctx.stroke();
+    ctx.beginPath(); ctx.arc(tre.x, tre.y, 4.5, 0, Math.PI * 2); ctx.fillStyle = "#8C2F23"; ctx.fill();
+    ctx.font = '500 10px "Spline Sans Mono", monospace'; ctx.fillStyle = "rgba(236,231,221,0.5)"; ctx.textAlign = "center"; ctx.fillText("TREASURY", tre.x, tre.y - 22);
+
+    this._notes.forEach((n) => {
+      if (n.p >= 1) return;
+      const rr = recips[n.i], c = ctrl(rr);
+      const pt = this._bez(top, c, { x: rr.x, y: rr.y - 9 }, n.p);
+      const w = 46, h = 26;
+      ctx.save(); ctx.translate(pt.x, pt.y);
+      ctx.globalAlpha = n.p < 0.08 ? n.p / 0.08 : 1;
+      ctx.fillStyle = "#20252F"; this._rr(ctx, -w / 2, -h / 2, w, h, 3); ctx.fill();
+      ctx.strokeStyle = "rgba(236,231,221,0.14)"; ctx.lineWidth = 1; this._rr(ctx, -w / 2, -h / 2, w, h, 3); ctx.stroke();
+      ctx.fillStyle = "#0E1218"; this._rr(ctx, -w / 2 + 7, -3, 24, 7, 1); ctx.fill();
+      ctx.beginPath(); ctx.arc(-w / 2 + 11, -8, 2.2, 0, Math.PI * 2); ctx.fillStyle = "rgba(236,231,221,0.4)"; ctx.fill();
+      ctx.beginPath(); ctx.arc(w / 2 - 8, 8, 2.6, 0, Math.PI * 2); ctx.fillStyle = "#8C2F23"; ctx.fill();
+      ctx.restore();
+    });
+    ctx.globalAlpha = 1; ctx.textAlign = "left";
+  }
+
+  renderVals() {
+    const rows = this.payees.map((p, i) => ({
+      idx: String(i + 1).padStart(2, "0"),
+      handle: p.handle,
+      amountText: "$" + p.amount.toLocaleString("en-US"),
+      isAlice: !!p.isAlice,
+    }));
+    return {
+      rootRef: this.rootRef,
+      canvasRef: this.canvasRef,
+      svgRef: this.svgRef,
+      counterRef: this.counterRef,
+      callUrl: this.CALL_URL,
+      githubUrl: this.GITHUB_URL,
+      navScrimStyle: { position: "absolute", inset: 0, background: "rgba(12,15,20,0.82)", backdropFilter: "blur(14px)", WebkitBackdropFilter: "blur(14px)", borderBottom: "1px solid rgba(236,231,221,0.08)", opacity: this.state.scrolled ? 1 : 0, transition: "opacity .3s ease", pointerEvents: "none" },
+      showNavLinks: !this.state.mobile,
+      rows,
+      selPublic: () => this.setViewer("public"),
+      selAuditor: () => this.setViewer("auditor"),
+      selPayee: () => this.setViewer("payee"),
+      goDisclosure: () => this.scrollTo("disclosure"),
+      goHow: () => this.scrollTo("how"),
+      goCompliance: () => this.scrollTo("compliance"),
+      goTop: () => this.scrollTo("top"),
+      email: this.state.email,
+      onEmail: (e) => this.setState({ email: e.target.value, formStatus: "idle", formError: "" }),
+      onSubmit: this.onSubmit,
+      formError: this.state.formError,
+      formOpen: this.state.formStatus !== "success",
+      formDone: this.state.formStatus === "success",
+      inputStyle: this.state.formStatus === "error"
+        ? { flex: "1 1 220px", minWidth: 0, background: "#0C0F14", border: "1px solid #8C2F23", color: "#ECE7DD", padding: "13px 14px", borderRadius: "5px", fontFamily: '"Hanken Grotesk",sans-serif', fontSize: "15px" }
+        : { flex: "1 1 220px", minWidth: 0, background: "#0C0F14", border: "1px solid rgba(236,231,221,0.16)", color: "#ECE7DD", padding: "13px 14px", borderRadius: "5px", fontFamily: '"Hanken Grotesk",sans-serif', fontSize: "15px" },
+    };
+  }
+}
+</script>
+</body>
+</html>

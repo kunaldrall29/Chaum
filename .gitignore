@@ -1,0 +1,40 @@
+# Cairo / Scarb / Foundry
+target/
+.snfoundry_cache/
+**/Scarb.lock
+
+# Node / TS
+node_modules/
+dist/
+build/
+*.tsbuildinfo
+.pnpm-store/
+
+# Env & secrets (NEVER commit)
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+
+# Agent runtime state
+*.sqlite
+*.sqlite-journal
+*.db
+agent/data/
+
+# Logs
+*.log
+logs/
+
+# Editor / OS
+.DS_Store
+.idea/
+.vscode/
+*.swp
+
+# Local Claude Code settings
+.claude/settings.local.json
+
+# Deploy artifacts (addresses tracked in docs/DEPLOYMENTS.md instead)
+deployments/*.local.json

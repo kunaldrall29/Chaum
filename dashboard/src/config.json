@@ -1,0 +1,504 @@
+{
+  "rpcUrl": "https://api.cartridge.gg/x/starknet/sepolia",
+  "explorer": "https://sepolia.voyager.online",
+  "chainId": "SN_SEPOLIA",
+  "addresses": {
+    "token": "0xdfe2463b1350496e9615dd777226e699535d2850cb8af2d5c63b13e092556c",
+    "registry": "0x6126696449e1d97009b02cc0e8bb9f354def6bc21bc389bf91ee0de7bc9f212",
+    "vault": "0x1882996f9033b26e39533255fac09ebada3a436460cff470d0347472e10849a",
+    "adapter": "0x7e027a60d854183381dd1013d8d9fb4bf78408d0139f970ddbbd4e55df7b6e4",
+    "executor": "0x7712ac81ab58d76e89431ec6938db95c4dcd7b1b4f2792614b799c063e4aa49",
+    "kyt": "0x544421e64a22a2ad4bb68d2f8bb29bc58992e58028b26372266242d384d89d1"
+  },
+  "owner": "0x020cc09b5ceff6ccb001071bbc1507a8224892e4bde893501de0e69fe10de4f2",
+  "agent": "0x020cc09b5ceff6ccb001071bbc1507a8224892e4bde893501de0e69fe10de4f2",
+  "roles": {
+    "auditor": "0x6dccc5f7351b50ea59fd6cfc697f5d13df7941d31130183ca320a0b1b4dc655",
+    "stakeholder": "0x392e5a03e359d59cd5dbf65fa5c95dfcff321362e3efcb5cc13150c29fcf5d0",
+    "payee": "0x132f8e6b765cde263ab9d53408ea236df0359239f2e03925adf5e70f47ae0c3"
+  },
+  "denied": "0x1fde91a1cf124edb81faaaf2b55366d04496d2003f704a2c314f80697d482ac",
+  "streams": [
+    "payroll",
+    "vendor",
+    "grant"
+  ],
+  "payeeRoot": "0x36368bf390ee9dae8ccc230eac9ff4ff858088cdefee775a5e8ba1066181d85",
+  "cycles": [
+    {
+      "cycleId": 1,
+      "txHash": "0x5bb46ee32a6651611b3e2e74125ee839db55d6fbb1129c703101ebc52f90c7d",
+      "verified": true,
+      "payouts": [
+        {
+          "label": "alice.stark",
+          "payee": "0x132f8e6b765cde263ab9d53408ea236df0359239f2e03925adf5e70f47ae0c3",
+          "stream": "payroll",
+          "denied": false,
+          "amount": "3200",
+          "blinding": "1699896365618827824911929305807226236607744815270564689432458352123075286971",
+          "commitment": {
+            "x": "0x3fd226c2978c5d0232c3ba129a460e57a0ed13ed9d7e38bc89f0cd76ed054fd",
+            "y": "0x215cb4bf3fe3f577c9c9315bc5d744ea50a14a4effa9a72c5eaad8943ea39cb"
+          }
+        },
+        {
+          "label": "ben.stark",
+          "payee": "0xe3c0f0395fd2067532259495f8dae62e41b8c70bce04890ae59832594e8314",
+          "stream": "payroll",
+          "denied": false,
+          "amount": "1840",
+          "blinding": "2773312930804664365856607708471802036813779176034676285898003136460682861603",
+          "commitment": {
+            "x": "0x3a6f410c3f38a43ffedd685025191afdd13e80ebdcbca3be11c1094d1344a28",
+            "y": "0x7ef540f19f71a5901813472a823272f2464c9a7b2bf0a67e1b1001aeca945bf"
+          }
+        },
+        {
+          "label": "cyo.stark",
+          "payee": "0x36c83a7206dc7498e06686004ac18e0d2216484c5904feb2e568b2b0ea49c26",
+          "stream": "payroll",
+          "denied": false,
+          "amount": "2460",
+          "blinding": "2716806942601123689974680781044943500044788247634021164828469695553354936813",
+          "commitment": {
+            "x": "0x7f7c202c8873b5b34c65681ccbcfefb4293de10b4dc941b953f4318533706b2",
+            "y": "0x45d468dd4213d14b51f8c2409dcdd358a4baf048204642641246bdd2dec20b6"
+          }
+        },
+        {
+          "label": "dave.stark",
+          "payee": "0x1dc0962210e67ba1ade847775d2704994ee7d4429f658244824e669575c632b",
+          "stream": "payroll",
+          "denied": false,
+          "amount": "4200",
+          "blinding": "1936446205407659735086512244035292611747551361206564534856049410624334309840",
+          "commitment": {
+            "x": "0x74a3e099bf9e15b303ecd35171c22437b39b1ae8552d777e08c2af4adc3534b",
+            "y": "0x18a6bb80cdbb02c82f7a7eb7de42d8f57093716f544e071b60ffd648e1e9909"
+          }
+        },
+        {
+          "label": "erin.stark",
+          "payee": "0x5143f984d2ba487bb72e5f313dfdc9afff49f186986b47e4b8b21abb5f740c7",
+          "stream": "payroll",
+          "denied": false,
+          "amount": "1480",
+          "blinding": "2791270676208625042532340053726460787417732497048873063299692718839316441914",
+          "commitment": {
+            "x": "0x120d596be36bb3b30eac99b040d5657d61683fb8718cc54ecea321e5b629716",
+            "y": "0x58f522924c90d1cabe532b72b7ef0619706705e586dba5dd4524f910a72ec8e"
+          }
+        },
+        {
+          "label": "frank.stark",
+          "payee": "0x38e5ef02e3341f1e3aec6e6945d584ae5300058db80aba215409831f6d21120",
+          "stream": "payroll",
+          "denied": false,
+          "amount": "1180",
+          "blinding": "3493014859119911438517603529687666330278889439088833130420013908236630266714",
+          "commitment": {
+            "x": "0x6f89bf2798c37e7f06ecec5291c51258b89b55092805201d120a94062553e66",
+            "y": "0xbcf75d7955689ceaf355e4b7ba35108a272155e5f764144c907572bb968bc6"
+          }
+        },
+        {
+          "label": "grace.stark",
+          "payee": "0x2cd768ced5e3c242ec41360f3ef85deec9be3ae12ef37ee6a4000f4b64086aa",
+          "stream": "payroll",
+          "denied": false,
+          "amount": "2750",
+          "blinding": "953740365827968314893055717286171292034709794876047074592505556336957474278",
+          "commitment": {
+            "x": "0x461e9c1f5102588311d62c6cae1a601dcfc71e709e6d972676e1d25035df49c",
+            "y": "0x6863ce5828945b87441e86eb7349f115d1dbd4b666bf103bca32e4141f873e0"
+          }
+        },
+        {
+          "label": "atlas-audit.stark",
+          "payee": "0x6d2d3226f02c077f4e628e18755435da529a491f81fd71d01856fe45965c3fb",
+          "stream": "vendor",
+          "denied": false,
+          "amount": "6000",
+          "blinding": "2791085936612810519396291539734386750957708971608419376772518646051324275653",
+          "commitment": {
+            "x": "0xbe205375b77e65f688ef863b83ccf3419e093c84556ad6fc1e59e052d4b3e3",
+            "y": "0x660ef3e44b058b1a5e21c5ccca519ba7be75768315c7e9634ed708a94a47477"
+          }
+        },
+        {
+          "label": "node-ops.stark",
+          "payee": "0x1fde91a1cf124edb81faaaf2b55366d04496d2003f704a2c314f80697d482ac",
+          "stream": "vendor",
+          "denied": true,
+          "amount": "3800",
+          "blinding": "3321764696538419950581272227484256869232405172096293869751992474390610664493",
+          "commitment": {
+            "x": "0x3e68c67665415746af9a9e6d0a69ade6a878d643ad04f28b524a0467e73a65e",
+            "y": "0x615b6cec5a1a690e005db826bd18d5434ab9290078ac2baf476ccbf6895b8e0"
+          }
+        },
+        {
+          "label": "cloud-host.stark",
+          "payee": "0x52a6c2707d5e9dabe1b7477cabddc3eac13493c19d900bb98922169fcc59a45",
+          "stream": "vendor",
+          "denied": false,
+          "amount": "2200",
+          "blinding": "3451774480796779553975425882477053762220486659301399960055981146098153206956",
+          "commitment": {
+            "x": "0x60a4e999259079320f3128e9273181cafb4537c840dc919f69c906ddb81c8d9",
+            "y": "0x6d5e588d1d0686eb6231abf16f863a221cd68eda3d8f83cf590a58156622189"
+          }
+        },
+        {
+          "label": "grant-014.stark",
+          "payee": "0x73490a8462a793d2ccb4b9c050cce6acd517aafb8354b6d70b4f65476fb8b5c",
+          "stream": "grant",
+          "denied": false,
+          "amount": "8000",
+          "blinding": "2537109335844859411634225176256445036710176601738422911838799218955550860409",
+          "commitment": {
+            "x": "0x177f9922549adcf140e99a085593d3ac8dc102e8eb236b0b69c86ff058d3328",
+            "y": "0x726ba832998580b2bb837a95c99d82a9bbcfe0b67a607592e97c58571592901"
+          }
+        },
+        {
+          "label": "grant-022.stark",
+          "payee": "0x10dd9c5906e410c770fbede301b71501e5da9d571a7894e99dcb440f61da6be",
+          "stream": "grant",
+          "denied": false,
+          "amount": "5000",
+          "blinding": "2098809273286116615507477621963640849198941802265718013879319997676745855135",
+          "commitment": {
+            "x": "0x7908700983e9c6e1c368940a8292b6766a645898a1ab3b89c90f0b7410a3991",
+            "y": "0x5e6fc05d91a0f22a4b8085ca6acd9137e4d7baa89c1e2be45cc81ef19ee80e6"
+          }
+        }
+      ],
+      "total": "38310",
+      "deniedTotal": "3800",
+      "streamTotals": {
+        "payroll": "17110",
+        "vendor": "8200",
+        "grant": "13000"
+      }
+    },
+    {
+      "cycleId": 2,
+      "txHash": "0x29b62418d811680962885c7c1746b45b770e330834a1625e4a600b1b13822ea",
+      "verified": true,
+      "payouts": [
+        {
+          "label": "alice.stark",
+          "payee": "0x132f8e6b765cde263ab9d53408ea236df0359239f2e03925adf5e70f47ae0c3",
+          "stream": "payroll",
+          "denied": false,
+          "amount": "3200",
+          "blinding": "646339642764251965605377515619657528890823277128947859202656539695918378496",
+          "commitment": {
+            "x": "0x2322a927e590602da71d293223e0c07bc049781cefd4d16d2571643df220a11",
+            "y": "0x4c3296c3996d2a47d0d057be7163c5f480871d5fc3751be6826c6c608121b6"
+          }
+        },
+        {
+          "label": "ben.stark",
+          "payee": "0xe3c0f0395fd2067532259495f8dae62e41b8c70bce04890ae59832594e8314",
+          "stream": "payroll",
+          "denied": false,
+          "amount": "1840",
+          "blinding": "2207745277152878120176690862590699299362891524279945362508509422267917733068",
+          "commitment": {
+            "x": "0x80b604e824050bfc40c2c6a61aa2dd8b13dab5e26fd7e30f516840b1a91105",
+            "y": "0x604f7dbf1e359d8869451ed3596b396012643ebd9fca6ff09ec99a9b942b682"
+          }
+        },
+        {
+          "label": "cyo.stark",
+          "payee": "0x36c83a7206dc7498e06686004ac18e0d2216484c5904feb2e568b2b0ea49c26",
+          "stream": "payroll",
+          "denied": false,
+          "amount": "2460",
+          "blinding": "447243521047197294679825285016825780325137620675429120130503924443726685544",
+          "commitment": {
+            "x": "0x7bd52cbacbae242c4a75d4dd16de8723adf12c985af4dc53a2e32999dada967",
+            "y": "0x44e175077240faa34cec531a18a451e5c75250954482ae250006a1ed8d0b172"
+          }
+        },
+        {
+          "label": "dave.stark",
+          "payee": "0x1dc0962210e67ba1ade847775d2704994ee7d4429f658244824e669575c632b",
+          "stream": "payroll",
+          "denied": false,
+          "amount": "4200",
+          "blinding": "3421867442951975931683682474412420355244916681435512073546525944417692826763",
+          "commitment": {
+            "x": "0x54f2d8f11fb388c5f14740ca5e474ad527b2af98d0eb9cb9be9bbd5a38886de",
+            "y": "0x223607a1d39fe61ee67156f32ea297d391b90c3a99d9e9d0274b53fee73ad0c"
+          }
+        },
+        {
+          "label": "erin.stark",
+          "payee": "0x5143f984d2ba487bb72e5f313dfdc9afff49f186986b47e4b8b21abb5f740c7",
+          "stream": "payroll",
+          "denied": false,
+          "amount": "1480",
+          "blinding": "625159721759798154296939076557732322836942846574841131671244682404654889077",
+          "commitment": {
+            "x": "0x698bb518767abcb8991d1a43dea3b3f2e7f5395fe37827c7ced148e4a490408",
+            "y": "0x11da80bd3b77fa471e87d6e1106ce9477fe11d7ebfb60b398e533be771effd"
+          }
+        },
+        {
+          "label": "frank.stark",
+          "payee": "0x38e5ef02e3341f1e3aec6e6945d584ae5300058db80aba215409831f6d21120",
+          "stream": "payroll",
+          "denied": false,
+          "amount": "1180",
+          "blinding": "729466876018795532173055629789321809259754999317481725697988791755957117977",
+          "commitment": {
+            "x": "0x51e6cdbd928436421ca26e24d857d13b23ddfcfb5525acd2e392aae1c588a93",
+            "y": "0x719ad161b038f01735f2f522d8da42b686d6176b8325650e54d7b582d4d8452"
+          }
+        },
+        {
+          "label": "grace.stark",
+          "payee": "0x2cd768ced5e3c242ec41360f3ef85deec9be3ae12ef37ee6a4000f4b64086aa",
+          "stream": "payroll",
+          "denied": false,
+          "amount": "2750",
+          "blinding": "3533488945869556933275772725714728060416384168278777130773144330039585659547",
+          "commitment": {
+            "x": "0x4339e5fd096b1711028a1d561fa69128bee5adba5361b6fa3cdb6398222de2b",
+            "y": "0x6269d47ba02771bdd52bc5ed37a97f8530bbc81797f0774f5e6a51ca2c1d0a3"
+          }
+        },
+        {
+          "label": "atlas-audit.stark",
+          "payee": "0x6d2d3226f02c077f4e628e18755435da529a491f81fd71d01856fe45965c3fb",
+          "stream": "vendor",
+          "denied": false,
+          "amount": "6000",
+          "blinding": "312595912286960196374467543497670821225513982911851547080929453061572751785",
+          "commitment": {
+            "x": "0x457e01c6a6c9f388d84c3151a5f1afb57cbe9ec13195ebed25c79dfae1be9c0",
+            "y": "0x3ae7f523a35005d8771db4f07bde63d82a0c1fb263f7073c534e405e4a8623c"
+          }
+        },
+        {
+          "label": "node-ops.stark",
+          "payee": "0x1fde91a1cf124edb81faaaf2b55366d04496d2003f704a2c314f80697d482ac",
+          "stream": "vendor",
+          "denied": true,
+          "amount": "3800",
+          "blinding": "350001324502562694094437381891670089576813781551877382809230493017746331033",
+          "commitment": {
+            "x": "0x1837bc9557be3d53781ead96d85573dbfdc9ca5e02c22c94712b98ef60aefa6",
+            "y": "0x28606899dcd5c499d832264bcab86cde063cf22f3e32cf05cd6de27161f61d2"
+          }
+        },
+        {
+          "label": "cloud-host.stark",
+          "payee": "0x52a6c2707d5e9dabe1b7477cabddc3eac13493c19d900bb98922169fcc59a45",
+          "stream": "vendor",
+          "denied": false,
+          "amount": "2200",
+          "blinding": "2342614953262581945479518144143741260677665922736299940321477911498431109219",
+          "commitment": {
+            "x": "0x150b0073115734712cde58daaa8ce9c96bb34541ea75e368961f44eed499d24",
+            "y": "0x5ed01ec2eedf1b235b63e8f1ea76cedeeb72052cf60a610ed253e875601b947"
+          }
+        },
+        {
+          "label": "grant-014.stark",
+          "payee": "0x73490a8462a793d2ccb4b9c050cce6acd517aafb8354b6d70b4f65476fb8b5c",
+          "stream": "grant",
+          "denied": false,
+          "amount": "8000",
+          "blinding": "211616060327691999784061615297812987843296015699001125011164363325199181643",
+          "commitment": {
+            "x": "0x79c2fdb9938ac5e8c19c6c71ce297bf88bd49d7c1eef535f88cf7e6aee4fa08",
+            "y": "0x59873d6f55870d88e6bc79f830bbc31639658017fa2c9d6113055a945b2761a"
+          }
+        },
+        {
+          "label": "grant-022.stark",
+          "payee": "0x10dd9c5906e410c770fbede301b71501e5da9d571a7894e99dcb440f61da6be",
+          "stream": "grant",
+          "denied": false,
+          "amount": "5000",
+          "blinding": "1125853247525008137736328269999966056835497186035663240745630150970394198763",
+          "commitment": {
+            "x": "0x50ed4adbb1faf67a517c98f7c86bb2323ecadf18c1371002ba3b2ee957ac5c4",
+            "y": "0x314a6040c9fe8173bb1879b9dff9f83bdfd0fef40a08dfe1f1947d725568611"
+          }
+        }
+      ],
+      "total": "38310",
+      "deniedTotal": "3800",
+      "streamTotals": {
+        "payroll": "17110",
+        "vendor": "8200",
+        "grant": "13000"
+      }
+    }
+  ],
+  "demoCycle": {
+    "cycleId": 1,
+    "txHash": "0x5bb46ee32a6651611b3e2e74125ee839db55d6fbb1129c703101ebc52f90c7d",
+    "verified": true,
+    "payouts": [
+      {
+        "label": "alice.stark",
+        "payee": "0x132f8e6b765cde263ab9d53408ea236df0359239f2e03925adf5e70f47ae0c3",
+        "stream": "payroll",
+        "denied": false,
+        "amount": "3200",
+        "blinding": "1699896365618827824911929305807226236607744815270564689432458352123075286971",
+        "commitment": {
+          "x": "0x3fd226c2978c5d0232c3ba129a460e57a0ed13ed9d7e38bc89f0cd76ed054fd",
+          "y": "0x215cb4bf3fe3f577c9c9315bc5d744ea50a14a4effa9a72c5eaad8943ea39cb"
+        }
+      },
+      {
+        "label": "ben.stark",
+        "payee": "0xe3c0f0395fd2067532259495f8dae62e41b8c70bce04890ae59832594e8314",
+        "stream": "payroll",
+        "denied": false,
+        "amount": "1840",
+        "blinding": "2773312930804664365856607708471802036813779176034676285898003136460682861603",
+        "commitment": {
+          "x": "0x3a6f410c3f38a43ffedd685025191afdd13e80ebdcbca3be11c1094d1344a28",
+          "y": "0x7ef540f19f71a5901813472a823272f2464c9a7b2bf0a67e1b1001aeca945bf"
+        }
+      },
+      {
+        "label": "cyo.stark",
+        "payee": "0x36c83a7206dc7498e06686004ac18e0d2216484c5904feb2e568b2b0ea49c26",
+        "stream": "payroll",
+        "denied": false,
+        "amount": "2460",
+        "blinding": "2716806942601123689974680781044943500044788247634021164828469695553354936813",
+        "commitment": {
+          "x": "0x7f7c202c8873b5b34c65681ccbcfefb4293de10b4dc941b953f4318533706b2",
+          "y": "0x45d468dd4213d14b51f8c2409dcdd358a4baf048204642641246bdd2dec20b6"
+        }
+      },
+      {
+        "label": "dave.stark",
+        "payee": "0x1dc0962210e67ba1ade847775d2704994ee7d4429f658244824e669575c632b",
+        "stream": "payroll",
+        "denied": false,
+        "amount": "4200",
+        "blinding": "1936446205407659735086512244035292611747551361206564534856049410624334309840",
+        "commitment": {
+          "x": "0x74a3e099bf9e15b303ecd35171c22437b39b1ae8552d777e08c2af4adc3534b",
+          "y": "0x18a6bb80cdbb02c82f7a7eb7de42d8f57093716f544e071b60ffd648e1e9909"
+        }
+      },
+      {
+        "label": "erin.stark",
+        "payee": "0x5143f984d2ba487bb72e5f313dfdc9afff49f186986b47e4b8b21abb5f740c7",
+        "stream": "payroll",
+        "denied": false,
+        "amount": "1480",
+        "blinding": "2791270676208625042532340053726460787417732497048873063299692718839316441914",
+        "commitment": {
+          "x": "0x120d596be36bb3b30eac99b040d5657d61683fb8718cc54ecea321e5b629716",
+          "y": "0x58f522924c90d1cabe532b72b7ef0619706705e586dba5dd4524f910a72ec8e"
+        }
+      },
+      {
+        "label": "frank.stark",
+        "payee": "0x38e5ef02e3341f1e3aec6e6945d584ae5300058db80aba215409831f6d21120",
+        "stream": "payroll",
+        "denied": false,
+        "amount": "1180",
+        "blinding": "3493014859119911438517603529687666330278889439088833130420013908236630266714",
+        "commitment": {
+          "x": "0x6f89bf2798c37e7f06ecec5291c51258b89b55092805201d120a94062553e66",
+          "y": "0xbcf75d7955689ceaf355e4b7ba35108a272155e5f764144c907572bb968bc6"
+        }
+      },
+      {
+        "label": "grace.stark",
+        "payee": "0x2cd768ced5e3c242ec41360f3ef85deec9be3ae12ef37ee6a4000f4b64086aa",
+        "stream": "payroll",
+        "denied": false,
+        "amount": "2750",
+        "blinding": "953740365827968314893055717286171292034709794876047074592505556336957474278",
+        "commitment": {
+          "x": "0x461e9c1f5102588311d62c6cae1a601dcfc71e709e6d972676e1d25035df49c",
+          "y": "0x6863ce5828945b87441e86eb7349f115d1dbd4b666bf103bca32e4141f873e0"
+        }
+      },
+      {
+        "label": "atlas-audit.stark",
+        "payee": "0x6d2d3226f02c077f4e628e18755435da529a491f81fd71d01856fe45965c3fb",
+        "stream": "vendor",
+        "denied": false,
+        "amount": "6000",
+        "blinding": "2791085936612810519396291539734386750957708971608419376772518646051324275653",
+        "commitment": {
+          "x": "0xbe205375b77e65f688ef863b83ccf3419e093c84556ad6fc1e59e052d4b3e3",
+          "y": "0x660ef3e44b058b1a5e21c5ccca519ba7be75768315c7e9634ed708a94a47477"
+        }
+      },
+      {
+        "label": "node-ops.stark",
+        "payee": "0x1fde91a1cf124edb81faaaf2b55366d04496d2003f704a2c314f80697d482ac",
+        "stream": "vendor",
+        "denied": true,
+        "amount": "3800",
+        "blinding": "3321764696538419950581272227484256869232405172096293869751992474390610664493",
+        "commitment": {
+          "x": "0x3e68c67665415746af9a9e6d0a69ade6a878d643ad04f28b524a0467e73a65e",
+          "y": "0x615b6cec5a1a690e005db826bd18d5434ab9290078ac2baf476ccbf6895b8e0"
+        }
+      },
+      {
+        "label": "cloud-host.stark",
+        "payee": "0x52a6c2707d5e9dabe1b7477cabddc3eac13493c19d900bb98922169fcc59a45",
+        "stream": "vendor",
+        "denied": false,
+        "amount": "2200",
+        "blinding": "3451774480796779553975425882477053762220486659301399960055981146098153206956",
+        "commitment": {
+          "x": "0x60a4e999259079320f3128e9273181cafb4537c840dc919f69c906ddb81c8d9",
+          "y": "0x6d5e588d1d0686eb6231abf16f863a221cd68eda3d8f83cf590a58156622189"
+        }
+      },
+      {
+        "label": "grant-014.stark",
+        "payee": "0x73490a8462a793d2ccb4b9c050cce6acd517aafb8354b6d70b4f65476fb8b5c",
+        "stream": "grant",
+        "denied": false,
+        "amount": "8000",
+        "blinding": "2537109335844859411634225176256445036710176601738422911838799218955550860409",
+        "commitment": {
+          "x": "0x177f9922549adcf140e99a085593d3ac8dc102e8eb236b0b69c86ff058d3328",
+          "y": "0x726ba832998580b2bb837a95c99d82a9bbcfe0b67a607592e97c58571592901"
+        }
+      },
+      {
+        "label": "grant-022.stark",
+        "payee": "0x10dd9c5906e410c770fbede301b71501e5da9d571a7894e99dcb440f61da6be",
+        "stream": "grant",
+        "denied": false,
+        "amount": "5000",
+        "blinding": "2098809273286116615507477621963640849198941802265718013879319997676745855135",
+        "commitment": {
+          "x": "0x7908700983e9c6e1c368940a8292b6766a645898a1ab3b89c90f0b7410a3991",
+          "y": "0x5e6fc05d91a0f22a4b8085ca6acd9137e4d7baa89c1e2be45cc81ef19ee80e6"
+        }
+      }
+    ],
+    "total": "38310",
+    "deniedTotal": "3800",
+    "streamTotals": {
+      "payroll": "17110",
+      "vendor": "8200",
+      "grant": "13000"
+    }
+  },
+  "fromBlock": 11818200
+}
