@@ -4,10 +4,13 @@ import {
   verifyStreamAggregate, openOwn, getRole, getCycleEvents, short,
 } from "../chain.ts";
 import { opensTo } from "../lib/commitments.ts";
+import { downloadAuditPacket } from "../lib/packet.ts";
 import { useAsync } from "../lib/useAsync.ts";
 import { useWallet } from "../App.tsx";
 import { useTx, TxFeedback } from "../components/actions.tsx";
 import { Loading, ErrorBox, PageHead, fmt } from "../components/ui.tsx";
+
+const hx = (b: bigint) => "0x" + b.toString(16);
 
 type Tab = "public" | "auditor" | "stakeholder" | "payee";
 const TABS: Tab[] = ["public", "auditor", "stakeholder", "payee"];
@@ -183,6 +186,30 @@ export function Disclosure() {
           </p>
         </div>
       )}
+
+      {/* ---- audit packet export (accountant-filable, no opening secrets) ---- */}
+      <div className="card" style={{ marginTop: 16, display: "flex", alignItems: "center", gap: 14, flexWrap: "wrap" }}>
+        <div style={{ flex: 1, minWidth: 220 }}>
+          <div className="label">audit packet</div>
+          <p className="mono" style={{ fontSize: 11.5, color: "var(--muted-2)", margin: "6px 0 0" }}>
+            a filable .zip — cycle.csv (commitments + stream), proof-bundle.json (totals + on-chain verify calls), README. No amounts, no opening secrets.
+          </p>
+        </div>
+        <button className="btn ghost" onClick={() => downloadAuditPacket({
+          cycleId,
+          txHash: CFG.demoCycle.txHash,
+          executor: CFG.addresses.executor,
+          rpc: CFG.rpcUrl,
+          totalCommitment: { x: hx(cycle.totalCommitment.x), y: hx(cycle.totalCommitment.y) },
+          streamTotals: CFG.streams.filter((s) => streamCommits[s]).map((s) => ({
+            stream: s, commitment: { x: hx(streamCommits[s].x), y: hx(streamCommits[s].y) },
+          })),
+          payouts: payouts.map((p, i) => ({
+            label: p.label, payee: p.payee, stream: p.stream, denied: !!p.denied,
+            commitment: p.denied ? { x: "0x0", y: "0x0" } : { x: hx(commits[i].x), y: hx(commits[i].y) },
+          })),
+        })}>Download audit packet ↓</button>
+      </div>
 
       <p className="mono" style={{ fontSize: 11, color: "var(--muted-2)", marginTop: 16 }}>
         seeded demo roles — auditor {short(CFG.roles.auditor)} · stakeholder {short(CFG.roles.stakeholder)} · payee {short(CFG.roles.payee)}. On-chain role-gated proofs succeed from a matching-role account (the owner also qualifies).
